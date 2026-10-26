@@ -1,893 +1,702 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduConnect — Portal Acadêmico Integrado</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduConnect — Sistema Acadêmico Integrado</title>
+    
+    <!-- Favicon do Capelo Acadêmico -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f46e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M22 10v6M2 10l10-5 10 5-10 5z'/><path d='M6 12v5c3 3 9 3 12 0v-5'/></svg>">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
-  <!-- Favicon do Capelo Acadêmico -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f46e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M22 10v6M2 10l10-5 10 5-10 5z'/><path d='M6 12v5c3 3 9 3 12 0v-5'/></svg>">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        },
+                        emeraldCustom: '#10b981'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(229, 231, 235, 0.8);
+        }
+        .dark .glass-panel {
+            background: rgba(17, 24, 39, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(55, 65, 81, 0.8);
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
 
-  <!-- Fontes e Ícones -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-
-  <style>
-    /* RESET & DESIGN TOKENS */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root {
-      --color-primary: #4f46e5;
-      --color-primary-dark: #3730a3;
-      --color-primary-soft: #eef2ff;
-      --color-bg: #f6f7fb;
-      --color-surface: #ffffff;
-      --color-text: #172033;
-      --color-muted: #687386;
-      --color-border: #e5e7eb;
-      --color-success: #16a34a;
-      --shadow-card: 0 12px 30px rgba(15, 23, 42, 0.08);
-      --radius-md: 14px;
-      --radius-lg: 24px;
-    }
-
-    body {
-      min-height: 100vh;
-      font-family: 'Inter', sans-serif;
-      background: var(--color-bg);
-      color: var(--color-text);
-      line-height: 1.5;
-    }
-
-    /* LAYOUT GERAL */
-    .app-layout {
-      display: grid;
-      grid-template-columns: 260px minmax(0, 1fr);
-      min-height: 100vh;
-    }
-
-    .app-content {
-      min-width: 0;
-      padding: 36px;
-    }
-
-    .page {
-      width: min(1180px, 100%);
-      margin: 0 auto;
-    }
-
-    .page-header {
-      margin-bottom: 24px;
-    }
-
-    .page-header h1 {
-      font-size: clamp(28px, 4vw, 42px);
-      line-height: 1.1;
-      font-weight: 800;
-    }
-
-    .page-header p {
-      margin-top: 6px;
-      color: var(--color-muted);
-    }
-
-    /* SIDEBAR */
-    .sidebar {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      background: var(--color-surface);
-      border-right: 1px solid var(--color-border);
-      padding: 24px 18px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .sidebar-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px;
-      margin-bottom: 20px;
-      color: var(--color-primary);
-      font-size: 22px;
-      font-weight: 800;
-    }
-
-    .sidebar-nav {
-      display: grid;
-      gap: 6px;
-    }
-
-    .sidebar-link {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      border-radius: var(--radius-md);
-      color: var(--color-muted);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 14px;
-      background: transparent;
-      border: 0;
-      cursor: pointer;
-      width: 100%;
-      text-align: left;
-      transition: all 180ms ease;
-    }
-
-    .sidebar-link:hover {
-      color: var(--color-primary);
-      background: var(--color-primary-soft);
-      transform: translateX(2px);
-    }
-
-    .sidebar-link.active {
-      color: #ffffff;
-      background: var(--color-primary);
-    }
-
-    .perfil-selector {
-      background: var(--color-bg);
-      padding: 4px;
-      border-radius: 10px;
-      display: flex;
-      gap: 4px;
-      margin-bottom: 16px;
-      border: 1px solid var(--color-border);
-    }
-
-    .perfil-btn {
-      flex: 1;
-      padding: 8px;
-      border: 0;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      background: transparent;
-      color: var(--color-muted);
-      transition: all 0.2s;
-    }
-
-    .perfil-btn.active {
-      background: var(--color-surface);
-      color: var(--color-primary);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-
-    /* CARROSSEL / BANNERS DE ANÚNCIOS DO CAMPUS */
-    .campus-carousel {
-      position: relative;
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      box-shadow: var(--shadow-card);
-      margin-bottom: 24px;
-      height: 240px;
-      background: #1e1b4b;
-    }
-
-    .carousel-slide {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      transition: opacity 0.6s ease-in-out;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 36px 42px;
-      background-size: cover;
-      background-position: center;
-      color: #ffffff;
-    }
-
-    .carousel-slide.active {
-      opacity: 1;
-      z-index: 1;
-    }
-
-    .carousel-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, rgba(15, 23, 42, 0.92) 0%, rgba(15, 23, 42, 0.4) 100%);
-    }
-
-    .carousel-content {
-      position: relative;
-      z-index: 2;
-      max-width: 580px;
-    }
-
-    .carousel-tag {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: var(--color-primary);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-      letter-spacing: 0.05em;
-    }
-
-    .carousel-content h2 {
-      font-size: 24px;
-      font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 8px;
-    }
-
-    .carousel-content p {
-      font-size: 14px;
-      color: #cbd5e1;
-      margin-bottom: 16px;
-    }
-
-    .carousel-dots {
-      position: absolute;
-      bottom: 14px;
-      right: 24px;
-      z-index: 3;
-      display: flex;
-      gap: 6px;
-    }
-
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.4);
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .dot.active {
-      background: #ffffff;
-      width: 24px;
-      border-radius: 999px;
-    }
-
-    /* HERO & DASHBOARD */
-    .hero {
-      display: grid;
-      grid-template-columns: 1.25fr 0.75fr;
-      align-items: center;
-      gap: 32px;
-      padding: 36px 42px;
-      background: linear-gradient(135deg, #ffffff 0%, #eef2ff 100%);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-card);
-      overflow: hidden;
-      margin-bottom: 24px;
-    }
-
-    .hero-tag {
-      display: inline-flex;
-      padding: 6px 12px;
-      margin-bottom: 12px;
-      border-radius: 999px;
-      background: var(--color-primary-soft);
-      color: var(--color-primary);
-      font-weight: 700;
-      font-size: 13px;
-    }
-
-    .hero h1 {
-      font-size: clamp(28px, 3.5vw, 42px);
-      line-height: 1.05;
-      letter-spacing: -0.02em;
-    }
-
-    .hero p {
-      margin: 12px 0 20px;
-      color: var(--color-muted);
-      font-size: 15px;
-    }
-
-    .hero-image img {
-      width: min(280px, 100%);
-      max-height: 220px;
-      object-fit: contain;
-      border-radius: var(--radius-lg);
-    }
-
-    .button-primary {
-      border: 0;
-      border-radius: 12px;
-      padding: 12px 20px;
-      background: var(--color-primary);
-      color: #ffffff;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      box-shadow: 0 10px 20px rgba(79, 70, 229, 0.2);
-      transition: background 180ms ease, transform 100ms ease;
-    }
-
-    .button-primary:hover {
-      background: var(--color-primary-dark);
-    }
-
-    /* GRIDS & CARDS */
-    .stats-grid, .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px;
-      margin-top: 22px;
-    }
-
-    .stat-card, .info-card, .form-card {
-      padding: 22px;
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-card);
-    }
-
-    .stat-card {
-      display: grid;
-      gap: 8px;
-    }
-
-    .stat-card-icon {
-      width: 42px;
-      height: 42px;
-      display: grid;
-      place-items: center;
-      border-radius: 12px;
-      color: var(--color-primary);
-      background: var(--color-primary-soft);
-    }
-
-    .stat-card strong {
-      font-size: 28px;
-    }
-
-    .stat-card span, .info-card p {
-      color: var(--color-muted);
-      font-size: 14px;
-    }
-
-    /* FORMULÁRIOS */
-    .form-card {
-      max-width: 680px;
-    }
-
-    .form-group {
-      display: grid;
-      gap: 6px;
-      margin-bottom: 16px;
-    }
-
-    .form-group label {
-      font-weight: 700;
-      font-size: 13px;
-    }
-
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid var(--color-border);
-      border-radius: 10px;
-      background: #ffffff;
-      outline: none;
-      font-family: inherit;
-      font-size: 14px;
-    }
-
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.13);
-    }
-
-    .api-status {
-      font-size: 12px;
-      color: var(--color-muted);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .api-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--color-success);
-    }
-
-    /* RESPONSIVIDADE */
-    @media (max-width: 900px) {
-      .app-layout { grid-template-columns: 1fr; }
-      .sidebar { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--color-border); }
-      .hero { grid-template-columns: 1fr; text-align: center; }
-      .campus-carousel { height: 280px; }
-      .stats-grid, .cards-grid { grid-template-columns: 1fr; }
-    }
-  </style>
+        /* Estilo do Carrossel do Campus */
+        .campus-slider {
+            position: relative;
+            height: 240px;
+            border-radius: 1.5rem;
+            overflow: hidden;
+        }
+        .campus-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.7s ease-in-out;
+            background-size: cover;
+            background-position: center;
+        }
+        .campus-slide.active {
+            opacity: 1;
+            z-index: 1;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-200 antialiased">
 
-  <div class="app-layout">
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div>
-        <div class="sidebar-brand">
-          <i data-lucide="graduation-cap" style="width: 28px; height: 28px;"></i>
-          <strong>EduConnect</strong>
-        </div>
+    <!-- APP CONTAINER -->
+    <div id="app" class="flex h-screen overflow-hidden">
 
-        <!-- Seletor Aluno / Professor -->
-        <div class="perfil-selector">
-          <button id="btn-aluno" class="perfil-btn active" onclick="setPerfil('aluno')">Aluno</button>
-          <button id="btn-professor" class="perfil-btn" onclick="setPerfil('professor')">Professor</button>
-        </div>
-
-        <nav class="sidebar-nav">
-          <button onclick="nav('dashboard')" id="nav-dashboard" class="sidebar-link active">
-            <i data-lucide="home" style="width: 19px;"></i> <span>Início</span>
-          </button>
-          <button onclick="nav('salas')" id="nav-salas" class="sidebar-link">
-            <i data-lucide="door-closed" style="width: 19px;"></i> <span>Marcar Sala</span>
-          </button>
-          <button onclick="nav('cursos')" id="nav-cursos" class="sidebar-link">
-            <i data-lucide="book-open" style="width: 19px;"></i> <span>Disciplinas</span>
-          </button>
-          <button onclick="nav('atividades')" id="nav-atividades" class="sidebar-link">
-            <i data-lucide="file-up" style="width: 19px;"></i> <span>Enviar Atividades</span>
-          </button>
-          <button onclick="nav('sac')" id="nav-sac" class="sidebar-link">
-            <i data-lucide="message-square" style="width: 19px;"></i> <span>SAC / Ouvidoria</span>
-          </button>
-          <button onclick="nav('notas')" id="nav-notas" class="sidebar-link">
-            <i data-lucide="award" style="width: 19px;"></i> <span id="txt-nav-notas">Notas</span>
-          </button>
-        </nav>
-      </div>
-
-      <div class="api-status">
-        <span class="api-dot"></span> API Google Sheets Conectada
-      </div>
-    </aside>
-
-    <!-- CONTEÚDO PRINCIPAL -->
-    <main class="app-content">
-      <div class="page">
-        
-        <!-- PÁGINA: DASHBOARD -->
-        <div id="page-dashboard" class="page-section">
-          
-          <!-- ANÚNCIOS DO CAMPUS / CARROSSEL -->
-          <section class="campus-carousel" data-animate>
-            <!-- Slide 1: Feira de Ciências -->
-            <div class="carousel-slide active" style="background-image: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80');">
-              <div class="carousel-overlay"></div>
-              <div class="carousel-content">
-                <span class="carousel-tag">Feira Tecnológica 2026</span>
-                <h2>Inscrições Abertas para a Feira de Inovação</h2>
-                <p>Apresente seu projeto para grandes empresas parceiras. Premiação para os 3 melhores grupos!</p>
-                <button class="button-primary" style="padding: 8px 16px; font-size: 13px;" onclick="alert('Submeta sua ideia pelo menu Enviar Atividades!')">Inscrever Projeto</button>
-              </div>
-            </div>
-
-            <!-- Slide 2: Interclasse -->
-            <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1200&q=80');">
-              <div class="carousel-overlay"></div>
-              <div class="carousel-content">
-                <span class="carousel-tag" style="background: #e11d48;">Esportes</span>
-                <h2>Torneio Interclasse de Futebol & Basquete</h2>
-                <p>Monte seu time com os colegas do curso. Jogos a partir da próxima sexta-feira no ginásio!</p>
-                <button class="button-primary" style="padding: 8px 16px; font-size: 13px; background: #e11d48;" onclick="alert('Verifique os requisitos com o centro acadêmico.')">Ver Tabela de Jogos</button>
-              </div>
-            </div>
-
-            <!-- Slide 3: Palestra -->
-            <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1200&q=80');">
-              <div class="carousel-overlay"></div>
-              <div class="carousel-content">
-                <span class="carousel-tag" style="background: #059669;">Palestra Especial</span>
-                <h2>Inteligência Artificial no Mercado de Trabalho</h2>
-                <p>Palestra com especialistas da indústria no Auditório Bloco B. Emite certificado de horas complementares.</p>
-                <button class="button-primary" style="padding: 8px 16px; font-size: 13px; background: #059669;" onclick="alert('Inscrição confirmada na palestra!')">Garantir Vaga</button>
-              </div>
-            </div>
-
-            <div class="carousel-dots">
-              <span class="dot active" onclick="setSlide(0)"></span>
-              <span class="dot" onclick="setSlide(1)"></span>
-              <span class="dot" onclick="setSlide(2)"></span>
-            </div>
-          </section>
-
-          <!-- HERO DASHBOARD -->
-          <section class="hero" data-animate>
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col justify-between transition-all duration-300 z-30 fixed md:relative h-full -translate-x-full md:translate-x-0">
             <div>
-              <span class="hero-tag">Portal Acadêmico</span>
-              <h1>Sua vida acadêmica em um único lugar.</h1>
-              <p>Acompanhe disciplinas, salas reservadas, envio de tarefas e atendimento com facilidade.</p>
-              <button class="button-primary" type="button" onclick="nav('salas')">Reservar Sala de Estudos</button>
-            </div>
-            <div class="hero-image">
-              <img src="/assets/estudo.gif" alt="Estudante estudando" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3429/3429149.png'">
-            </div>
-          </section>
+                <!-- Brand Header -->
+                <div class="h-16 flex items-center justify-between px-6 border-b border-slate-100 dark:border-slate-700/50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
+                            <i class="fa-solid fa-graduation-cap text-lg"></i>
+                        </div>
+                        <span class="font-bold text-xl tracking-tight bg-gradient-to-r from-brand-600 to-indigo-500 bg-clip-text text-transparent">EduConnect</span>
+                    </div>
+                    <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-slate-600">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
 
-          <section class="stats-grid">
-            <article class="stat-card" data-animate>
-              <div class="stat-card-icon"><i data-lucide="book-open"></i></div>
-              <strong id="stat-disciplinas">6</strong>
-              <span>Disciplinas ativas</span>
-            </article>
-            <article class="stat-card" data-animate>
-              <div class="stat-card-icon"><i data-lucide="check-circle-2"></i></div>
-              <strong>82%</strong>
-              <span>Atividades concluídas</span>
-            </article>
-            <article class="stat-card" data-animate>
-              <div class="stat-card-icon"><i data-lucide="trending-up"></i></div>
-              <strong>8,7</strong>
-              <span>Média geral</span>
-            </article>
-          </section>
+                <!-- Navigation Links -->
+                <nav class="p-4 space-y-1 custom-scrollbar overflow-y-auto max-h-[calc(100vh-180px)]" id="nav-menu">
+                    <!-- Dynamic Nav Items via JS -->
+                </nav>
+            </div>
+
+            <!-- API Status & Profile -->
+            <div>
+                <div class="px-4 py-2 text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-2 font-medium border-t border-slate-100 dark:border-slate-700/50">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Google Sheets API On
+                </div>
+                <!-- User Profile Bottom Bar -->
+                <div class="p-4 border-t border-slate-100 dark:border-slate-700/50 flex items-center justify-between">
+                    <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('perfil')">
+                        <img id="user-avatar-sidebar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150" alt="Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-brand-500">
+                        <div class="overflow-hidden">
+                            <p id="user-name-sidebar" class="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate">Maria Silva</p>
+                            <p id="user-role-sidebar" class="text-xs text-slate-500 dark:text-slate-400 truncate">Aluno • Eng. de Software</p>
+                        </div>
+                    </div>
+                    <button onclick="toggleUserRole()" title="Alternar Visão (Aluno/Professor)" class="text-slate-400 hover:text-brand-600 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+            <!-- TOP NAVBAR -->
+            <header class="h-16 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-4 md:px-8 z-20">
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleSidebar()" class="md:hidden text-slate-600 dark:text-slate-300 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
+                        <i class="fa-solid fa-bars text-lg"></i>
+                    </button>
+                    <div class="relative hidden sm:block">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input type="text" placeholder="Buscar disciplinas, avisos, salas..." class="w-64 pl-9 pr-4 py-1.5 text-sm rounded-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 focus:outline-none focus:border-brand-500 dark:focus:border-brand-500 transition-all">
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <!-- Role Indicator Badge -->
+                    <span id="role-badge" class="px-2.5 py-1 text-xs font-semibold rounded-full bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300 border border-brand-200 dark:border-brand-800">
+                        Modo Aluno
+                    </span>
+
+                    <!-- Dark Mode Toggle -->
+                    <button onclick="toggleDarkMode()" class="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors">
+                        <i id="theme-icon" class="fa-solid fa-moon"></i>
+                    </button>
+
+                    <!-- Webmail Indicator -->
+                    <button onclick="navigate('webmail')" class="relative p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors">
+                        <i class="fa-solid fa-envelope"></i>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+
+                    <!-- Notifications Button -->
+                    <button onclick="showToast('Sua solicitação de sala foi aprovada!')" class="relative p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-brand-500 rounded-full"></span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- VIEW CONTAINER -->
+            <main id="main-view" class="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
+                <!-- Dynamic Pages Injected Here -->
+            </main>
         </div>
+    </div>
 
-        <!-- PÁGINA: MARCAR SALA DE ESTUDO -->
-        <div id="page-salas" class="page-section" style="display: none;">
-          <header class="page-header" data-animate>
-            <h1>Marcar Sala de Estudo</h1>
-            <p>Agende um espaço individual ou em grupo no campus da faculdade.</p>
-          </header>
-          <form class="form-card" onsubmit="handleReserva(event)" data-animate>
-            <div class="form-group">
-              <label>Nome do Aluno / Grupo</label>
-              <input type="text" id="res-aluno" required placeholder="Ex: Maria Silva">
+    <!-- MODAL RESERVA DE SALAS DE ESTUDO -->
+    <div id="modal-sala" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 dark:border-slate-700">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold dark:text-white">Reservar Sala de Estudo</h3>
+                <button onclick="closeModal('modal-sala')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="form-group">
-              <label>Escolha a Sala</label>
-              <select id="res-sala">
-                <option value="Sala 101 - Bloco A (Silenciosa)">Sala 101 - Bloco A (Silenciosa)</option>
-                <option value="Sala 204 - Bloco B (Grupo/Lousa)">Sala 204 - Bloco B (Grupo/Lousa)</option>
-                <option value="Laboratório 03 - T.I.">Laboratório 03 - T.I.</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Data</label>
-              <input type="date" id="res-data" required>
-            </div>
-            <div class="form-group">
-              <label>Horário</label>
-              <select id="res-horario">
-                <option value="08:00 - 10:00">08:00 - 10:00</option>
-                <option value="10:00 - 12:00">10:00 - 12:00</option>
-                <option value="14:00 - 16:00">14:00 - 16:00</option>
-                <option value="19:00 - 21:00">19:00 - 21:00</option>
-              </select>
-            </div>
-            <button class="button-primary" type="submit" id="btn-reserva">Confirmar Agendamento</button>
-          </form>
+            <form onsubmit="confirmarReservaSala(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">SALA SELECIONADA</label>
+                    <input type="text" id="sala-nome-modal" readonly class="w-full bg-slate-100 dark:bg-slate-700 font-medium px-3 py-2 rounded-lg text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">NOME DO ALUNO / GRUPO</label>
+                    <input type="text" id="reser-aluno-modal" placeholder="Ex: Maria Silva" required class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">DATA</label>
+                        <input type="date" id="reser-data-modal" required class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">HORÁRIO</label>
+                        <select id="reser-horario-modal" required class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm">
+                            <option value="08:00 - 10:00">08:00 - 10:00</option>
+                            <option value="10:00 - 12:00">10:00 - 12:00</option>
+                            <option value="14:00 - 16:00">14:00 - 16:00</option>
+                            <option value="19:00 - 21:00">19:00 - 21:00</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" id="btn-sub-reserva" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-xl shadow-lg shadow-brand-500/20 transition-all">Confirmar e Enviar para o Sistema</button>
+            </form>
         </div>
+    </div>
 
-        <!-- PÁGINA: SAC / OUVIDORIA -->
-        <div id="page-sac" class="page-section" style="display: none;">
-          <header class="page-header" data-animate>
-            <h1>SAC & Ouvidoria</h1>
-            <p>Envie sua mensagem, dúvida ou solicitação diretamente para a secretaria.</p>
-          </header>
-          <form class="form-card" onsubmit="handleSAC(event)" data-animate>
-            <div class="form-group">
-              <label>Nome Completo</label>
-              <input type="text" id="sac-aluno" required placeholder="Digite seu nome">
-            </div>
-            <div class="form-group">
-              <label>Assunto</label>
-              <select id="sac-assunto">
-                <option value="Dúvida Acadêmica">Dúvida Acadêmica</option>
-                <option value="Secretaria / Matrícula">Secretaria / Matrícula</option>
-                <option value="Suporte Técnico">Suporte Técnico</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Mensagem</label>
-              <textarea id="sac-mensagem" rows="4" required placeholder="Escreva aqui sua solicitação..."></textarea>
-            </div>
-            <button class="button-primary" type="submit" id="btn-sac">Enviar Mensagem</button>
-          </form>
-        </div>
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
 
-        <!-- PÁGINA: DISCIPLINAS -->
-        <div id="page-cursos" class="page-section" style="display: none;">
-          <header class="page-header" data-animate>
-            <h1>Minhas Disciplinas</h1>
-            <p>Acompanhe o progresso das matérias cursadas.</p>
-          </header>
-          <div class="cards-grid">
-            <article class="info-card" data-animate>
-              <h2>Programação FrontEnd</h2>
-              <p>Docente: Profa. Ana</p>
-              <p>Progresso: 78%</p>
-            </article>
-            <article class="info-card" data-animate>
-              <h2>UX/UI Design</h2>
-              <p>Docente: Prof. Carlos</p>
-              <p>Progresso: 64%</p>
-            </article>
-            <article class="info-card" data-animate>
-              <h2>Banco de Dados</h2>
-              <p>Docente: Profa. Marina</p>
-              <p>Progresso: 86%</p>
-            </article>
-          </div>
-        </div>
+    <script>
+        // URL DA SUA API GOOGLE APPS SCRIPT
+        const API_URL = "https://script.google.com/macros/s/AKfycbx37HaqrZwmhpL0dCJbzp9wCdMxg3_q-CtUDLfLTs2kZv-L80fI2TjHLaOb_l4575gLBg/exec";
 
-        <!-- PÁGINA: ENVIAR ATIVIDADES -->
-        <div id="page-atividades" class="page-section" style="display: none;">
-          <header class="page-header" data-animate>
-            <h1>Enviar Atividades</h1>
-            <p>Suba o link do trabalho ou arquivo de exercícios para o professor.</p>
-          </header>
-          <form class="form-card" onsubmit="handleAtividade(event)" data-animate>
-            <div class="form-group">
-              <label>Disciplina</label>
-              <select id="atv-disciplina">
-                <option value="Programação FrontEnd">Programação FrontEnd</option>
-                <option value="UX/UI Design">UX/UI Design</option>
-                <option value="Banco de Dados">Banco de Dados</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Nome do Aluno</label>
-              <input type="text" id="atv-aluno" required placeholder="Digite seu nome">
-            </div>
-            <div class="form-group">
-              <label>Link do Trabalho (Drive, GitHub, Figma)</label>
-              <input type="url" id="atv-link" required placeholder="https://...">
-            </div>
-            <button class="button-primary" type="submit" id="btn-atv">Enviar Atividade</button>
-          </form>
-        </div>
+        // GLOBAL STATE
+        let currentUserRole = 'aluno'; // 'aluno' ou 'professor'
+        let currentView = 'dashboard';
+        let currentCarouselIndex = 0;
 
-        <!-- PÁGINA: NOTAS / LANÇAR NOTAS -->
-        <div id="page-notas" class="page-section" style="display: none;">
-          <header class="page-header" data-animate>
-            <h1 id="title-notas">Notas Acadêmicas</h1>
-            <p id="sub-notas">Consulte seu desempenho acadêmico no semestre.</p>
-          </header>
+        // MOCK DATA STORE
+        const mockData = {
+            disciplinas: [
+                { id: 1, nome: "Programação FrontEnd SPA", prof: "Profa. Ana", progresso: 78, cor: "from-blue-500 to-indigo-600", icone: "fa-code" },
+                { id: 2, nome: "UX/UI Design System", prof: "Prof. Carlos", progresso: 64, cor: "from-purple-500 to-pink-600", icone: "fa-palette" },
+                { id: 3, nome: "Banco de Dados NoSQL", prof: "Profa. Marina", progresso: 86, cor: "from-emerald-500 to-teal-600", icone: "fa-database" },
+                { id: 4, nome: "Engenharia de Software", prof: "Prof. Roberto", progresso: 92, cor: "from-amber-500 to-orange-600", icone: "fa-gears" }
+            ],
+            notas: [
+                { disciplina: "Programação FrontEnd SPA", p1: 9.2, p2: 8.8, trabalho: 10.0, media: 9.3 },
+                { disciplina: "UX/UI Design System", p1: 8.5, p2: 8.0, trabalho: 9.5, media: 8.7 },
+                { disciplina: "Banco de Dados NoSQL", p1: 7.8, p2: 8.2, trabalho: 8.5, media: 8.1 },
+                { disciplina: "Engenharia de Software", p1: 9.5, p2: 9.0, trabalho: 9.8, media: 9.4 }
+            ],
+            salasEstudo: [
+                { id: 'A101', nome: "Sala de Estudos - Bloco A #101", capacidade: "4 pessoas", recurso: "Lousa Digital & TV", status: "Livre" },
+                { id: 'A102', nome: "Sala de Estudos - Bloco A #102", capacidade: "6 pessoas", recurso: "Projetor & Ar Condicionado", status: "Ocupada" },
+                { id: 'B205', nome: "Sala Mac / Design Lab", capacidade: "8 pessoas", recurso: "Workstations & Monitor Ultrawide", status: "Livre" },
+                { id: 'C301', nome: "Espaço Silencioso Individual", capacidade: "1 pessoa", recurso: "Tomadas & Isolamento Acústico", status: "Livre" }
+            ],
+            avisos: [
+                { data: "26 Out", titulo: "Feira de Projetos TecEdu 2026", desc: "Inscrições abertas para submissão de trabalhos no campus." },
+                { data: "28 Out", titulo: "Torneio Interclasse de Futebol", desc: "Jogos no ginásio principal a partir das 18h." }
+            ],
+            campusPhotos: [
+                { title: "Feira de Tecnologia & Ciência 2026", tag: "Inscrições Abertas", desc: "Apresente seus projetos para grandes empresas parceiras da faculdade.", img: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80" },
+                { title: "Campeonato Interclasse de Basquete & Futebol", tag: "Esportes no Campus", desc: "Monte seu time e represente seu curso na competição anual do ginásio.", img: "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1200&q=80" },
+                { title: "Palestra: O Futuro da Inteligência Artificial", tag: "Auditório Central", desc: "Evento com certificado de horas complementares ministrado por especialistas.", img: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1200&q=80" }
+            ]
+        };
 
-          <!-- Visão do Aluno -->
-          <div id="view-notas-aluno" class="cards-grid">
-            <article class="info-card" data-animate>
-              <h2>Programação FrontEnd</h2>
-              <p>Nota Atual</p>
-              <strong style="font-size: 28px; color: var(--color-primary);">9.2</strong>
-            </article>
-            <article class="info-card" data-animate>
-              <h2>UX/UI Design</h2>
-              <p>Nota Atual</p>
-              <strong style="font-size: 28px; color: var(--color-primary);">8.8</strong>
-            </article>
-            <article class="info-card" data-animate>
-              <h2>Banco de Dados</h2>
-              <p>Nota Atual</p>
-              <strong style="font-size: 28px; color: var(--color-primary);">8.1</strong>
-            </article>
-          </div>
+        // NAVIGATION CONFIG
+        const navItems = [
+            { id: 'dashboard', label: 'Início', icon: 'fa-house', roles: ['aluno', 'professor'] },
+            { id: 'cursos', label: 'Disciplinas', icon: 'fa-book-open', roles: ['aluno', 'professor'] },
+            { id: 'salas', label: 'Salas de Estudo', icon: 'fa-door-open', roles: ['aluno', 'professor'] },
+            { id: 'notas', label: 'Notas & Atividades', icon: 'fa-chart-line', roles: ['aluno'] },
+            { id: 'professor-painel', label: 'Painel Docente', icon: 'fa-chalkboard-user', roles: ['professor'] },
+            { id: 'biblioteca', label: 'Biblioteca Virtual', icon: 'fa-book-bookmark', roles: ['aluno', 'professor'] },
+            { id: 'webmail', label: 'Webmail', icon: 'fa-envelope', roles: ['aluno', 'professor'] },
+            { id: 'sac', label: 'Atendimento / SAC', icon: 'fa-headset', roles: ['aluno', 'professor'] },
+            { id: 'perfil', label: 'Meu Perfil', icon: 'fa-user', roles: ['aluno', 'professor'] }
+        ];
 
-          <!-- Visão do Professor (Lançamento via API) -->
-          <form id="view-notas-prof" class="form-card" style="display: none;" onsubmit="handleLancarNota(event)" data-animate>
-            <div class="form-group">
-              <label>Disciplina</label>
-              <select id="nota-disciplina">
-                <option value="Programação FrontEnd">Programação FrontEnd</option>
-                <option value="UX/UI Design">UX/UI Design</option>
-                <option value="Banco de Dados">Banco de Dados</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Nome do Aluno</label>
-              <input type="text" id="nota-aluno" required placeholder="Ex: Maria Silva">
-            </div>
-            <div class="form-group">
-              <label>Nota (0 a 10)</label>
-              <input type="number" step="0.1" min="0" max="10" id="nota-valor" required placeholder="Ex: 9.5">
-            </div>
-            <button class="button-primary" type="submit" id="btn-nota">Lançar Nota na Planilha</button>
-          </form>
-        </div>
+        // INITIALIZATION
+        window.onload = function() {
+            renderSidebar();
+            navigate('dashboard');
+        };
 
-      </div>
-    </main>
-  </div>
+        // RENDER SIDEBAR
+        function renderSidebar() {
+            const menu = document.getElementById('nav-menu');
+            menu.innerHTML = '';
 
-  <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbx37HaqrZwmhpL0dCJbzp9wCdMxg3_q-CtUDLfLTs2kZv-L80fI2TjHLaOb_l4575gLBg/exec";
+            navItems.forEach(item => {
+                if (item.roles.includes(currentUserRole)) {
+                    const activeClass = currentView === item.id 
+                        ? 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300 font-semibold' 
+                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50';
 
-    // Inicializa ícones Lucide
-    lucide.createIcons();
+                    menu.innerHTML += `
+                        <button onclick="navigate('${item.id}')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm transition-all duration-150 ${activeClass}">
+                            <i class="fa-solid ${item.icon} w-5 text-center"></i>
+                            <span>${item.label}</span>
+                        </button>
+                    `;
+                }
+            });
+        }
 
-    // LÓGICA DO CARROSSEL DE AVISOS DO CAMPUS
-    let currentSlide = 0;
-    const slides = document.querySelectorAll('.carousel-slide');
-    const dots = document.querySelectorAll('.dot');
+        // NAVIGATION ENGINE
+        function navigate(viewId) {
+            currentView = viewId;
+            renderSidebar();
+            const main = document.getElementById('main-view');
+            
+            gsap.to(main, { opacity: 0, y: 10, duration: 0.15, onComplete: () => {
+                main.innerHTML = getPageTemplate(viewId);
+                animatePageElements();
+                if (viewId === 'dashboard') startCarouselTimer();
+                gsap.to(main, { opacity: 1, y: 0, duration: 0.25 });
+            }});
 
-    function setSlide(index) {
-      slides.forEach(s => s.classList.remove('active'));
-      dots.forEach(d => d.classList.remove('active'));
-      
-      currentSlide = index;
-      if (slides[currentSlide]) slides[currentSlide].classList.add('active');
-      if (dots[currentSlide]) dots[currentSlide].classList.add('active');
-    }
+            if (window.innerWidth < 768) {
+                document.getElementById('sidebar').classList.add('-translate-x-full');
+            }
+        }
 
-    // Passa slide a cada 5 segundos
-    setInterval(() => {
-      currentSlide = (currentSlide + 1) % slides.length;
-      setSlide(currentSlide);
-    }, 5000);
+        // STAT CARD HELPER
+        function renderStatCard(title, val, icon, color, sub) {
+            return `
+                <div data-animate class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">${title}</p>
+                        <h3 class="text-2xl font-bold dark:text-white mt-1">${val}</h3>
+                        <span class="text-[11px] text-slate-400">${sub}</span>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center ${color} text-xl">
+                        <i class="fa-solid ${icon}"></i>
+                    </div>
+                </div>
+            `;
+        }
 
-    // GSAP Animações de Entrada
-    function animatePage() {
-      gsap.from("[data-animate]", {
-        opacity: 0,
-        y: 20,
-        duration: 0.5,
-        stagger: 0.08,
-        ease: "power2.out"
-      });
-    }
+        // CARROSSEL TIMER
+        function startCarouselTimer() {
+            setInterval(() => {
+                const slides = document.querySelectorAll('.campus-slide');
+                if (slides.length > 0) {
+                    slides.forEach(s => s.classList.remove('active'));
+                    currentCarouselIndex = (currentCarouselIndex + 1) % slides.length;
+                    slides[currentCarouselIndex].classList.add('active');
+                }
+            }, 5000);
+        }
 
-    // Navegação entre Páginas SPA
-    function nav(pageId) {
-      document.querySelectorAll('.page-section').forEach(el => el.style.display = 'none');
-      document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+        // PAGE TEMPLATES
+        function getPageTemplate(viewId) {
+            switch(viewId) {
+                case 'dashboard':
+                    return `
+                        <div class="space-y-6">
+                            <!-- CARROSSEL DE FOTOS DO CAMPUS E AVISOS -->
+                            <div data-animate class="campus-slider shadow-xl">
+                                ${mockData.campusPhotos.map((photo, i) => `
+                                    <div class="campus-slide ${i === 0 ? 'active' : ''}" style="background-image: linear-gradient(90deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.3) 100%), url('${photo.img}')">
+                                        <div class="p-6 md:p-8 flex flex-col justify-center h-full max-w-xl text-white">
+                                            <span class="inline-block px-3 py-1 bg-brand-600 text-white rounded-full text-xs font-bold w-max mb-2">${photo.tag}</span>
+                                            <h2 class="text-2xl md:text-3xl font-extrabold mb-2">${photo.title}</h2>
+                                            <p class="text-slate-200 text-sm mb-4">${photo.desc}</p>
+                                            <button onclick="navigate('salas')" class="bg-white text-slate-900 px-4 py-2 rounded-xl text-xs font-bold w-max hover:bg-brand-50 transition-all">
+                                                Saber Mais
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
 
-      const target = document.getElementById(`page-${pageId}`);
-      const btn = document.getElementById(`nav-${pageId}`);
-      if (target) target.style.display = 'block';
-      if (btn) btn.classList.add('active');
+                            <!-- Hero Banner Original -->
+                            <div data-animate class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 p-6 md:p-8 text-white shadow-xl">
+                                <div class="relative z-10 max-w-xl">
+                                    <span class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-semibold mb-3">Portal Acadêmico 2026</span>
+                                    <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight mb-2">Bem-vindo(a) ao EduConnect!</h1>
+                                    <p class="text-brand-100 text-sm md:text-base mb-6">Acompanhe suas aulas, gerencie entregas, agende salas de estudo e mantenha-se em dia com sua rotina universitária.</p>
+                                    <div class="flex flex-wrap gap-3">
+                                        <button onclick="navigate('salas')" class="bg-white text-brand-600 hover:bg-brand-50 px-5 py-2.5 rounded-xl font-bold text-sm shadow-md transition-all">
+                                            <i class="fa-solid fa-calendar-plus mr-2"></i>Reservar Sala de Estudo
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
 
-      animatePage();
-    }
+                            <!-- Metrics Grid -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                ${renderStatCard("CR Geral", "8,9", "fa-chart-line", "text-emerald-500", "Top 5% da turma")}
+                                ${renderStatCard("Frequência", "96%", "fa-user-check", "text-blue-500", "Excelente marca")}
+                                ${renderStatCard("Atividades", "12/14", "fa-list-check", "text-purple-500", "2 pendentes")}
+                                ${renderStatCard("Livros Salvos", "5", "fa-bookmark", "text-amber-500", "Biblioteca Virtual")}
+                            </div>
+                        </div>
+                    `;
 
-    // Modo Aluno / Professor
-    function setPerfil(perfil) {
-      document.getElementById('btn-aluno').classList.toggle('active', perfil === 'aluno');
-      document.getElementById('btn-professor').classList.toggle('active', perfil === 'professor');
+                case 'salas':
+                    return `
+                        <div class="space-y-6">
+                            <div data-animate class="flex justify-between items-center">
+                                <div>
+                                    <h1 class="text-2xl font-bold dark:text-white">Reserva de Salas de Estudo</h1>
+                                    <p class="text-sm text-slate-500">Agende um espaço para estudo individual ou trabalhos em grupo.</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                ${mockData.salasEstudo.map(sala => `
+                                    <div data-animate class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                                        <div>
+                                            <div class="flex justify-between items-center mb-3">
+                                                <span class="text-xs font-bold px-2.5 py-1 rounded-full ${sala.status === 'Livre' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300'}">
+                                                    ${sala.status}
+                                                </span>
+                                                <i class="fa-solid fa-door-closed text-slate-400 text-xl"></i>
+                                            </div>
+                                            <h3 class="font-bold text-slate-800 dark:text-white mb-2">${sala.nome}</h3>
+                                            <p class="text-xs text-slate-500 mb-1"><i class="fa-solid fa-users mr-1"></i> ${sala.capacidade}</p>
+                                            <p class="text-xs text-slate-500 mb-4"><i class="fa-solid fa-tv mr-1"></i> ${sala.recurso}</p>
+                                        </div>
+                                        <button onclick="openModalSala('${sala.nome}')" ${sala.status !== 'Livre' ? 'disabled' : ''} class="w-full py-2 bg-brand-600 hover:bg-brand-700 disabled:bg-slate-300 text-white rounded-xl text-sm font-semibold transition-all">
+                                            ${sala.status === 'Livre' ? 'Reservar Agora' : 'Indisponível'}
+                                        </button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
 
-      const isProf = perfil === 'professor';
-      document.getElementById('txt-nav-notas').innerText = isProf ? 'Lançar Notas' : 'Notas';
-      document.getElementById('title-notas').innerText = isProf ? 'Portal do Professor — Lançar Notas' : 'Notas Acadêmicas';
-      document.getElementById('sub-notas').innerText = isProf ? 'Registre as notas diretamente no sistema.' : 'Consulte seu desempenho acadêmico no semestre.';
-      
-      document.getElementById('view-notas-aluno').style.display = isProf ? 'none' : 'grid';
-      document.getElementById('view-notas-prof').style.display = isProf ? 'block' : 'none';
-    }
+                case 'notas':
+                    return `
+                        <div class="space-y-6">
+                            <div data-animate>
+                                <h1 class="text-2xl font-bold dark:text-white">Boletim & Envio de Atividades</h1>
+                                <p class="text-sm text-slate-500">Envie suas tarefas diretamente para os professores via Google API.</p>
+                            </div>
 
-    // INTEGRAÇÕES COM O GOOGLE APPS SCRIPT (API)
+                            <!-- Formulário Envio de Atividade -->
+                            <div data-animate class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                                <h3 class="font-bold dark:text-white mb-4">Enviar Novo Trabalho / Exercício</h3>
+                                <form onsubmit="handleEnviarAtividadeAPI(event)" class="space-y-4 max-w-xl">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 mb-1">DISCIPLINA</label>
+                                        <select id="atv-disc" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm">
+                                            <option value="Programação FrontEnd SPA">Programação FrontEnd SPA</option>
+                                            <option value="UX/UI Design System">UX/UI Design System</option>
+                                            <option value="Banco de Dados NoSQL">Banco de Dados NoSQL</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 mb-1">NOME DO ALUNO</label>
+                                        <input type="text" id="atv-aluno" required placeholder="Digite seu nome completo" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 mb-1">LINK DO TRABALHO (GitHub / Drive / Figma)</label>
+                                        <input type="url" id="atv-link" required placeholder="https://..." class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm">
+                                    </div>
+                                    <button type="submit" id="btn-env-atv" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-all">
+                                        Enviar Atividade
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    `;
 
-    // 1. Reservar Sala
-    async function handleReserva(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btn-reserva');
-      btn.innerText = "Agendando...";
-      btn.disabled = true;
+                case 'professor-painel':
+                    return `
+                        <div class="space-y-6">
+                            <div data-animate>
+                                <h1 class="text-2xl font-bold dark:text-white">Painel do Docente</h1>
+                                <p class="text-sm text-slate-500">Lance as notas dos seus alunos direto no banco de dados da instituição.</p>
+                            </div>
 
-      try {
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({
-            action: 'reservarSala',
-            aluno: document.getElementById('res-aluno').value,
-            sala: document.getElementById('res-sala').value,
-            data: document.getElementById('res-data').value,
-            horario: document.getElementById('res-horario').value
-          })
-        });
-        const data = await res.json();
-        alert("Sucesso: " + data.message);
-        e.target.reset();
-      } catch (err) {
-        alert("Erro ao conectar com a API.");
-      } finally {
-        btn.innerText = "Confirmar Agendamento";
-        btn.disabled = false;
-      }
-    }
+                            <div data-animate class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm max-w-xl">
+                                <h3 class="font-bold dark:text-white mb-4">Lançar Nota de Aluno</h3>
+                                <form onsubmit="handleLancarNotaAPI(event)" class="space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 mb-1">DISCIPLINA</label>
+                                        <select id="nota-disc" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm">
+                                            <option value="Programação FrontEnd SPA">Programação FrontEnd SPA</option>
+                                            <option value="UX/UI Design System">UX/UI Design System</option>
+                                            <option value="Banco de Dados NoSQL">Banco de Dados NoSQL</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 mb-1">NOME DO ALUNO</label>
+                                        <input type="text" id="nota-aluno" required placeholder="Ex: Maria Silva" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 mb-1">NOTA (0.0 A 10.0)</label>
+                                        <input type="number" step="0.1" min="0" max="10" id="nota-val" required placeholder="Ex: 9.5" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm">
+                                    </div>
+                                    <button type="submit" id="btn-lan-nota" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-all">
+                                        Registrar Nota na Planilha
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    `;
 
-    // 2. SAC / Ouvidoria
-    async function handleSAC(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btn-sac');
-      btn.innerText = "Enviando...";
-      btn.disabled = true;
+                case 'sac':
+                    return `
+                        <div class="space-y-6">
+                            <div data-animate>
+                                <h1 class="text-2xl font-bold dark:text-white">SAC / Ouvidoria Acadêmica</h1>
+                                <p class="text-sm text-slate-500">Abra um chamado diretamente com a secretaria universitária.</p>
+                            </div>
 
-      try {
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({
-            action: 'enviarSAC',
-            aluno: document.getElementById('sac-aluno').value,
-            assunto: document.getElementById('sac-assunto').value,
-            mensagem: document.getElementById('sac-mensagem').value
-          })
-        });
-        const data = await res.json();
-        alert("Sucesso: " + data.message);
-        e.target.reset();
-      } catch (err) {
-        alert("Erro ao conectar com a API.");
-      } finally {
-        btn.innerText = "Enviar Mensagem";
-        btn.disabled = false;
-      }
-    }
+                            <div data-animate class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm max-w-xl">
+                                <form onsubmit="handleSACAPI(event)" class="space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 mb-1">SEU NOME</label>
+                                        <input type="text" id="sac-aluno" required placeholder="Digite seu nome" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 mb-1">ASSUNTO</label>
+                                        <select id="sac-assunto" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm">
+                                            <option value="Dúvida Acadêmica">Dúvida Acadêmica</option>
+                                            <option value="Secretaria / Matrícula">Secretaria / Matrícula</option>
+                                            <option value="Suporte Técnico">Suporte Técnico</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 mb-1">MENSAGEM</label>
+                                        <textarea id="sac-msg" rows="4" required placeholder="Descreva sua solicitação..." class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm"></textarea>
+                                    </div>
+                                    <button type="submit" id="btn-env-sac" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-all">
+                                        Enviar Protocolo ao SAC
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    `;
 
-    // 3. Enviar Atividade
-    async function handleAtividade(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btn-atv');
-      btn.innerText = "Enviando...";
-      btn.disabled = true;
+                default:
+                    return `
+                        <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl border border-slate-200 dark:border-slate-700">
+                            <h2 class="text-xl font-bold dark:text-white mb-2">Módulo em Desenvolvimento</h2>
+                            <p class="text-sm text-slate-500">A seção <strong>${viewId}</strong> está pronta para integrar conteúdos adicionais.</p>
+                        </div>
+                    `;
+            }
+        }
 
-      try {
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({
-            action: 'enviarAtividade',
-            disciplina: document.getElementById('atv-disciplina').value,
-            aluno: document.getElementById('atv-aluno').value,
-            linkArquivo: document.getElementById('atv-link').value
-          })
-        });
-        const data = await res.json();
-        alert("Sucesso: " + data.message);
-        e.target.reset();
-      } catch (err) {
-        alert("Erro ao conectar com a API.");
-      } finally {
-        btn.innerText = "Enviar Atividade";
-        btn.disabled = false;
-      }
-    }
+        // UTILITY FUNCTIONS & HANDLERS
 
-    // 4. Lançar Nota (Professor)
-    async function handleLancarNota(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btn-nota');
-      btn.innerText = "Registrando...";
-      btn.disabled = true;
+        function animatePageElements() {
+            gsap.from("[data-animate]", {
+                opacity: 0,
+                y: 15,
+                duration: 0.4,
+                stagger: 0.08,
+                ease: "power2.out"
+            });
+        }
 
-      try {
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({
-            action: 'lancarNota',
-            disciplina: document.getElementById('nota-disciplina').value,
-            aluno: document.getElementById('nota-aluno').value,
-            nota: document.getElementById('nota-valor').value
-          })
-        });
-        const data = await res.json();
-        alert("Sucesso: " + data.message);
-        e.target.reset();
-      } catch (err) {
-        alert("Erro ao conectar com a API.");
-      } finally {
-        btn.innerText = "Lançar Nota na Planilha";
-        btn.disabled = false;
-      }
-    }
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        }
 
-    // Animação inicial ao carregar a página
-    window.onload = animatePage;
-  </script>
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('theme-icon');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+        }
+
+        function toggleUserRole() {
+            currentUserRole = currentUserRole === 'aluno' ? 'professor' : 'aluno';
+            document.getElementById('role-badge').innerText = currentUserRole === 'aluno' ? 'Modo Aluno' : 'Modo Professor';
+            document.getElementById('user-role-sidebar').innerText = currentUserRole === 'aluno' ? 'Aluno • Eng. de Software' : 'Professor • Docente';
+            renderSidebar();
+            navigate(currentUserRole === 'professor' ? 'professor-painel' : 'dashboard');
+            showToast(`Alternado para ${currentUserRole === 'aluno' ? 'Visão do Aluno' : 'Painel do Professor'}`);
+        }
+
+        function openModalSala(nomeSala) {
+            document.getElementById('sala-nome-modal').value = nomeSala;
+            document.getElementById('modal-sala').classList.remove('hidden');
+            document.getElementById('modal-sala').classList.add('flex');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+            document.getElementById(modalId).classList.remove('flex');
+        }
+
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-4 py-3 rounded-xl shadow-2xl text-xs font-semibold flex items-center gap-2';
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> ${msg}`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3500);
+        }
+
+        // GOOGLE APPS SCRIPT HANDLERS (API INTEGRATION)
+
+        async function confirmarReservaSala(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-sub-reserva');
+            btn.innerText = "Enviando para o Google Sheets...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'reservarSala',
+                        sala: document.getElementById('sala-nome-modal').value,
+                        aluno: document.getElementById('reser-aluno-modal').value,
+                        data: document.getElementById('reser-data-modal').value,
+                        horario: document.getElementById('reser-horario-modal').value
+                    })
+                });
+                const data = await res.json();
+                closeModal('modal-sala');
+                showToast(data.message || "Reserva efetuada na planilha!");
+            } catch(err) {
+                showToast("Erro ao conectar com a API.");
+            } finally {
+                btn.innerText = "Confirmar e Enviar para o Sistema";
+                btn.disabled = false;
+            }
+        }
+
+        async function handleEnviarAtividadeAPI(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-env-atv');
+            btn.innerText = "Enviando...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'enviarAtividade',
+                        disciplina: document.getElementById('atv-disc').value,
+                        aluno: document.getElementById('atv-aluno').value,
+                        linkArquivo: document.getElementById('atv-link').value
+                    })
+                });
+                const data = await res.json();
+                showToast(data.message || "Trabalho enviado ao professor!");
+                e.target.reset();
+            } catch(err) {
+                showToast("Erro ao enviar atividade.");
+            } finally {
+                btn.innerText = "Enviar Atividade";
+                btn.disabled = false;
+            }
+        }
+
+        async function handleLancarNotaAPI(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-lan-nota');
+            btn.innerText = "Registrando...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'lancarNota',
+                        disciplina: document.getElementById('nota-disc').value,
+                        aluno: document.getElementById('nota-aluno').value,
+                        nota: document.getElementById('nota-val').value
+                    })
+                });
+                const data = await res.json();
+                showToast(data.message || "Nota lançada na planilha!");
+                e.target.reset();
+            } catch(err) {
+                showToast("Erro ao registrar nota.");
+            } finally {
+                btn.innerText = "Registrar Nota na Planilha";
+                btn.disabled = false;
+            }
+        }
+
+        async function handleSACAPI(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-env-sac');
+            btn.innerText = "Abrindo Chamado...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'enviarSAC',
+                        aluno: document.getElementById('sac-aluno').value,
+                        assunto: document.getElementById('sac-assunto').value,
+                        mensagem: document.getElementById('sac-msg').value
+                    })
+                });
+                const data = await res.json();
+                showToast(data.message || "Protocolo aberto com sucesso!");
+                e.target.reset();
+            } catch(err) {
+                showToast("Erro ao abrir protocolo.");
+            } finally {
+                btn.innerText = "Enviar Protocolo ao SAC";
+                btn.disabled = false;
+            }
+        }
+    </script>
 </body>
 </html>
