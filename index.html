@@ -1,260 +1,893 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="h-full bg-slate-900 text-slate-100">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EduConnect — Portal Acadêmico Integrado</title>
-  
+
   <!-- Favicon do Capelo Acadêmico -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M22 10v6M2 10l10-5 10 5-10 5z'/><path d='M6 12v5c3 3 9 3 12 0v-5'/></svg>">
-  
-  <!-- Tailwind CSS & Lucide Icons -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f46e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M22 10v6M2 10l10-5 10 5-10 5z'/><path d='M6 12v5c3 3 9 3 12 0v-5'/></svg>">
+
+  <!-- Fontes e Ícones -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: { 50: '#eef2ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' }
-          }
-        }
-      }
+
+  <style>
+    /* RESET & DESIGN TOKENS */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --color-primary: #4f46e5;
+      --color-primary-dark: #3730a3;
+      --color-primary-soft: #eef2ff;
+      --color-bg: #f6f7fb;
+      --color-surface: #ffffff;
+      --color-text: #172033;
+      --color-muted: #687386;
+      --color-border: #e5e7eb;
+      --color-success: #16a34a;
+      --shadow-card: 0 12px 30px rgba(15, 23, 42, 0.08);
+      --radius-md: 14px;
+      --radius-lg: 24px;
     }
-  </script>
+
+    body {
+      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.5;
+    }
+
+    /* LAYOUT GERAL */
+    .app-layout {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .app-content {
+      min-width: 0;
+      padding: 36px;
+    }
+
+    .page {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+    }
+
+    .page-header {
+      margin-bottom: 24px;
+    }
+
+    .page-header h1 {
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.1;
+      font-weight: 800;
+    }
+
+    .page-header p {
+      margin-top: 6px;
+      color: var(--color-muted);
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      background: var(--color-surface);
+      border-right: 1px solid var(--color-border);
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      margin-bottom: 20px;
+      color: var(--color-primary);
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .sidebar-nav {
+      display: grid;
+      gap: 6px;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      color: var(--color-muted);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      transition: all 180ms ease;
+    }
+
+    .sidebar-link:hover {
+      color: var(--color-primary);
+      background: var(--color-primary-soft);
+      transform: translateX(2px);
+    }
+
+    .sidebar-link.active {
+      color: #ffffff;
+      background: var(--color-primary);
+    }
+
+    .perfil-selector {
+      background: var(--color-bg);
+      padding: 4px;
+      border-radius: 10px;
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+      border: 1px solid var(--color-border);
+    }
+
+    .perfil-btn {
+      flex: 1;
+      padding: 8px;
+      border: 0;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      background: transparent;
+      color: var(--color-muted);
+      transition: all 0.2s;
+    }
+
+    .perfil-btn.active {
+      background: var(--color-surface);
+      color: var(--color-primary);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    /* CARROSSEL / BANNERS DE ANÚNCIOS DO CAMPUS */
+    .campus-carousel {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      margin-bottom: 24px;
+      height: 240px;
+      background: #1e1b4b;
+    }
+
+    .carousel-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.6s ease-in-out;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 36px 42px;
+      background-size: cover;
+      background-position: center;
+      color: #ffffff;
+    }
+
+    .carousel-slide.active {
+      opacity: 1;
+      z-index: 1;
+    }
+
+    .carousel-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(15, 23, 42, 0.92) 0%, rgba(15, 23, 42, 0.4) 100%);
+    }
+
+    .carousel-content {
+      position: relative;
+      z-index: 2;
+      max-width: 580px;
+    }
+
+    .carousel-tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--color-primary);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      letter-spacing: 0.05em;
+    }
+
+    .carousel-content h2 {
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .carousel-content p {
+      font-size: 14px;
+      color: #cbd5e1;
+      margin-bottom: 16px;
+    }
+
+    .carousel-dots {
+      position: absolute;
+      bottom: 14px;
+      right: 24px;
+      z-index: 3;
+      display: flex;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .dot.active {
+      background: #ffffff;
+      width: 24px;
+      border-radius: 999px;
+    }
+
+    /* HERO & DASHBOARD */
+    .hero {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      align-items: center;
+      gap: 32px;
+      padding: 36px 42px;
+      background: linear-gradient(135deg, #ffffff 0%, #eef2ff 100%);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      padding: 6px 12px;
+      margin-bottom: 12px;
+      border-radius: 999px;
+      background: var(--color-primary-soft);
+      color: var(--color-primary);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .hero h1 {
+      font-size: clamp(28px, 3.5vw, 42px);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      margin: 12px 0 20px;
+      color: var(--color-muted);
+      font-size: 15px;
+    }
+
+    .hero-image img {
+      width: min(280px, 100%);
+      max-height: 220px;
+      object-fit: contain;
+      border-radius: var(--radius-lg);
+    }
+
+    .button-primary {
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 20px;
+      background: var(--color-primary);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(79, 70, 229, 0.2);
+      transition: background 180ms ease, transform 100ms ease;
+    }
+
+    .button-primary:hover {
+      background: var(--color-primary-dark);
+    }
+
+    /* GRIDS & CARDS */
+    .stats-grid, .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .stat-card, .info-card, .form-card {
+      padding: 22px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+    }
+
+    .stat-card {
+      display: grid;
+      gap: 8px;
+    }
+
+    .stat-card-icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: var(--color-primary);
+      background: var(--color-primary-soft);
+    }
+
+    .stat-card strong {
+      font-size: 28px;
+    }
+
+    .stat-card span, .info-card p {
+      color: var(--color-muted);
+      font-size: 14px;
+    }
+
+    /* FORMULÁRIOS */
+    .form-card {
+      max-width: 680px;
+    }
+
+    .form-group {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--color-border);
+      border-radius: 10px;
+      background: #ffffff;
+      outline: none;
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.13);
+    }
+
+    .api-status {
+      font-size: 12px;
+      color: var(--color-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .api-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-success);
+    }
+
+    /* RESPONSIVIDADE */
+    @media (max-width: 900px) {
+      .app-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--color-border); }
+      .hero { grid-template-columns: 1fr; text-align: center; }
+      .campus-carousel { height: 280px; }
+      .stats-grid, .cards-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
-<body class="h-full flex flex-col md:flex-row overflow-x-hidden font-sans antialiased">
+<body>
 
-  <!-- Sidebar / Menu Navegação -->
-  <aside class="w-full md:w-64 bg-slate-950 border-b md:border-b-0 md:border-r border-slate-800 p-4 flex flex-col justify-between shrink-0">
-    <div>
-      <div class="flex items-center gap-3 px-2 py-4 mb-4 text-brand-500 font-bold text-xl border-b border-slate-800/60">
-        <i data-lucide="graduation-cap" class="w-8 h-8"></i>
-        <span class="tracking-wide text-white">EduConnect</span>
-      </div>
-
-      <!-- Troca de Perfil (Aluno / Professor) -->
-      <div class="mb-6 p-2 bg-slate-900 rounded-xl border border-slate-800 flex text-xs">
-        <button id="btn-mode-aluno" onclick="setPerfil('aluno')" class="flex-1 py-1.5 rounded-lg font-medium text-center bg-brand-600 text-white transition-all">Aluno</button>
-        <button id="btn-mode-prof" onclick="setPerfil('professor')" class="flex-1 py-1.5 rounded-lg font-medium text-center text-slate-400 hover:text-white transition-all">Professor</button>
-      </div>
-
-      <nav class="space-y-1" id="nav-links">
-        <button onclick="nav('dashboard')" class="nav-btn active w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors bg-brand-600 text-white">
-          <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
-        </button>
-        <button onclick="nav('salas')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-slate-400 hover:bg-slate-900 hover:text-white">
-          <i data-lucide="door-closed" class="w-4 h-4"></i> Marcar Sala de Estudo
-        </button>
-        <button onclick="nav('atividades')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-slate-400 hover:bg-slate-900 hover:text-white">
-          <i data-lucide="file-up" class="w-4 h-4"></i> Enviar Atividades
-        </button>
-        <button onclick="nav('sac')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-slate-400 hover:bg-slate-900 hover:text-white">
-          <i data-lucide="message-square-plus" class="w-4 h-4"></i> SAC / Ouvidoria
-        </button>
-        <button onclick="nav('biblioteca')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-slate-400 hover:bg-slate-900 hover:text-white">
-          <i data-lucide="book-open" class="w-4 h-4"></i> Biblioteca Virtual
-        </button>
-      </nav>
-    </div>
-
-    <div class="pt-4 border-t border-slate-800 text-xs text-slate-500 flex items-center justify-between">
-      <span>Status API:</span>
-      <span class="inline-flex items-center gap-1.5 text-emerald-400"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Conectado</span>
-    </div>
-  </aside>
-
-  <!-- Área Principal de Conteúdo -->
-  <main class="flex-1 p-6 md:p-10 overflow-y-auto min-w-0" id="main-content">
-    
-    <!-- MÓDULO: DASHBOARD -->
-    <section id="view-dashboard" class="view-section space-y-6">
+  <div class="app-layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
       <div>
-        <h1 class="text-2xl font-bold text-white">Visão Geral Acadêmica</h1>
-        <p class="text-sm text-slate-400">Acompanhe suas reservas, notas e avisos em tempo real.</p>
+        <div class="sidebar-brand">
+          <i data-lucide="graduation-cap" style="width: 28px; height: 28px;"></i>
+          <strong>EduConnect</strong>
+        </div>
+
+        <!-- Seletor Aluno / Professor -->
+        <div class="perfil-selector">
+          <button id="btn-aluno" class="perfil-btn active" onclick="setPerfil('aluno')">Aluno</button>
+          <button id="btn-professor" class="perfil-btn" onclick="setPerfil('professor')">Professor</button>
+        </div>
+
+        <nav class="sidebar-nav">
+          <button onclick="nav('dashboard')" id="nav-dashboard" class="sidebar-link active">
+            <i data-lucide="home" style="width: 19px;"></i> <span>Início</span>
+          </button>
+          <button onclick="nav('salas')" id="nav-salas" class="sidebar-link">
+            <i data-lucide="door-closed" style="width: 19px;"></i> <span>Marcar Sala</span>
+          </button>
+          <button onclick="nav('cursos')" id="nav-cursos" class="sidebar-link">
+            <i data-lucide="book-open" style="width: 19px;"></i> <span>Disciplinas</span>
+          </button>
+          <button onclick="nav('atividades')" id="nav-atividades" class="sidebar-link">
+            <i data-lucide="file-up" style="width: 19px;"></i> <span>Enviar Atividades</span>
+          </button>
+          <button onclick="nav('sac')" id="nav-sac" class="sidebar-link">
+            <i data-lucide="message-square" style="width: 19px;"></i> <span>SAC / Ouvidoria</span>
+          </button>
+          <button onclick="nav('notas')" id="nav-notas" class="sidebar-link">
+            <i data-lucide="award" style="width: 19px;"></i> <span id="txt-nav-notas">Notas</span>
+          </button>
+        </nav>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="p-5 bg-slate-950 border border-slate-800 rounded-2xl flex items-center gap-4">
-          <div class="p-3 bg-brand-500/10 text-brand-500 rounded-xl"><i data-lucide="bookmark" class="w-6 h-6"></i></div>
-          <div>
-            <div class="text-xs text-slate-400">Salas Reservadas</div>
-            <div class="text-xl font-bold text-white" id="dash-res-count">0</div>
-          </div>
-        </div>
-        <div class="p-5 bg-slate-950 border border-slate-800 rounded-2xl flex items-center gap-4">
-          <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl"><i data-lucide="award" class="w-6 h-6"></i></div>
-          <div>
-            <div class="text-xs text-slate-400">Média Geral</div>
-            <div class="text-xl font-bold text-white">8.8</div>
-          </div>
-        </div>
-        <div class="p-5 bg-slate-950 border border-slate-800 rounded-2xl flex items-center gap-4">
-          <div class="p-3 bg-amber-500/10 text-amber-400 rounded-xl"><i data-lucide="clock" class="w-6 h-6"></i></div>
-          <div>
-            <div class="text-xs text-slate-400">Atividades Pendentes</div>
-            <div class="text-xl font-bold text-white">2</div>
-          </div>
-        </div>
+      <div class="api-status">
+        <span class="api-dot"></span> API Google Sheets Conectada
       </div>
-    </section>
+    </aside>
 
-    <!-- MÓDULO: RESERVAR SALA DE ESTUDO -->
-    <section id="view-salas" class="view-section hidden max-w-2xl space-y-6">
-      <div>
-        <h1 class="text-2xl font-bold text-white">Reservar Sala de Estudo</h1>
-        <p class="text-sm text-slate-400">Agende um espaço individual ou em grupo no campus.</p>
-      </div>
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="app-content">
+      <div class="page">
+        
+        <!-- PÁGINA: DASHBOARD -->
+        <div id="page-dashboard" class="page-section">
+          
+          <!-- ANÚNCIOS DO CAMPUS / CARROSSEL -->
+          <section class="campus-carousel" data-animate>
+            <!-- Slide 1: Feira de Ciências -->
+            <div class="carousel-slide active" style="background-image: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80');">
+              <div class="carousel-overlay"></div>
+              <div class="carousel-content">
+                <span class="carousel-tag">Feira Tecnológica 2026</span>
+                <h2>Inscrições Abertas para a Feira de Inovação</h2>
+                <p>Apresente seu projeto para grandes empresas parceiras. Premiação para os 3 melhores grupos!</p>
+                <button class="button-primary" style="padding: 8px 16px; font-size: 13px;" onclick="alert('Submeta sua ideia pelo menu Enviar Atividades!')">Inscrever Projeto</button>
+              </div>
+            </div>
 
-      <form id="form-reserva" onsubmit="handleReserva(event)" class="bg-slate-950 border border-slate-800 p-6 rounded-2xl space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Nome do Aluno / Grupo</label>
-          <input type="text" id="res-aluno" required placeholder="Ex: Maria Silva" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+            <!-- Slide 2: Interclasse -->
+            <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1200&q=80');">
+              <div class="carousel-overlay"></div>
+              <div class="carousel-content">
+                <span class="carousel-tag" style="background: #e11d48;">Esportes</span>
+                <h2>Torneio Interclasse de Futebol & Basquete</h2>
+                <p>Monte seu time com os colegas do curso. Jogos a partir da próxima sexta-feira no ginásio!</p>
+                <button class="button-primary" style="padding: 8px 16px; font-size: 13px; background: #e11d48;" onclick="alert('Verifique os requisitos com o centro acadêmico.')">Ver Tabela de Jogos</button>
+              </div>
+            </div>
+
+            <!-- Slide 3: Palestra -->
+            <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1200&q=80');">
+              <div class="carousel-overlay"></div>
+              <div class="carousel-content">
+                <span class="carousel-tag" style="background: #059669;">Palestra Especial</span>
+                <h2>Inteligência Artificial no Mercado de Trabalho</h2>
+                <p>Palestra com especialistas da indústria no Auditório Bloco B. Emite certificado de horas complementares.</p>
+                <button class="button-primary" style="padding: 8px 16px; font-size: 13px; background: #059669;" onclick="alert('Inscrição confirmada na palestra!')">Garantir Vaga</button>
+              </div>
+            </div>
+
+            <div class="carousel-dots">
+              <span class="dot active" onclick="setSlide(0)"></span>
+              <span class="dot" onclick="setSlide(1)"></span>
+              <span class="dot" onclick="setSlide(2)"></span>
+            </div>
+          </section>
+
+          <!-- HERO DASHBOARD -->
+          <section class="hero" data-animate>
+            <div>
+              <span class="hero-tag">Portal Acadêmico</span>
+              <h1>Sua vida acadêmica em um único lugar.</h1>
+              <p>Acompanhe disciplinas, salas reservadas, envio de tarefas e atendimento com facilidade.</p>
+              <button class="button-primary" type="button" onclick="nav('salas')">Reservar Sala de Estudos</button>
+            </div>
+            <div class="hero-image">
+              <img src="/assets/estudo.gif" alt="Estudante estudando" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3429/3429149.png'">
+            </div>
+          </section>
+
+          <section class="stats-grid">
+            <article class="stat-card" data-animate>
+              <div class="stat-card-icon"><i data-lucide="book-open"></i></div>
+              <strong id="stat-disciplinas">6</strong>
+              <span>Disciplinas ativas</span>
+            </article>
+            <article class="stat-card" data-animate>
+              <div class="stat-card-icon"><i data-lucide="check-circle-2"></i></div>
+              <strong>82%</strong>
+              <span>Atividades concluídas</span>
+            </article>
+            <article class="stat-card" data-animate>
+              <div class="stat-card-icon"><i data-lucide="trending-up"></i></div>
+              <strong>8,7</strong>
+              <span>Média geral</span>
+            </article>
+          </section>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Escolha a Sala</label>
-            <select id="res-sala" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
-              <option value="Sala 101 - Bloco A (Silenciosa)">Sala 101 - Bloco A (Silenciosa)</option>
-              <option value="Sala 204 - Bloco B (Grupo/Lousa)">Sala 204 - Bloco B (Grupo/Lousa)</option>
-              <option value="Laboratório 03 - T.I.">Laboratório 03 - T.I.</option>
-            </select>
+
+        <!-- PÁGINA: MARCAR SALA DE ESTUDO -->
+        <div id="page-salas" class="page-section" style="display: none;">
+          <header class="page-header" data-animate>
+            <h1>Marcar Sala de Estudo</h1>
+            <p>Agende um espaço individual ou em grupo no campus da faculdade.</p>
+          </header>
+          <form class="form-card" onsubmit="handleReserva(event)" data-animate>
+            <div class="form-group">
+              <label>Nome do Aluno / Grupo</label>
+              <input type="text" id="res-aluno" required placeholder="Ex: Maria Silva">
+            </div>
+            <div class="form-group">
+              <label>Escolha a Sala</label>
+              <select id="res-sala">
+                <option value="Sala 101 - Bloco A (Silenciosa)">Sala 101 - Bloco A (Silenciosa)</option>
+                <option value="Sala 204 - Bloco B (Grupo/Lousa)">Sala 204 - Bloco B (Grupo/Lousa)</option>
+                <option value="Laboratório 03 - T.I.">Laboratório 03 - T.I.</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Data</label>
+              <input type="date" id="res-data" required>
+            </div>
+            <div class="form-group">
+              <label>Horário</label>
+              <select id="res-horario">
+                <option value="08:00 - 10:00">08:00 - 10:00</option>
+                <option value="10:00 - 12:00">10:00 - 12:00</option>
+                <option value="14:00 - 16:00">14:00 - 16:00</option>
+                <option value="19:00 - 21:00">19:00 - 21:00</option>
+              </select>
+            </div>
+            <button class="button-primary" type="submit" id="btn-reserva">Confirmar Agendamento</button>
+          </form>
+        </div>
+
+        <!-- PÁGINA: SAC / OUVIDORIA -->
+        <div id="page-sac" class="page-section" style="display: none;">
+          <header class="page-header" data-animate>
+            <h1>SAC & Ouvidoria</h1>
+            <p>Envie sua mensagem, dúvida ou solicitação diretamente para a secretaria.</p>
+          </header>
+          <form class="form-card" onsubmit="handleSAC(event)" data-animate>
+            <div class="form-group">
+              <label>Nome Completo</label>
+              <input type="text" id="sac-aluno" required placeholder="Digite seu nome">
+            </div>
+            <div class="form-group">
+              <label>Assunto</label>
+              <select id="sac-assunto">
+                <option value="Dúvida Acadêmica">Dúvida Acadêmica</option>
+                <option value="Secretaria / Matrícula">Secretaria / Matrícula</option>
+                <option value="Suporte Técnico">Suporte Técnico</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Mensagem</label>
+              <textarea id="sac-mensagem" rows="4" required placeholder="Escreva aqui sua solicitação..."></textarea>
+            </div>
+            <button class="button-primary" type="submit" id="btn-sac">Enviar Mensagem</button>
+          </form>
+        </div>
+
+        <!-- PÁGINA: DISCIPLINAS -->
+        <div id="page-cursos" class="page-section" style="display: none;">
+          <header class="page-header" data-animate>
+            <h1>Minhas Disciplinas</h1>
+            <p>Acompanhe o progresso das matérias cursadas.</p>
+          </header>
+          <div class="cards-grid">
+            <article class="info-card" data-animate>
+              <h2>Programação FrontEnd</h2>
+              <p>Docente: Profa. Ana</p>
+              <p>Progresso: 78%</p>
+            </article>
+            <article class="info-card" data-animate>
+              <h2>UX/UI Design</h2>
+              <p>Docente: Prof. Carlos</p>
+              <p>Progresso: 64%</p>
+            </article>
+            <article class="info-card" data-animate>
+              <h2>Banco de Dados</h2>
+              <p>Docente: Profa. Marina</p>
+              <p>Progresso: 86%</p>
+            </article>
           </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Data</label>
-            <input type="date" id="res-data" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+        </div>
+
+        <!-- PÁGINA: ENVIAR ATIVIDADES -->
+        <div id="page-atividades" class="page-section" style="display: none;">
+          <header class="page-header" data-animate>
+            <h1>Enviar Atividades</h1>
+            <p>Suba o link do trabalho ou arquivo de exercícios para o professor.</p>
+          </header>
+          <form class="form-card" onsubmit="handleAtividade(event)" data-animate>
+            <div class="form-group">
+              <label>Disciplina</label>
+              <select id="atv-disciplina">
+                <option value="Programação FrontEnd">Programação FrontEnd</option>
+                <option value="UX/UI Design">UX/UI Design</option>
+                <option value="Banco de Dados">Banco de Dados</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Nome do Aluno</label>
+              <input type="text" id="atv-aluno" required placeholder="Digite seu nome">
+            </div>
+            <div class="form-group">
+              <label>Link do Trabalho (Drive, GitHub, Figma)</label>
+              <input type="url" id="atv-link" required placeholder="https://...">
+            </div>
+            <button class="button-primary" type="submit" id="btn-atv">Enviar Atividade</button>
+          </form>
+        </div>
+
+        <!-- PÁGINA: NOTAS / LANÇAR NOTAS -->
+        <div id="page-notas" class="page-section" style="display: none;">
+          <header class="page-header" data-animate>
+            <h1 id="title-notas">Notas Acadêmicas</h1>
+            <p id="sub-notas">Consulte seu desempenho acadêmico no semestre.</p>
+          </header>
+
+          <!-- Visão do Aluno -->
+          <div id="view-notas-aluno" class="cards-grid">
+            <article class="info-card" data-animate>
+              <h2>Programação FrontEnd</h2>
+              <p>Nota Atual</p>
+              <strong style="font-size: 28px; color: var(--color-primary);">9.2</strong>
+            </article>
+            <article class="info-card" data-animate>
+              <h2>UX/UI Design</h2>
+              <p>Nota Atual</p>
+              <strong style="font-size: 28px; color: var(--color-primary);">8.8</strong>
+            </article>
+            <article class="info-card" data-animate>
+              <h2>Banco de Dados</h2>
+              <p>Nota Atual</p>
+              <strong style="font-size: 28px; color: var(--color-primary);">8.1</strong>
+            </article>
           </div>
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Horário</label>
-          <select id="res-horario" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
-            <option value="08:00 - 10:00">08:00 - 10:00</option>
-            <option value="10:00 - 12:00">10:00 - 12:00</option>
-            <option value="14:00 - 16:00">14:00 - 16:00</option>
-            <option value="19:00 - 21:00">19:00 - 21:00</option>
-          </select>
-        </div>
-        <button type="submit" id="btn-reserva-sub" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-medium py-2.5 rounded-xl text-sm transition-all flex justify-center items-center gap-2">
-          Confirmar Agendamento
-        </button>
-      </form>
-    </section>
 
-    <!-- MÓDULO: SAC / OUVIDORIA -->
-    <section id="view-sac" class="view-section hidden max-w-2xl space-y-6">
-      <div>
-        <h1 class="text-2xl font-bold text-white">SAC & Atendimento ao Aluno</h1>
-        <p class="text-sm text-slate-400">Abra chamados para suporte acadêmico, financeiro ou secretaria.</p>
+          <!-- Visão do Professor (Lançamento via API) -->
+          <form id="view-notas-prof" class="form-card" style="display: none;" onsubmit="handleLancarNota(event)" data-animate>
+            <div class="form-group">
+              <label>Disciplina</label>
+              <select id="nota-disciplina">
+                <option value="Programação FrontEnd">Programação FrontEnd</option>
+                <option value="UX/UI Design">UX/UI Design</option>
+                <option value="Banco de Dados">Banco de Dados</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Nome do Aluno</label>
+              <input type="text" id="nota-aluno" required placeholder="Ex: Maria Silva">
+            </div>
+            <div class="form-group">
+              <label>Nota (0 a 10)</label>
+              <input type="number" step="0.1" min="0" max="10" id="nota-valor" required placeholder="Ex: 9.5">
+            </div>
+            <button class="button-primary" type="submit" id="btn-nota">Lançar Nota na Planilha</button>
+          </form>
+        </div>
+
       </div>
+    </main>
+  </div>
 
-      <form id="form-sac" onsubmit="handleSAC(event)" class="bg-slate-950 border border-slate-800 p-6 rounded-2xl space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Seu Nome</label>
-          <input type="text" id="sac-aluno" required placeholder="Digite seu nome completo" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Assunto / Categoria</label>
-          <select id="sac-assunto" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
-            <option value="Dúvida Acadêmica">Dúvida Acadêmica</option>
-            <option value="Secretaria / Matrícula">Secretaria / Matrícula</option>
-            <option value="Problema Técnico / Wi-Fi">Problema Técnico / Wi-Fi</option>
-            <option value="Outros">Outros</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Mensagem / Detalhes</label>
-          <textarea id="sac-mensagem" rows="4" required placeholder="Descreva como podemos ajudar..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500"></textarea>
-        </div>
-        <button type="submit" id="btn-sac-sub" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-medium py-2.5 rounded-xl text-sm transition-all">
-          Enviar Protocolo
-        </button>
-      </form>
-    </section>
-
-  </main>
-
-  <!-- JavaScript Integration -->
   <script>
-    // URL do seu Google Apps Script implantado
     const API_URL = "https://script.google.com/macros/s/AKfycbx37HaqrZwmhpL0dCJbzp9wCdMxg3_q-CtUDLfLTs2kZv-L80fI2TjHLaOb_l4575gLBg/exec";
 
-    // Inicialização dos ícones Lucide
+    // Inicializa ícones Lucide
     lucide.createIcons();
 
-    // Navegação SPA
-    function nav(targetId) {
-      document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
-      const target = document.getElementById(`view-${targetId}`);
-      if(target) target.classList.remove('hidden');
+    // LÓGICA DO CARROSSEL DE AVISOS DO CAMPUS
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.dot');
 
-      // Animação de entrada via GSAP
-      gsap.fromTo(`#view-${targetId}`, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3 });
+    function setSlide(index) {
+      slides.forEach(s => s.classList.remove('active'));
+      dots.forEach(d => d.classList.remove('active'));
+      
+      currentSlide = index;
+      if (slides[currentSlide]) slides[currentSlide].classList.add('active');
+      if (dots[currentSlide]) dots[currentSlide].classList.add('active');
     }
 
-    // Gerenciador de Reserva de Salas
+    // Passa slide a cada 5 segundos
+    setInterval(() => {
+      currentSlide = (currentSlide + 1) % slides.length;
+      setSlide(currentSlide);
+    }, 5000);
+
+    // GSAP Animações de Entrada
+    function animatePage() {
+      gsap.from("[data-animate]", {
+        opacity: 0,
+        y: 20,
+        duration: 0.5,
+        stagger: 0.08,
+        ease: "power2.out"
+      });
+    }
+
+    // Navegação entre Páginas SPA
+    function nav(pageId) {
+      document.querySelectorAll('.page-section').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+
+      const target = document.getElementById(`page-${pageId}`);
+      const btn = document.getElementById(`nav-${pageId}`);
+      if (target) target.style.display = 'block';
+      if (btn) btn.classList.add('active');
+
+      animatePage();
+    }
+
+    // Modo Aluno / Professor
+    function setPerfil(perfil) {
+      document.getElementById('btn-aluno').classList.toggle('active', perfil === 'aluno');
+      document.getElementById('btn-professor').classList.toggle('active', perfil === 'professor');
+
+      const isProf = perfil === 'professor';
+      document.getElementById('txt-nav-notas').innerText = isProf ? 'Lançar Notas' : 'Notas';
+      document.getElementById('title-notas').innerText = isProf ? 'Portal do Professor — Lançar Notas' : 'Notas Acadêmicas';
+      document.getElementById('sub-notas').innerText = isProf ? 'Registre as notas diretamente no sistema.' : 'Consulte seu desempenho acadêmico no semestre.';
+      
+      document.getElementById('view-notas-aluno').style.display = isProf ? 'none' : 'grid';
+      document.getElementById('view-notas-prof').style.display = isProf ? 'block' : 'none';
+    }
+
+    // INTEGRAÇÕES COM O GOOGLE APPS SCRIPT (API)
+
+    // 1. Reservar Sala
     async function handleReserva(e) {
       e.preventDefault();
-      const btn = document.getElementById('btn-reserva-sub');
+      const btn = document.getElementById('btn-reserva');
+      btn.innerText = "Agendando...";
       btn.disabled = true;
-      btn.innerText = "Agendando na planilha...";
-
-      const payload = {
-        action: "reservarSala",
-        aluno: document.getElementById('res-aluno').value,
-        sala: document.getElementById('res-sala').value,
-        data: document.getElementById('res-data').value,
-        horario: document.getElementById('res-horario').value
-      };
 
       try {
         const res = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'reservarSala',
+            aluno: document.getElementById('res-aluno').value,
+            sala: document.getElementById('res-sala').value,
+            data: document.getElementById('res-data').value,
+            horario: document.getElementById('res-horario').value
+          })
         });
         const data = await res.json();
-        alert(" Sucesso! " + data.message);
-        document.getElementById('form-reserva').reset();
+        alert("Sucesso: " + data.message);
+        e.target.reset();
       } catch (err) {
-        alert("Erro ao enviar agendamento. Verifique a conexão.");
+        alert("Erro ao conectar com a API.");
       } finally {
-        btn.disabled = false;
         btn.innerText = "Confirmar Agendamento";
+        btn.disabled = false;
       }
     }
 
-    // Gerenciador de Envio do SAC
+    // 2. SAC / Ouvidoria
     async function handleSAC(e) {
       e.preventDefault();
-      const btn = document.getElementById('btn-sac-sub');
+      const btn = document.getElementById('btn-sac');
+      btn.innerText = "Enviando...";
       btn.disabled = true;
-      btn.innerText = "Registrando protocolo...";
-
-      const payload = {
-        action: "enviarSAC",
-        aluno: document.getElementById('sac-aluno').value,
-        assunto: document.getElementById('sac-assunto').value,
-        mensagem: document.getElementById('sac-mensagem').value
-      };
 
       try {
         const res = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'enviarSAC',
+            aluno: document.getElementById('sac-aluno').value,
+            assunto: document.getElementById('sac-assunto').value,
+            mensagem: document.getElementById('sac-mensagem').value
+          })
         });
         const data = await res.json();
-        alert(" Sucesso! " + data.message);
-        document.getElementById('form-sac').reset();
+        alert("Sucesso: " + data.message);
+        e.target.reset();
       } catch (err) {
-        alert("Erro ao registrar chamado no SAC.");
+        alert("Erro ao conectar com a API.");
       } finally {
+        btn.innerText = "Enviar Mensagem";
         btn.disabled = false;
-        btn.innerText = "Enviar Protocolo";
       }
     }
+
+    // 3. Enviar Atividade
+    async function handleAtividade(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-atv');
+      btn.innerText = "Enviando...";
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'enviarAtividade',
+            disciplina: document.getElementById('atv-disciplina').value,
+            aluno: document.getElementById('atv-aluno').value,
+            linkArquivo: document.getElementById('atv-link').value
+          })
+        });
+        const data = await res.json();
+        alert("Sucesso: " + data.message);
+        e.target.reset();
+      } catch (err) {
+        alert("Erro ao conectar com a API.");
+      } finally {
+        btn.innerText = "Enviar Atividade";
+        btn.disabled = false;
+      }
+    }
+
+    // 4. Lançar Nota (Professor)
+    async function handleLancarNota(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-nota');
+      btn.innerText = "Registrando...";
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'lancarNota',
+            disciplina: document.getElementById('nota-disciplina').value,
+            aluno: document.getElementById('nota-aluno').value,
+            nota: document.getElementById('nota-valor').value
+          })
+        });
+        const data = await res.json();
+        alert("Sucesso: " + data.message);
+        e.target.reset();
+      } catch (err) {
+        alert("Erro ao conectar com a API.");
+      } finally {
+        btn.innerText = "Lançar Nota na Planilha";
+        btn.disabled = false;
+      }
+    }
+
+    // Animação inicial ao carregar a página
+    window.onload = animatePage;
   </script>
 </body>
 </html>
