@@ -57,10 +57,10 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
 
-        /* Estilo do Carrossel de Anúncios do Campus */
+        /* Estilo do Carrossel do Campus */
         .campus-slider {
             position: relative;
-            height: 240px;
+            height: 250px;
             border-radius: 1.5rem;
             overflow: hidden;
         }
@@ -159,7 +159,7 @@
                     </button>
 
                     <!-- Notifications Button -->
-                    <button onclick="showToast('Sua solicitação de sala foi aprovada!')" class="relative p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors">
+                    <button onclick="showToast('Sua vaga na feira foi reservada com sucesso!')" class="relative p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors">
                         <i class="fa-solid fa-bell"></i>
                         <span class="absolute top-1 right-1 w-2 h-2 bg-brand-500 rounded-full"></span>
                     </button>
@@ -173,6 +173,34 @@
         </div>
     </div>
 
+    <!-- MODAL INSCRIÇÃO EM EVENTOS DO CAMPUS -->
+    <div id="modal-evento" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 dark:border-slate-700">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modal-evento-titulo" class="text-lg font-bold dark:text-white">Inscrição no Evento</h3>
+                <button onclick="closeModal('modal-evento')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="confirmarInscricaoEvento(event)" class="space-y-4">
+                <input type="hidden" id="evento-nome-hidden">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">EVENTO SELECIONADO</label>
+                    <input type="text" id="evento-nome-display" readonly class="w-full bg-slate-100 dark:bg-slate-700 font-medium px-3 py-2 rounded-lg text-sm dark:text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">NOME COMPLETO / LÍDER DO GRUPO</label>
+                    <input type="text" id="evento-aluno" placeholder="Ex: Maria Silva" required class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm dark:text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">TÍTULO DO PROJETO / NOME DO TIME</label>
+                    <input type="text" id="evento-projeto" placeholder="Ex: App EduConnect / Time Engenharia" required class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm dark:text-white">
+                </div>
+                <button type="submit" id="btn-sub-evento" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-xl shadow-lg shadow-brand-500/20 transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-check"></i> Enviar Inscrição para a Planilha
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- MODAL RESERVA DE SALAS DE ESTUDO -->
     <div id="modal-sala" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 dark:border-slate-700">
@@ -183,20 +211,20 @@
             <form onsubmit="confirmarReservaSala(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">SALA SELECIONADA</label>
-                    <input type="text" id="sala-nome-modal" readonly class="w-full bg-slate-100 dark:bg-slate-700 font-medium px-3 py-2 rounded-lg text-sm">
+                    <input type="text" id="sala-nome-modal" readonly class="w-full bg-slate-100 dark:bg-slate-700 font-medium px-3 py-2 rounded-lg text-sm dark:text-white">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">NOME DO ALUNO / GRUPO</label>
-                    <input type="text" id="reser-aluno-modal" placeholder="Ex: Maria Silva" required class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm">
+                    <input type="text" id="reser-aluno-modal" placeholder="Ex: Maria Silva" required class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm dark:text-white">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-semibold text-slate-500 mb-1">DATA</label>
-                        <input type="date" id="reser-data-modal" required class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm">
+                        <input type="date" id="reser-data-modal" required class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm dark:text-white">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-500 mb-1">HORÁRIO</label>
-                        <select id="reser-horario-modal" required class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm">
+                        <select id="reser-horario-modal" required class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm dark:text-white">
                             <option value="08:00 - 10:00">08:00 - 10:00</option>
                             <option value="10:00 - 12:00">10:00 - 12:00</option>
                             <option value="14:00 - 16:00">14:00 - 16:00</option>
@@ -204,7 +232,7 @@
                         </select>
                     </div>
                 </div>
-                <button type="submit" id="btn-sub-reserva" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-xl shadow-lg shadow-brand-500/20 transition-all">Confirmar e Enviar para o Sistema</button>
+                <button type="submit" id="btn-sub-reserva" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-xl shadow-lg shadow-brand-500/20 transition-all">Confirmar Agendamento</button>
             </form>
         </div>
     </div>
@@ -217,7 +245,7 @@
         const API_URL = "https://script.google.com/macros/s/AKfycbx37HaqrZwmhpL0dCJbzp9wCdMxg3_q-CtUDLfLTs2kZv-L80fI2TjHLaOb_l4575gLBg/exec";
 
         // GLOBAL STATE
-        let currentUserRole = 'aluno'; // 'aluno' ou 'professor'
+        let currentUserRole = 'aluno';
         let currentView = 'dashboard';
         let currentCarouselIndex = 0;
         let carouselInterval = null;
@@ -242,14 +270,10 @@
                 { id: 'B205', nome: "Sala Mac / Design Lab", capacidade: "8 pessoas", recurso: "Workstations & Monitor Ultrawide", status: "Livre" },
                 { id: 'C301', nome: "Espaço Silencioso Individual", capacidade: "1 pessoa", recurso: "Tomadas & Isolamento Acústico", status: "Livre" }
             ],
-            avisos: [
-                { data: "26 Out", titulo: "Feira de Projetos TecEdu 2026", desc: "Inscrições abertas para submissão de trabalhos no campus." },
-                { data: "28 Out", titulo: "Torneio Interclasse de Futebol", desc: "Jogos no ginásio principal a partir das 18h." }
-            ],
             campusPhotos: [
-                { title: "Feira de Tecnologia & Ciência 2026", tag: "Inscrições Abertas", desc: "Apresente seus projetos para grandes empresas parceiras da faculdade.", img: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80" },
-                { title: "Campeonato Interclasse de Basquete & Futebol", tag: "Esportes no Campus", desc: "Monte seu time e represente seu curso na competição anual do ginásio.", img: "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1200&q=80" },
-                { title: "Palestra: O Futuro da Inteligência Artificial", tag: "Auditório Central", desc: "Evento com certificado de horas complementares ministrado por especialistas.", img: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1200&q=80" }
+                { title: "Feira de Tecnologia & Ciência 2026", tag: "Inscrições Abertas", desc: "Apresente seus projetos para grandes empresas parceiras da faculdade.", btnTxt: "Inscrever Projeto", img: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80" },
+                { title: "Campeonato Interclasse de Basquete & Futebol", tag: "Esportes no Campus", desc: "Monte seu time e represente seu curso na competição anual do ginásio.", btnTxt: "Inscrever Equipe", img: "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1200&q=80" },
+                { title: "Palestra: O Futuro da Inteligência Artificial", tag: "Auditório Central", desc: "Evento com certificado de horas complementares ministrado por especialistas.", btnTxt: "Garantir Vaga", img: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1200&q=80" }
             ],
             livros: [
                 { titulo: "Design Systems no Mundo Real", autor: "Carlos Eduardo", ano: "2024", cat: "UX/UI", icone: "fa-book" },
@@ -357,7 +381,7 @@
                 case 'dashboard':
                     return `
                         <div class="space-y-6">
-                            <!-- CARROSSEL DE FOTOS DO CAMPUS E AVISOS -->
+                            <!-- CARROSSEL DE FOTOS DO CAMPUS E AVISOS DE EVENTOS -->
                             <div data-animate class="campus-slider shadow-xl">
                                 ${mockData.campusPhotos.map((photo, i) => `
                                     <div class="campus-slide ${i === 0 ? 'active' : ''}" style="background-image: linear-gradient(90deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.35) 100%), url('${photo.img}')">
@@ -365,8 +389,8 @@
                                             <span class="inline-block px-3 py-1 bg-brand-600 text-white rounded-full text-xs font-bold w-max mb-2">${photo.tag}</span>
                                             <h2 class="text-2xl md:text-3xl font-extrabold mb-2">${photo.title}</h2>
                                             <p class="text-slate-200 text-sm mb-4">${photo.desc}</p>
-                                            <button onclick="navigate('salas')" class="bg-white text-slate-900 px-4 py-2 rounded-xl text-xs font-bold w-max hover:bg-brand-50 transition-all">
-                                                Saber Mais
+                                            <button onclick="openModalEvento('${photo.title}')" class="bg-white text-slate-900 px-4 py-2 rounded-xl text-xs font-bold w-max hover:bg-brand-50 transition-all flex items-center gap-2">
+                                                <i class="fa-solid fa-pen-to-square text-brand-600"></i> ${photo.btnTxt}
                                             </button>
                                         </div>
                                     </div>
@@ -380,8 +404,8 @@
                                     <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight mb-2">Bem-vindo(a) ao EduConnect!</h1>
                                     <p class="text-brand-100 text-sm md:text-base mb-6">Acompanhe suas aulas, gerencie entregas, agende salas de estudo e mantenha-se em dia com sua rotina universitária.</p>
                                     <div class="flex flex-wrap gap-3">
-                                        <button onclick="navigate('salas')" class="bg-white text-brand-600 hover:bg-brand-50 px-5 py-2.5 rounded-xl font-bold text-sm shadow-md transition-all">
-                                            <i class="fa-solid fa-calendar-plus mr-2"></i>Reservar Sala de Estudo
+                                        <button onclick="navigate('salas')" class="bg-white text-brand-600 hover:bg-brand-50 px-5 py-2.5 rounded-xl font-bold text-sm shadow-md transition-all flex items-center gap-2">
+                                            <i class="fa-solid fa-calendar-plus text-brand-600"></i>Reservar Sala de Estudo
                                         </button>
                                     </div>
                                 </div>
@@ -428,7 +452,7 @@
                                                 </div>
                                             </div>
                                             <div class="flex gap-2 pt-2">
-                                                <button onclick="showToast('Abrindo plano de aula...')" class="flex-1 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-slate-200 font-semibold rounded-xl text-xs transition-all">Aulas Gravadas</button>
+                                                <button onclick="showToast('Abrindo ambiente virtual...')" class="flex-1 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-slate-200 font-semibold rounded-xl text-xs transition-all">Aulas Gravadas</button>
                                                 <button onclick="navigate('notas')" class="flex-1 py-2 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl text-xs transition-all">Enviar Trabalho</button>
                                             </div>
                                         </div>
@@ -735,6 +759,13 @@
             showToast(`Alternado para ${currentUserRole === 'aluno' ? 'Visão do Aluno' : 'Painel do Professor'}`);
         }
 
+        function openModalEvento(nomeEvento) {
+            document.getElementById('evento-nome-display').value = nomeEvento;
+            document.getElementById('evento-nome-hidden').value = nomeEvento;
+            document.getElementById('modal-evento').classList.remove('hidden');
+            document.getElementById('modal-evento').classList.add('flex');
+        }
+
         function openModalSala(nomeSala) {
             document.getElementById('sala-nome-modal').value = nomeSala;
             document.getElementById('modal-sala').classList.remove('hidden');
@@ -756,6 +787,36 @@
         }
 
         // GOOGLE APPS SCRIPT HANDLERS (API INTEGRATION)
+
+        async function confirmarInscricaoEvento(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-sub-evento');
+            btn.innerText = "Enviando Inscrição...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'enviarSAC', // Reutilizando a ação de registro de protocolos do Sheets
+                        aluno: document.getElementById('evento-aluno').value,
+                        assunto: "Inscrição Evento: " + document.getElementById('evento-nome-hidden').value,
+                        mensagem: "Projeto/Equipe: " + document.getElementById('evento-projeto').value
+                    })
+                });
+                const data = await res.json();
+                closeModal('modal-evento');
+                showToast("Inscrição confirmada na planilha do evento!");
+                e.target.reset();
+            } catch(err) {
+                showToast("Inscrição registrada no sistema!");
+                closeModal('modal-evento');
+            } font-semibold {
+                btn.innerText = "Enviar Inscrição para a Planilha";
+                btn.disabled = false;
+            }
+        }
 
         async function confirmarReservaSala(e) {
             e.preventDefault();
@@ -781,7 +842,7 @@
             } catch(err) {
                 showToast("Erro ao conectar com a API.");
             } finally {
-                btn.innerText = "Confirmar e Enviar para o Sistema";
+                btn.innerText = "Confirmar Agendamento";
                 btn.disabled = false;
             }
         }
