@@ -57,7 +57,7 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
 
-        /* Estilo do Carrossel do Campus */
+        /* Estilo do Carrossel de Anúncios do Campus */
         .campus-slider {
             position: relative;
             height: 240px;
@@ -220,6 +220,7 @@
         let currentUserRole = 'aluno'; // 'aluno' ou 'professor'
         let currentView = 'dashboard';
         let currentCarouselIndex = 0;
+        let carouselInterval = null;
 
         // MOCK DATA STORE
         const mockData = {
@@ -230,10 +231,10 @@
                 { id: 4, nome: "Engenharia de Software", prof: "Prof. Roberto", progresso: 92, cor: "from-amber-500 to-orange-600", icone: "fa-gears" }
             ],
             notas: [
-                { disciplina: "Programação FrontEnd SPA", p1: 9.2, p2: 8.8, trabalho: 10.0, media: 9.3 },
-                { disciplina: "UX/UI Design System", p1: 8.5, p2: 8.0, trabalho: 9.5, media: 8.7 },
-                { disciplina: "Banco de Dados NoSQL", p1: 7.8, p2: 8.2, trabalho: 8.5, media: 8.1 },
-                { disciplina: "Engenharia de Software", p1: 9.5, p2: 9.0, trabalho: 9.8, media: 9.4 }
+                { disciplina: "Programação FrontEnd SPA", p1: 9.2, p2: 8.8, trabalho: 10.0, media: 9.3, status: "Aprovado" },
+                { disciplina: "UX/UI Design System", p1: 8.5, p2: 8.0, trabalho: 9.5, media: 8.7, status: "Aprovado" },
+                { disciplina: "Banco de Dados NoSQL", p1: 7.8, p2: 8.2, trabalho: 8.5, media: 8.1, status: "Aprovado" },
+                { disciplina: "Engenharia de Software", p1: 9.5, p2: 9.0, trabalho: 9.8, media: 9.4, status: "Aprovado" }
             ],
             salasEstudo: [
                 { id: 'A101', nome: "Sala de Estudos - Bloco A #101", capacidade: "4 pessoas", recurso: "Lousa Digital & TV", status: "Livre" },
@@ -249,6 +250,17 @@
                 { title: "Feira de Tecnologia & Ciência 2026", tag: "Inscrições Abertas", desc: "Apresente seus projetos para grandes empresas parceiras da faculdade.", img: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80" },
                 { title: "Campeonato Interclasse de Basquete & Futebol", tag: "Esportes no Campus", desc: "Monte seu time e represente seu curso na competição anual do ginásio.", img: "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1200&q=80" },
                 { title: "Palestra: O Futuro da Inteligência Artificial", tag: "Auditório Central", desc: "Evento com certificado de horas complementares ministrado por especialistas.", img: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1200&q=80" }
+            ],
+            livros: [
+                { titulo: "Design Systems no Mundo Real", autor: "Carlos Eduardo", ano: "2024", cat: "UX/UI", icone: "fa-book" },
+                { titulo: "Arquitetura de SPA com React & Vite", autor: "Ana Paula Souza", ano: "2025", cat: "FrontEnd", icone: "fa-code" },
+                { titulo: "Modelagem NoSQL e Alta Performance", autor: "Marina R. Lima", ano: "2023", cat: "Banco de Dados", icone: "fa-database" },
+                { titulo: "Engenharia de Software Moderna", autor: "Roberto Silva", ano: "2026", cat: "Engenharia", icone: "fa-gears" }
+            ],
+            emails: [
+                { de: "Secretaria Acadêmica", assunto: "Confirmação de Matrícula 2026.2", data: "Hoje, 14:30", desc: "Sua matrícula foi processada com sucesso no sistema central." },
+                { de: "Profa. Ana Paula", assunto: "Lembrete: Entrega do Projeto de FrontEnd", data: "Ontem, 09:15", desc: "Não se esqueçam de enviar o link do repositório até o final da semana." },
+                { de: "Biblioteca Central", assunto: "Reserva de Sala de Estudos Aprovada", data: "24 Out", desc: "Sua solicitação para a Sala #101 foi confirmada para o horário agendado." }
             ]
         };
 
@@ -295,6 +307,7 @@
         // NAVIGATION ENGINE
         function navigate(viewId) {
             currentView = viewId;
+            if (carouselInterval) clearInterval(carouselInterval);
             renderSidebar();
             const main = document.getElementById('main-view');
             
@@ -328,17 +341,17 @@
 
         // CARROSSEL TIMER
         function startCarouselTimer() {
-            setInterval(() => {
+            carouselInterval = setInterval(() => {
                 const slides = document.querySelectorAll('.campus-slide');
                 if (slides.length > 0) {
                     slides.forEach(s => s.classList.remove('active'));
                     currentCarouselIndex = (currentCarouselIndex + 1) % slides.length;
                     slides[currentCarouselIndex].classList.add('active');
                 }
-            }, 5000);
+            }, 4500);
         }
 
-        // PAGE TEMPLATES
+        // PAGE TEMPLATES COMPLETOS
         function getPageTemplate(viewId) {
             switch(viewId) {
                 case 'dashboard':
@@ -347,7 +360,7 @@
                             <!-- CARROSSEL DE FOTOS DO CAMPUS E AVISOS -->
                             <div data-animate class="campus-slider shadow-xl">
                                 ${mockData.campusPhotos.map((photo, i) => `
-                                    <div class="campus-slide ${i === 0 ? 'active' : ''}" style="background-image: linear-gradient(90deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.3) 100%), url('${photo.img}')">
+                                    <div class="campus-slide ${i === 0 ? 'active' : ''}" style="background-image: linear-gradient(90deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.35) 100%), url('${photo.img}')">
                                         <div class="p-6 md:p-8 flex flex-col justify-center h-full max-w-xl text-white">
                                             <span class="inline-block px-3 py-1 bg-brand-600 text-white rounded-full text-xs font-bold w-max mb-2">${photo.tag}</span>
                                             <h2 class="text-2xl md:text-3xl font-extrabold mb-2">${photo.title}</h2>
@@ -380,6 +393,47 @@
                                 ${renderStatCard("Frequência", "96%", "fa-user-check", "text-blue-500", "Excelente marca")}
                                 ${renderStatCard("Atividades", "12/14", "fa-list-check", "text-purple-500", "2 pendentes")}
                                 ${renderStatCard("Livros Salvos", "5", "fa-bookmark", "text-amber-500", "Biblioteca Virtual")}
+                            </div>
+                        </div>
+                    `;
+
+                case 'cursos':
+                    return `
+                        <div class="space-y-6">
+                            <div data-animate class="flex justify-between items-center">
+                                <div>
+                                    <h1 class="text-2xl font-bold dark:text-white">Minhas Disciplinas</h1>
+                                    <p class="text-sm text-slate-500">Acesse conteúdos, materiais e acompanhe o progresso do semestre.</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                ${mockData.disciplinas.map(c => `
+                                    <div data-animate class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+                                        <div class="h-28 bg-gradient-to-r ${c.cor} p-6 flex justify-between items-start text-white">
+                                            <div>
+                                                <h3 class="text-lg font-bold">${c.nome}</h3>
+                                                <p class="text-xs text-white/80">${c.prof}</p>
+                                            </div>
+                                            <i class="fa-solid ${c.icone} text-2xl text-white/80"></i>
+                                        </div>
+                                        <div class="p-6 space-y-4">
+                                            <div>
+                                                <div class="flex justify-between text-xs font-semibold mb-1">
+                                                    <span class="text-slate-500">Progresso do Semestre</span>
+                                                    <span class="text-brand-600 dark:text-brand-400">${c.progresso}%</span>
+                                                </div>
+                                                <div class="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                                                    <div class="h-full bg-brand-600 rounded-full" style="width: ${c.progresso}%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="flex gap-2 pt-2">
+                                                <button onclick="showToast('Abrindo plano de aula...')" class="flex-1 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-slate-200 font-semibold rounded-xl text-xs transition-all">Aulas Gravadas</button>
+                                                <button onclick="navigate('notas')" class="flex-1 py-2 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl text-xs transition-all">Enviar Trabalho</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
                             </div>
                         </div>
                     `;
@@ -421,12 +475,49 @@
                         <div class="space-y-6">
                             <div data-animate>
                                 <h1 class="text-2xl font-bold dark:text-white">Boletim & Envio de Atividades</h1>
-                                <p class="text-sm text-slate-500">Envie suas tarefas diretamente para os professores via Google API.</p>
+                                <p class="text-sm text-slate-500">Consulte seu desempenho acadêmico e envie novos exercícios para avaliação.</p>
                             </div>
 
-                            <!-- Formulário Envio de Atividade -->
+                            <!-- TABELA DE NOTAS ACADÊMICAS -->
+                            <div data-animate class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+                                <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700">
+                                    <h3 class="font-bold text-slate-800 dark:text-white">Histórico de Notas do Semestre</h3>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left text-sm">
+                                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 uppercase text-xs">
+                                            <tr>
+                                                <th class="px-6 py-3">Disciplina</th>
+                                                <th class="px-6 py-3">P1</th>
+                                                <th class="px-6 py-3">P2</th>
+                                                <th class="px-6 py-3">Trabalho</th>
+                                                <th class="px-6 py-3">Média</th>
+                                                <th class="px-6 py-3">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+                                            ${mockData.notas.map(n => `
+                                                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-700/30">
+                                                    <td class="px-6 py-4 font-semibold text-slate-800 dark:text-white">${n.disciplina}</td>
+                                                    <td class="px-6 py-4">${n.p1}</td>
+                                                    <td class="px-6 py-4">${n.p2}</td>
+                                                    <td class="px-6 py-4">${n.trabalho}</td>
+                                                    <td class="px-6 py-4 font-bold text-brand-600 dark:text-brand-400">${n.media}</td>
+                                                    <td class="px-6 py-4">
+                                                        <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">
+                                                            ${n.status}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- FORMULÁRIO ENVIO DE ATIVIDADE -->
                             <div data-animate class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-                                <h3 class="font-bold dark:text-white mb-4">Enviar Novo Trabalho / Exercício</h3>
+                                <h3 class="font-bold dark:text-white mb-4">Enviar Novo Trabalho / Exercício para a Planilha</h3>
                                 <form onsubmit="handleEnviarAtividadeAPI(event)" class="space-y-4 max-w-xl">
                                     <div>
                                         <label class="block text-xs font-semibold text-slate-500 mb-1">DISCIPLINA</label>
@@ -487,6 +578,61 @@
                         </div>
                     `;
 
+                case 'biblioteca':
+                    return `
+                        <div class="space-y-6">
+                            <div data-animate class="flex justify-between items-center">
+                                <div>
+                                    <h1 class="text-2xl font-bold dark:text-white">Biblioteca Virtual</h1>
+                                    <p class="text-sm text-slate-500">Consulte livros digitais, artigos acadêmicos e referências bibliográficas.</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                ${mockData.livros.map(l => `
+                                    <div data-animate class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-start gap-4">
+                                        <div class="w-12 h-16 rounded-lg bg-brand-100 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300 flex items-center justify-center text-xl shrink-0">
+                                            <i class="fa-solid ${l.icone}"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">${l.cat}</span>
+                                            <h3 class="font-bold text-slate-800 dark:text-white text-sm mt-1">${l.titulo}</h3>
+                                            <p class="text-xs text-slate-500">${l.autor} • ${l.ano}</p>
+                                            <button onclick="showToast('Acessando e-book no leitor digital...')" class="mt-3 text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline">
+                                                Ler E-Book <i class="fa-solid fa-arrow-right ml-1"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+
+                case 'webmail':
+                    return `
+                        <div class="space-y-6">
+                            <div data-animate>
+                                <h1 class="text-2xl font-bold dark:text-white">Webmail Universitário</h1>
+                                <p class="text-sm text-slate-500">Caixa de entrada oficial de comunicados da faculdade.</p>
+                            </div>
+
+                            <div data-animate class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+                                <div class="divide-y divide-slate-100 dark:divide-slate-700">
+                                    ${mockData.emails.map(m => `
+                                        <div class="p-4 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors cursor-pointer" onclick="showToast('Abrindo e-mail...')">
+                                            <div class="flex justify-between items-center mb-1">
+                                                <span class="font-bold text-sm text-slate-800 dark:text-white">${m.de}</span>
+                                                <span class="text-xs text-slate-400">${m.data}</span>
+                                            </div>
+                                            <h4 class="text-xs font-semibold text-brand-600 dark:text-brand-400 mb-1">${m.assunto}</h4>
+                                            <p class="text-xs text-slate-500 truncate">${m.desc}</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
                 case 'sac':
                     return `
                         <div class="space-y-6">
@@ -521,13 +667,39 @@
                         </div>
                     `;
 
-                default:
+                case 'perfil':
                     return `
-                        <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl border border-slate-200 dark:border-slate-700">
-                            <h2 class="text-xl font-bold dark:text-white mb-2">Módulo em Desenvolvimento</h2>
-                            <p class="text-sm text-slate-500">A seção <strong>${viewId}</strong> está pronta para integrar conteúdos adicionais.</p>
+                        <div class="space-y-6">
+                            <div data-animate>
+                                <h1 class="text-2xl font-bold dark:text-white">Meu Perfil</h1>
+                                <p class="text-sm text-slate-500">Gerencie suas informações cadastrais acadêmicas.</p>
+                            </div>
+
+                            <div data-animate class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm max-w-xl space-y-4">
+                                <div class="flex items-center gap-4 pb-4 border-b border-slate-100 dark:border-slate-700">
+                                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150" class="w-16 h-16 rounded-full border-2 border-brand-500 object-cover">
+                                    <div>
+                                        <h3 class="font-bold text-slate-800 dark:text-white">Maria Silva</h3>
+                                        <p class="text-xs text-slate-500">RA: 2026849302 • Eng. de Software</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-500 mb-1">E-MAIL ACADÊMICO</label>
+                                    <input type="email" value="maria.silva@aluno.educonnect.br" readonly class="w-full bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-500 mb-1">CAMPUS / SEMESTRE</label>
+                                    <input type="text" value="Campus Central • 4º Semestre" readonly class="w-full bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm">
+                                </div>
+                                <button onclick="showToast('Dados cadastrais validados!')" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-all">
+                                    Atualizar Cadastro
+                                </button>
+                            </div>
                         </div>
                     `;
+
+                default:
+                    return `<div></div>`;
             }
         }
 
