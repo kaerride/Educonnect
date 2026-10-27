@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduConnect — Sistema Acadêmico Integrado</title>
+    <title>FNET — Faculdade Nova Era Tecnológica</title>
     
-    <!-- Favicon do Capelo Acadêmico -->
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f46e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M22 10v6M2 10l10-5 10 5-10 5z'/><path d='M6 12v5c3 3 9 3 12 0v-5'/></svg>">
     
     <!-- Tailwind CSS CDN -->
@@ -13,7 +13,7 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- GSAP Animation Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
@@ -33,24 +33,23 @@
                         }
                     },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
 
-        /* Estilo do Carrossel do Campus */
         .campus-slider {
             position: relative;
-            height: 280px;
-            border-radius: 1.5rem;
+            height: 300px;
+            border-radius: 1.75rem;
             overflow: hidden;
         }
         .campus-slide {
@@ -69,28 +68,28 @@
 </head>
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-200 antialiased">
 
-    <!-- LOGIN SCREEN CONTAINER -->
-    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900 bg-cover bg-center" style="background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.95)), url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1600&q=80');">
+    <!-- TELA DE LOGIN -->
+    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900 bg-cover bg-center" style="background-image: linear-gradient(rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.96)), url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1600&q=80');">
         <div class="w-full max-w-md p-8 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md rounded-3xl shadow-2xl border border-white/20 dark:border-slate-700/50">
             <div class="text-center mb-6">
-                <div class="w-14 h-14 bg-brand-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mx-auto shadow-lg shadow-brand-500/40 mb-3">
-                    <i class="fa-solid fa-graduation-cap"></i>
+                <div class="w-16 h-16 bg-gradient-to-tr from-brand-600 to-indigo-500 rounded-2xl flex items-center justify-center text-white text-3xl font-extrabold mx-auto shadow-xl shadow-brand-500/40 mb-3">
+                    <i class="fa-solid fa-atom"></i>
                 </div>
-                <h2 class="text-2xl font-black tracking-tight text-slate-900 dark:text-white">EduConnect Portal</h2>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Acesse sua conta acadêmica institucional</p>
+                <h2 class="text-2xl font-black tracking-tight text-slate-900 dark:text-white">FNET Portal</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Faculdade Nova Era Tecnológica</p>
             </div>
 
-            <!-- Role Selector Tabs -->
+            <!-- Abas Aluno/Professor -->
             <div class="flex p-1 bg-slate-100 dark:bg-slate-700/60 rounded-xl mb-6">
-                <button type="button" id="tab-aluno" onclick="setLoginRole('aluno')" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-white dark:bg-slate-800 text-brand-600 shadow-sm">
-                    <i class="fa-solid fa-user-graduate mr-1"></i> Aluno
+                <button type="button" id="tab-aluno" onclick="setLoginRole('aluno')" class="flex-1 py-2.5 text-xs font-bold rounded-lg transition-all bg-white dark:bg-slate-800 text-brand-600 shadow-sm">
+                    <i class="fa-solid fa-user-graduate mr-1"></i> Área do Aluno
                 </button>
-                <button type="button" id="tab-professor" onclick="setLoginRole('professor')" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 transition-all">
-                    <i class="fa-solid fa-chalkboard-user mr-1"></i> Professor
+                <button type="button" id="tab-professor" onclick="setLoginRole('professor')" class="flex-1 py-2.5 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 transition-all">
+                    <i class="fa-solid fa-chalkboard-user mr-1"></i> Área do Docente
                 </button>
             </div>
 
-            <!-- Login Form -->
+            <!-- Formulário de Login -->
             <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
                 <div>
                     <label id="label-login-id" class="block text-xs font-semibold text-slate-500 mb-1 uppercase">Matrícula / RA do Aluno</label>
@@ -112,10 +111,10 @@
                     <label class="flex items-center text-slate-500 cursor-pointer">
                         <input type="checkbox" checked class="rounded border-slate-300 text-brand-600 focus:ring-brand-500 mr-2"> Lembrar dados
                     </label>
-                    <a href="#" onclick="showToast('Solicitação de redefinição enviada ao e-mail institucional.')" class="text-brand-600 hover:underline font-semibold">Esqueceu a senha?</a>
+                    <a href="#" onclick="showToast('Link de recuperação enviado ao e-mail cadastrado.')" class="text-brand-600 hover:underline font-semibold">Esqueceu a senha?</a>
                 </div>
 
-                <button type="submit" id="btn-login" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-brand-500/30 transition-all flex items-center justify-center gap-2 text-sm">
+                <button type="submit" id="btn-login" class="w-full bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-brand-500/30 transition-all flex items-center justify-center gap-2 text-sm">
                     Entrar no Portal <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </form>
@@ -131,10 +130,10 @@
                 <!-- Brand Header -->
                 <div class="h-16 flex items-center justify-between px-6 border-b border-slate-100 dark:border-slate-700/50">
                     <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
-                            <i class="fa-solid fa-graduation-cap text-lg"></i>
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
+                            <i class="fa-solid fa-atom text-lg"></i>
                         </div>
-                        <span class="font-bold text-xl tracking-tight bg-gradient-to-r from-brand-600 to-indigo-500 bg-clip-text text-transparent">EduConnect</span>
+                        <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-brand-600 to-indigo-500 bg-clip-text text-transparent">FNET</span>
                     </div>
                     <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-slate-600">
                         <i class="fa-solid fa-xmark text-xl"></i>
@@ -178,7 +177,7 @@
                     </button>
                     <div class="relative hidden sm:block">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                        <input type="text" placeholder="Buscar disciplinas, avisos, salas..." class="w-64 pl-9 pr-4 py-1.5 text-sm rounded-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 focus:outline-none focus:border-brand-500 transition-all">
+                        <input type="text" placeholder="Buscar matérias, avisos, salas..." class="w-64 pl-9 pr-4 py-1.5 text-sm rounded-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 focus:outline-none focus:border-brand-500 transition-all">
                     </div>
                 </div>
 
@@ -200,13 +199,13 @@
                     <div class="relative">
                         <button onclick="toggleNotificationMenu()" class="relative p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors">
                             <i class="fa-solid fa-bell"></i>
-                            <span id="notif-badge" class="absolute top-1 right-1 w-2 h-2 bg-brand-500 rounded-full"></span>
+                            <span id="notif-badge" class="absolute top-1 right-1 w-2 h-2 bg-brand-500 rounded-full animate-ping"></span>
                         </button>
 
                         <div id="notif-dropdown" class="hidden absolute right-0 mt-3 w-80 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 z-50 overflow-hidden">
-                            <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
-                                <h4 class="font-bold text-sm text-slate-800 dark:text-white">Notificações</h4>
-                                <span class="text-[10px] bg-brand-100 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300 px-2 py-0.5 rounded-full font-bold">3 novas</span>
+                            <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-700/50">
+                                <h4 class="font-bold text-sm text-slate-800 dark:text-white">Central de Avisos</h4>
+                                <span class="text-[10px] bg-brand-100 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300 px-2 py-0.5 rounded-full font-bold">3 novos</span>
                             </div>
                             <div class="divide-y divide-slate-100 dark:divide-slate-700 max-h-80 overflow-y-auto custom-scrollbar">
                                 <div class="p-3.5 hover:bg-slate-50 dark:hover:bg-slate-700/40 transition-colors cursor-pointer" onclick="navigate('salas')">
@@ -214,8 +213,8 @@
                                         <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300 flex items-center justify-center shrink-0 text-xs"><i class="fa-solid fa-check"></i></div>
                                         <div>
                                             <p class="text-xs font-semibold text-slate-800 dark:text-white">Reserva de Sala Confirmada</p>
-                                            <p class="text-[11px] text-slate-500 mt-0.5">Sala de Estudos #101 reservada para às 14h.</p>
-                                            <span class="text-[9px] text-slate-400 mt-1 block">Há 10 minutos</span>
+                                            <p class="text-[11px] text-slate-500 mt-0.5">Sala de Estudos #101 confirmada no Google Sheets.</p>
+                                            <span class="text-[9px] text-slate-400 mt-1 block">Há 5 minutos</span>
                                         </div>
                                     </div>
                                 </div>
@@ -223,18 +222,18 @@
                                     <div class="flex gap-3">
                                         <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300 flex items-center justify-center shrink-0 text-xs"><i class="fa-solid fa-file-signature"></i></div>
                                         <div>
-                                            <p class="text-xs font-semibold text-slate-800 dark:text-white">Nova Nota Lançada</p>
-                                            <p class="text-[11px] text-slate-500 mt-0.5">Profa. Ana publicou a nota da P1 de FrontEnd.</p>
+                                            <p class="text-xs font-semibold text-slate-800 dark:text-white">Boletim Atualizado</p>
+                                            <p class="text-[11px] text-slate-500 mt-0.5">Nota de Engenharia de Software publicada.</p>
                                             <span class="text-[9px] text-slate-400 mt-1 block">Há 1 hora</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="p-3.5 hover:bg-slate-50 dark:hover:bg-slate-700/40 transition-colors cursor-pointer" onclick="navigate('dashboard')">
                                     <div class="flex gap-3">
-                                        <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300 flex items-center justify-center shrink-0 text-xs"><i class="fa-solid fa-bullhorn"></i></div>
+                                        <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300 flex items-center justify-center shrink-0 text-xs"><i class="fa-solid fa-graduation-cap"></i></div>
                                         <div>
-                                            <p class="text-xs font-semibold text-slate-800 dark:text-white">Feira de Tecnologia 2026</p>
-                                            <p class="text-[11px] text-slate-500 mt-0.5">Inscrições de projetos abertas no carrossel do campus.</p>
+                                            <p class="text-xs font-semibold text-slate-800 dark:text-white">Feira Tecnológica FNET 2026</p>
+                                            <p class="text-[11px] text-slate-500 mt-0.5">Inscreva seu projeto pelo carrossel do campus.</p>
                                             <span class="text-[9px] text-slate-400 mt-1 block">Ontem</span>
                                         </div>
                                     </div>
@@ -330,10 +329,10 @@
 
         const mockData = {
             disciplinas: [
-                { id: 1, nome: "Programação FrontEnd SPA", prof: "Profa. Ana", progresso: 78, cor: "from-blue-500 to-indigo-600", icone: "fa-code" },
-                { id: 2, nome: "UX/UI Design System", prof: "Prof. Carlos", progresso: 64, cor: "from-purple-500 to-pink-600", icone: "fa-palette" },
-                { id: 3, nome: "Banco de Dados NoSQL", prof: "Profa. Marina", progresso: 86, cor: "from-emerald-500 to-teal-600", icone: "fa-database" },
-                { id: 4, nome: "Engenharia de Software", prof: "Prof. Roberto", progresso: 92, cor: "from-amber-500 to-orange-600", icone: "fa-gears" }
+                { id: 1, nome: "Programação FrontEnd SPA", prof: "Profa. Ana", progresso: 88, cor: "from-blue-600 via-indigo-600 to-violet-600", icone: "fa-laptop-code", badge: "Avançado", desc: "React, Vite, Single Page Application e Tailwind CSS." },
+                { id: 2, nome: "UX/UI Design System", prof: "Prof. Carlos", progresso: 64, cor: "from-pink-500 via-purple-600 to-indigo-600", icone: "fa-wand-magic-sparkles", badge: "Design", desc: "Figma, Design Tokens e acessibilidade de interfaces." },
+                { id: 3, nome: "Banco de Dados NoSQL & Cloud", prof: "Profa. Marina", progresso: 92, cor: "from-emerald-500 via-teal-600 to-cyan-600", icone: "fa-server", badge: "Backend", desc: "MongoDB, Firebase e Arquitetura Serverless em Nuvem." },
+                { id: 4, nome: "Engenharia de Software & IA", prof: "Prof. Roberto", progresso: 95, cor: "from-amber-500 via-orange-600 to-red-600", icone: "fa-brain", badge: "IA & Dev", desc: "Metodologias Ágeis, CI/CD e Agentes Autônomos de IA." }
             ],
             notas: [
                 { disciplina: "Programação FrontEnd SPA", p1: 9.2, p2: 8.8, trabalho: 10.0, media: 9.3, status: "Aprovado" },
@@ -347,11 +346,11 @@
                 { id: 'B205', nome: "Sala Mac / Design Lab", capacidade: "8 pessoas", recurso: "Workstations & Monitor Ultrawide", status: "Livre" },
                 { id: 'C301', nome: "Espaço Silencioso Individual", capacidade: "1 pessoa", recurso: "Tomadas & Isolamento Acústico", status: "Livre" }
             ],
-            // FOTOS REAIS DO HARVARD E MIT ENVIADAS
+            // CAMINHOS LOCAIS DAS FOTOS DA PASTA ASSETS
             campusPhotos: [
-                { title: "Campus MIT — Massachusetts Institute of Technology", tag: "Inovações & Pesquisa", desc: "Laboratórios e auditórios abertos para projetos de Inteligência Artificial e Robótica.", btnTxt: "Inscrever Projeto", img: "https://i.ibb.co/3sX8Mtm/MIT-Massachusetts-Institute-of-Technology.jpg" },
-                { title: "Harvard University — Annenberg Hall", tag: "Tradição & Excelência", desc: "Auditórios de alto nível e fóruns acadêmicos abertos para estudantes.", btnTxt: "Garantir Vaga", img: "https://i.ibb.co/bM38392/Harvard-University.jpg" },
-                { title: "Auditório Central de Palestras e Simpósios", tag: "Eventos Acadêmicos", desc: "Acompanhe conferências presenciais e garanta suas horas complementares.", btnTxt: "Inscrever Equipe", img: "https://i.ibb.co/q1N7B57/finding-emily-2026.jpg" }
+                { title: "Campus MIT — Instalações Tecnológicas FNET", tag: "Pesquisa & Robótica", desc: "Laboratórios e auditórios equipados para o desenvolvimento de soluções em tecnologia.", btnTxt: "Inscrever Projeto", img: "./assets/MIT_Massachusetts%20Institute%20of%20Technology.jpg" },
+                { title: "Harvard University — Annenberg Hall", tag: "Excelência Acadêmica", desc: "Auditórios de alto padrão e fóruns de debate para estudantes e docentes.", btnTxt: "Garantir Vaga", img: "./assets/-%20Harvard%20University%20%F0%9F%90%BE.jpg" },
+                { title: "Auditório Central de Palestras e Simpósios", tag: "Eventos Acadêmicos", desc: "Participe das conferências presenciais e garanta suas horas complementares.", btnTxt: "Inscrever Equipe", img: "./assets/finding%20emily%20(2026).jpg" }
             ],
             livros: [
                 { titulo: "Design Systems no Mundo Real", autor: "Carlos Eduardo", ano: "2024", cat: "UX/UI", icone: "fa-book" },
@@ -360,9 +359,9 @@
                 { titulo: "Engenharia de Software Moderna", autor: "Roberto Silva", ano: "2026", cat: "Engenharia", icone: "fa-gears" }
             ],
             emails: [
-                { de: "Secretaria Acadêmica", assunto: "Confirmação de Matrícula 2026.2", data: "Hoje, 14:30", desc: "Sua matrícula foi processada com sucesso no sistema central." },
-                { de: "Profa. Ana Paula", assunto: "Lembrete: Entrega do Projeto de FrontEnd", data: "Ontem, 09:15", desc: "Não se esqueçam de enviar o link do repositório até o final da semana." },
-                { de: "Biblioteca Central", assunto: "Reserva de Sala de Estudos Aprovada", data: "24 Out", desc: "Sua solicitação para a Sala #101 foi confirmada para o horário agendado." }
+                { de: "Secretaria FNET", assunto: "Confirmação de Matrícula 2026.2", data: "Hoje, 14:30", desc: "Sua rematrícula foi processada com sucesso no sistema FNET." },
+                { de: "Profa. Ana Paula", assunto: "Lembrete: Entrega do Projeto de FrontEnd", data: "Ontem, 09:15", desc: "Envie o link do seu repositório diretamente na aba 'Notas & Atividades'." },
+                { de: "Biblioteca Central", assunto: "Reserva de Sala de Estudos Aprovada", data: "24 Out", desc: "Sua reserva para a Sala #101 foi registrada na planilha do sistema." }
             ]
         };
 
@@ -374,15 +373,14 @@
             { id: 'professor-painel', label: 'Painel Docente', icon: 'fa-chalkboard-user', roles: ['professor'] },
             { id: 'biblioteca', label: 'Biblioteca Virtual', icon: 'fa-book-bookmark', roles: ['aluno', 'professor'] },
             { id: 'webmail', label: 'Webmail', icon: 'fa-envelope', roles: ['aluno', 'professor'] },
-            { id: 'sac', label: 'Atendimento / SAC', icon: 'fa-headset', roles: ['aluno', 'professor'] },
+            { id: 'sac', label: 'SAC & Agente IA', icon: 'fa-robot', roles: ['aluno', 'professor'] },
             { id: 'perfil', label: 'Meu Perfil', icon: 'fa-user', roles: ['aluno', 'professor'] }
         ];
 
         window.onload = function() {
-            // Inicia na tela de login
+            // Inicialização
         };
 
-        // LOGIN SYSTEM
         function setLoginRole(role) {
             loginSelectedRole = role;
             const tabAluno = document.getElementById('tab-aluno');
@@ -391,13 +389,13 @@
             const inputUser = document.getElementById('login-user');
 
             if (role === 'aluno') {
-                tabAluno.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-white dark:bg-slate-800 text-brand-600 shadow-sm";
-                tabProf.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 transition-all";
+                tabAluno.className = "flex-1 py-2.5 text-xs font-bold rounded-lg transition-all bg-white dark:bg-slate-800 text-brand-600 shadow-sm";
+                tabProf.className = "flex-1 py-2.5 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 transition-all";
                 labelId.innerText = "Matrícula / RA do Aluno";
                 inputUser.value = "2026849302";
             } else {
-                tabProf.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-white dark:bg-slate-800 text-brand-600 shadow-sm";
-                tabAluno.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 transition-all";
+                tabProf.className = "flex-1 py-2.5 text-xs font-bold rounded-lg transition-all bg-white dark:bg-slate-800 text-brand-600 shadow-sm";
+                tabAluno.className = "flex-1 py-2.5 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 transition-all";
                 labelId.innerText = "ID / Registro do Professor";
                 inputUser.value = "DOC-883920";
             }
@@ -407,18 +405,16 @@
             e.preventDefault();
             currentUserRole = loginSelectedRole;
             
-            // Oculta tela de login e ativa a aplicação
             gsap.to('#login-screen', { opacity: 0, duration: 0.3, onComplete: () => {
                 document.getElementById('login-screen').classList.add('hidden');
                 
-                // Atualiza perfil no sidebar
                 document.getElementById('user-name-sidebar').innerText = currentUserRole === 'aluno' ? 'Maria Silva' : 'Prof. Carlos Eduardo';
                 document.getElementById('user-role-sidebar').innerText = currentUserRole === 'aluno' ? 'Aluno • Eng. de Software' : 'Docente • Ciência da Computação';
                 document.getElementById('role-badge').innerText = currentUserRole === 'aluno' ? 'Modo Aluno' : 'Modo Professor';
 
                 renderSidebar();
                 navigate(currentUserRole === 'professor' ? 'professor-painel' : 'dashboard');
-                showToast(`Login efetuado com sucesso como ${currentUserRole === 'aluno' ? 'Aluno' : 'Professor'}!`);
+                showToast(`Bem-vindo à FNET como ${currentUserRole === 'aluno' ? 'Aluno' : 'Professor'}!`);
             }});
         }
 
@@ -440,7 +436,7 @@
             navItems.forEach(item => {
                 if (item.roles.includes(currentUserRole)) {
                     const activeClass = currentView === item.id 
-                        ? 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300 font-semibold' 
+                        ? 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300 font-bold shadow-sm' 
                         : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50';
 
                     menu.innerHTML += `
@@ -480,7 +476,7 @@
                         <h3 class="text-2xl font-bold dark:text-white mt-1">${val}</h3>
                         <span class="text-[11px] text-slate-400">${sub}</span>
                     </div>
-                    <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center ${color} text-xl">
+                    <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-700/60 flex items-center justify-center ${color} text-xl shadow-inner">
                         <i class="fa-solid ${icon}"></i>
                     </div>
                 </div>
@@ -498,20 +494,67 @@
             }, 4500);
         }
 
+        function responderAgenteIA(msg) {
+            const texto = msg.toLowerCase();
+            if (texto.includes("boleto") || texto.includes("mensalidade") || texto.includes("pagamento")) {
+                return "💳 **Segunda Via de Boleto:** Você pode emitir seus boletos e consultar comprovantes diretamente no portal financeiro em 'Meu Perfil > Financeiro'. Caso haja atraso de pagamento, os juros são atualizados automaticamente sem necessidade de novo cálculo na secretaria.";
+            } else if (texto.includes("reabertura") || texto.includes("prova") || texto.includes("segunda chamada")) {
+                return "📝 **Reabertura de Prova / Segunda Chamada:** A solicitação de 2ª chamada deve ser realizada em até 5 dias úteis após a data da avaliação regular. É necessário anexar um atestado médico ou justificativa de trabalho válida através do formulário oficial do SAC.";
+            } else if (texto.includes("horas") || texto.includes("complementar")) {
+                return "🎓 **Horas Complementares:** O envio de certificados de cursos, eventos e simpósios deve ser realizado via Webmail para 'atendimento@fnet.edu.br'. A validação é concluída no prazo de até 10 dias úteis pelo coordenador do curso.";
+            } else if (texto.includes("trancamento") || texto.includes("rematricula") || texto.includes("matricula")) {
+                return "📌 **Rematrícula & Trancamento:** O período oficial de rematrícula para o próximo semestre ocorre online de 1 a 15 de Dezembro. Para trancamento de curso, o aluno deve agendar um atendimento presencial na Secretaria Acadêmica.";
+            } else {
+                return "🤖 **Atendimento FNET-Bot:** Entendi sua dúvida! Caso precise de um atendimento humanizado específico para este caso, preencha o formulário de chamado ao lado para que nossa secretaria responda diretamente no seu Webmail acadêmico.";
+            }
+        }
+
+        function enviarMensagemChatIA(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input-ia');
+            const chatBox = document.getElementById('chat-messages-ia');
+            const userMsg = input.value.trim();
+            if(!userMsg) return;
+
+            chatBox.innerHTML += `
+                <div class="flex justify-end">
+                    <div class="bg-brand-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[80%] text-xs shadow-md">
+                        ${userMsg}
+                    </div>
+                </div>
+            `;
+            input.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            setTimeout(() => {
+                const botRes = responderAgenteIA(userMsg);
+                chatBox.innerHTML += `
+                    <div class="flex items-start gap-2.5">
+                        <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-brand-600 to-purple-600 flex items-center justify-center text-white text-xs shrink-0 shadow-md">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div class="bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 p-3 rounded-2xl rounded-tl-none max-w-[85%] text-xs border border-slate-200 dark:border-slate-600 shadow-sm leading-relaxed">
+                            ${botRes.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
+                        </div>
+                    </div>
+                `;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 600);
+        }
+
         function getPageTemplate(viewId) {
             switch(viewId) {
                 case 'dashboard':
                     return `
                         <div class="space-y-6">
-                            <!-- CARROSSEL DO CAMPUS (MIT & HARVARD) -->
-                            <div data-animate class="campus-slider shadow-xl">
+                            <div data-animate class="campus-slider shadow-2xl">
                                 ${mockData.campusPhotos.map((photo, i) => `
-                                    <div class="campus-slide ${i === 0 ? 'active' : ''}" style="background-image: linear-gradient(90deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.35) 100%), url('${photo.img}')">
+                                    <div class="campus-slide ${i === 0 ? 'active' : ''}" style="background-image: linear-gradient(90deg, rgba(15, 23, 42, 0.92) 0%, rgba(15, 23, 42, 0.4) 100%), url('${photo.img}')">
                                         <div class="p-6 md:p-8 flex flex-col justify-center h-full max-w-xl text-white">
-                                            <span class="inline-block px-3 py-1 bg-brand-600 text-white rounded-full text-xs font-bold w-max mb-2">${photo.tag}</span>
-                                            <h2 class="text-2xl md:text-3xl font-extrabold mb-2">${photo.title}</h2>
-                                            <p class="text-slate-200 text-sm mb-4">${photo.desc}</p>
-                                            <button onclick="openModalEvento('${photo.title}')" class="bg-white text-slate-900 px-4 py-2 rounded-xl text-xs font-bold w-max hover:bg-brand-50 transition-all flex items-center gap-2">
+                                            <span class="inline-block px-3 py-1 bg-brand-600 text-white rounded-full text-xs font-bold w-max mb-2 shadow-lg">${photo.tag}</span>
+                                            <h2 class="text-2xl md:text-3xl font-extrabold mb-2 leading-tight">${photo.title}</h2>
+                                            <p class="text-slate-200 text-sm mb-4 line-clamp-2">${photo.desc}</p>
+                                            <button onclick="openModalEvento('${photo.title}')" class="bg-white text-slate-900 px-4 py-2.5 rounded-xl text-xs font-bold w-max hover:bg-brand-50 transition-all flex items-center gap-2 shadow-lg">
                                                 <i class="fa-solid fa-pen-to-square text-brand-600"></i> ${photo.btnTxt}
                                             </button>
                                         </div>
@@ -521,9 +564,9 @@
 
                             <div data-animate class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 p-6 md:p-8 text-white shadow-xl">
                                 <div class="relative z-10 max-w-xl">
-                                    <span class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-semibold mb-3">Portal Acadêmico 2026</span>
-                                    <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight mb-2">Bem-vindo(a) ao EduConnect!</h1>
-                                    <p class="text-brand-100 text-sm md:text-base mb-6">Acompanhe suas aulas, gerencie entregas, agende salas de estudo e mantenha-se em dia com sua rotina universitária.</p>
+                                    <span class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-semibold mb-3">Faculdade Nova Era Tecnológica</span>
+                                    <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight mb-2">Bem-vindo(a) ao Portal FNET!</h1>
+                                    <p class="text-brand-100 text-sm md:text-base mb-6">Acompanhe suas matérias, envie atividades diretamente para a planilha do professor e tire dúvidas pelo SAC com IA.</p>
                                     <div class="flex flex-wrap gap-3">
                                         <button onclick="navigate('salas')" class="bg-white text-brand-600 hover:bg-brand-50 px-5 py-2.5 rounded-xl font-bold text-sm shadow-md transition-all flex items-center gap-2">
                                             <i class="fa-solid fa-calendar-plus text-brand-600"></i>Reservar Sala de Estudo
@@ -546,34 +589,38 @@
                         <div class="space-y-6">
                             <div data-animate class="flex justify-between items-center">
                                 <div>
-                                    <h1 class="text-2xl font-bold dark:text-white">Minhas Disciplinas</h1>
-                                    <p class="text-sm text-slate-500">Acesse conteúdos, materiais e acompanhe o progresso do semestre.</p>
+                                    <h1 class="text-2xl font-bold dark:text-white">Disciplinas do Semestre</h1>
+                                    <p class="text-sm text-slate-500">Confira suas matérias ativas com conteúdo integrado.</p>
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 ${mockData.disciplinas.map(c => `
-                                    <div data-animate class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
-                                        <div class="h-28 bg-gradient-to-r ${c.cor} p-6 flex justify-between items-start text-white">
-                                            <div>
-                                                <h3 class="text-lg font-bold">${c.nome}</h3>
-                                                <p class="text-xs text-white/80">${c.prof}</p>
+                                    <div data-animate class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden hover:scale-[1.02] transition-all duration-200">
+                                        <div class="p-6 bg-gradient-to-br ${c.cor} text-white relative">
+                                            <div class="flex justify-between items-start">
+                                                <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[11px] font-bold tracking-wide uppercase">${c.badge}</span>
+                                                <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl shadow-lg">
+                                                    <i class="fa-solid ${c.icone}"></i>
+                                                </div>
                                             </div>
-                                            <i class="fa-solid ${c.icone} text-2xl text-white/80"></i>
+                                            <h3 class="text-xl font-extrabold mt-4 mb-1">${c.nome}</h3>
+                                            <p class="text-xs text-white/80 font-medium"><i class="fa-solid fa-user-tie mr-1"></i> ${c.prof}</p>
                                         </div>
                                         <div class="p-6 space-y-4">
+                                            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">${c.desc}</p>
                                             <div>
-                                                <div class="flex justify-between text-xs font-semibold mb-1">
-                                                    <span class="text-slate-500">Progresso do Semestre</span>
-                                                    <span class="text-brand-600 dark:text-brand-400">${c.progresso}%</span>
+                                                <div class="flex justify-between text-xs font-bold mb-1.5">
+                                                    <span class="text-slate-500">Progresso do Módulo</span>
+                                                    <span class="text-brand-600 dark:text-brand-400 font-extrabold">${c.progresso}%</span>
                                                 </div>
-                                                <div class="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-                                                    <div class="h-full bg-brand-600 rounded-full" style="width: ${c.progresso}%"></div>
+                                                <div class="w-full h-2.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden p-0.5">
+                                                    <div class="h-full bg-gradient-to-r from-brand-600 to-indigo-500 rounded-full" style="width: ${c.progresso}%"></div>
                                                 </div>
                                             </div>
                                             <div class="flex gap-2 pt-2">
-                                                <button onclick="showToast('Abrindo ambiente virtual...')" class="flex-1 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-slate-200 font-semibold rounded-xl text-xs transition-all">Aulas Gravadas</button>
-                                                <button onclick="navigate('notas')" class="flex-1 py-2 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl text-xs transition-all">Enviar Trabalho</button>
+                                                <button onclick="showToast('Acessando gravação das aulas...')" class="flex-1 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-slate-200 font-bold rounded-xl text-xs transition-all">Aulas Gravadas</button>
+                                                <button onclick="navigate('notas')" class="flex-1 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-xs transition-all shadow-md">Enviar Trabalho</button>
                                             </div>
                                         </div>
                                     </div>
@@ -605,7 +652,7 @@
                                             <p class="text-xs text-slate-500 mb-1"><i class="fa-solid fa-users mr-1"></i> ${sala.capacidade}</p>
                                             <p class="text-xs text-slate-500 mb-4"><i class="fa-solid fa-tv mr-1"></i> ${sala.recurso}</p>
                                         </div>
-                                        <button onclick="openModalSala('${sala.nome}')" ${sala.status !== 'Livre' ? 'disabled' : ''} class="w-full py-2 bg-brand-600 hover:bg-brand-700 disabled:bg-slate-300 text-white rounded-xl text-sm font-semibold transition-all">
+                                        <button onclick="openModalSala('${sala.nome}')" ${sala.status !== 'Livre' ? 'disabled' : ''} class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 disabled:bg-slate-300 text-white rounded-xl text-xs font-bold transition-all shadow-md">
                                             ${sala.status === 'Livre' ? 'Reservar Agora' : 'Indisponível'}
                                         </button>
                                     </div>
@@ -677,7 +724,7 @@
                                         <label class="block text-xs font-semibold text-slate-500 mb-1">LINK DO TRABALHO (GitHub / Drive / Figma)</label>
                                         <input type="url" id="atv-link" required placeholder="https://..." class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm dark:text-white">
                                     </div>
-                                    <button type="submit" id="btn-env-atv" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-all">
+                                    <button type="submit" id="btn-env-atv" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-all shadow-md">
                                         Enviar Atividade
                                     </button>
                                 </form>
@@ -712,7 +759,7 @@
                                         <label class="block text-xs font-semibold text-slate-500 mb-1">NOTA (0.0 A 10.0)</label>
                                         <input type="number" step="0.1" min="0" max="10" id="nota-val" required placeholder="Ex: 9.5" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm dark:text-white">
                                     </div>
-                                    <button type="submit" id="btn-lan-nota" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-all">
+                                    <button type="submit" id="btn-lan-nota" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-all shadow-md">
                                         Registrar Nota na Planilha
                                     </button>
                                 </form>
@@ -725,7 +772,7 @@
                         <div class="space-y-6">
                             <div data-animate class="flex justify-between items-center">
                                 <div>
-                                    <h1 class="text-2xl font-bold dark:text-white">Biblioteca Virtual</h1>
+                                    <h1 class="text-2xl font-bold dark:text-white">Biblioteca Virtual FNET</h1>
                                     <p class="text-sm text-slate-500">Consulte livros digitais, artigos acadêmicos e referências bibliográficas.</p>
                                 </div>
                             </div>
@@ -754,7 +801,7 @@
                     return `
                         <div class="space-y-6">
                             <div data-animate>
-                                <h1 class="text-2xl font-bold dark:text-white">Webmail Universitário</h1>
+                                <h1 class="text-2xl font-bold dark:text-white">Webmail Universitário FNET</h1>
                                 <p class="text-sm text-slate-500">Caixa de entrada oficial de comunicados da faculdade.</p>
                             </div>
 
@@ -779,32 +826,75 @@
                     return `
                         <div class="space-y-6">
                             <div data-animate>
-                                <h1 class="text-2xl font-bold dark:text-white">SAC / Ouvidoria Acadêmica</h1>
-                                <p class="text-sm text-slate-500">Abra um chamado diretamente com a secretaria universitária.</p>
+                                <h1 class="text-2xl font-bold dark:text-white">SAC & Agente de Inteligência Artificial</h1>
+                                <p class="text-sm text-slate-500">Tire suas dúvidas instantaneamente com o assistente FNET ou abra um chamado oficial.</p>
                             </div>
 
-                            <div data-animate class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm max-w-xl">
-                                <form onsubmit="handleSACAPI(event)" class="space-y-4">
-                                    <div>
-                                        <label class="block text-xs font-semibold text-slate-500 mb-1">SEU NOME</label>
-                                        <input type="text" id="sac-aluno" required placeholder="Digite seu nome" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm dark:text-white">
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div data-animate class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-lg flex flex-col h-[480px] overflow-hidden">
+                                    <div class="p-4 bg-gradient-to-r from-brand-600 to-indigo-600 text-white flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-xl">
+                                            <i class="fa-solid fa-robot"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-bold text-sm">FNET Assistente Virtual</h3>
+                                            <p class="text-[11px] text-white/80">Respostas automáticas 24/7</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label class="block text-xs font-semibold text-slate-500 mb-1">ASSUNTO</label>
-                                        <select id="sac-assunto" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm dark:text-white">
-                                            <option value="Dúvida Acadêmica">Dúvida Acadêmica</option>
-                                            <option value="Secretaria / Matrícula">Secretaria / Matrícula</option>
-                                            <option value="Suporte Técnico">Suporte Técnico</option>
-                                        </select>
+
+                                    <div id="chat-messages-ia" class="flex-1 p-4 overflow-y-auto space-y-3 custom-scrollbar">
+                                        <div class="flex items-start gap-2.5">
+                                            <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-brand-600 to-purple-600 flex items-center justify-center text-white text-xs shrink-0 shadow-md">
+                                                <i class="fa-solid fa-robot"></i>
+                                            </div>
+                                            <div class="bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 p-3 rounded-2xl rounded-tl-none max-w-[85%] text-xs border border-slate-200 dark:border-slate-600 shadow-sm leading-relaxed">
+                                                Olá! Sou o assistente da FNET. Como posso te ajudar hoje? Tópicos frequentes: <strong>Boleto</strong>, <strong>Reabertura de Prova</strong>, <strong>Horas Complementares</strong> ou <strong>Rematrícula</strong>.
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label class="block text-xs font-semibold text-slate-500 mb-1">MENSAGEM</label>
-                                        <textarea id="sac-msg" rows="4" required placeholder="Descreva sua solicitação..." class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm dark:text-white"></textarea>
+
+                                    <div class="p-2 border-t border-slate-100 dark:border-slate-700 flex gap-1.5 overflow-x-auto custom-scrollbar bg-slate-50 dark:bg-slate-900/50">
+                                        <button onclick="document.getElementById('chat-input-ia').value='Como tirar 2a via do boleto?'; responderChatManual();" class="px-2.5 py-1 bg-white dark:bg-slate-800 text-[10px] font-bold text-brand-600 rounded-full border border-slate-200 dark:border-slate-700 whitespace-nowrap hover:bg-brand-50">💳 Seg. Via Boleto</button>
+                                        <button onclick="document.getElementById('chat-input-ia').value='Como pedir reabertura de prova?'; responderChatManual();" class="px-2.5 py-1 bg-white dark:bg-slate-800 text-[10px] font-bold text-brand-600 rounded-full border border-slate-200 dark:border-slate-700 whitespace-nowrap hover:bg-brand-50">📝 Pedir 2ª Chamada</button>
+                                        <button onclick="document.getElementById('chat-input-ia').value='Como validar horas complementares?'; responderChatManual();" class="px-2.5 py-1 bg-white dark:bg-slate-800 text-[10px] font-bold text-brand-600 rounded-full border border-slate-200 dark:border-slate-700 whitespace-nowrap hover:bg-brand-50">🎓 Horas Complementares</button>
                                     </div>
-                                    <button type="submit" id="btn-env-sac" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-all">
-                                        Enviar Protocolo ao SAC
-                                    </button>
-                                </form>
+
+                                    <form onsubmit="enviarMensagemChatIA(event)" class="p-3 border-t border-slate-100 dark:border-slate-700 flex gap-2 bg-white dark:bg-slate-800">
+                                        <input type="text" id="chat-input-ia" placeholder="Pergunte sobre boletos, provas..." required class="flex-1 bg-slate-100 dark:bg-slate-700 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-brand-500 dark:text-white">
+                                        <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-md">
+                                            <i class="fa-solid fa-paper-plane"></i>
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <div data-animate class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-lg flex flex-col justify-between">
+                                    <div>
+                                        <h3 class="font-bold text-base dark:text-white mb-1">Abrir Chamado Presencial / Protocolo</h3>
+                                        <p class="text-xs text-slate-500 mb-4">Sua solicitação será gravada no Google Sheets da Secretaria FNET.</p>
+                                        <form onsubmit="handleSACAPI(event)" class="space-y-3.5">
+                                            <div>
+                                                <label class="block text-xs font-semibold text-slate-500 mb-1">SEU NOME COMPLETO</label>
+                                                <input type="text" id="sac-aluno" required placeholder="Digite seu nome" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-xl px-3 py-2 text-xs dark:text-white">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-semibold text-slate-500 mb-1">ASSUNTO DA SOLICITAÇÃO</label>
+                                                <select id="sac-assunto" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-xl px-3 py-2 text-xs dark:text-white">
+                                                    <option value="Dúvida Acadêmica">Dúvida Acadêmica</option>
+                                                    <option value="Secretaria / Matrícula">Secretaria / Matrícula</option>
+                                                    <option value="Financeiro / Boletos">Financeiro / Boletos</option>
+                                                    <option value="Segunda Chamada de Prova">Segunda Chamada de Prova</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-semibold text-slate-500 mb-1">MENSAGEM / JUSTIFICATIVA</label>
+                                                <textarea id="sac-msg" rows="3" required placeholder="Descreva os detalhes..." class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-xl px-3 py-2 text-xs dark:text-white"></textarea>
+                                            </div>
+                                            <button type="submit" id="btn-env-sac" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-md">
+                                                Enviar Protocolo para o Sheets
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     `;
@@ -813,8 +903,8 @@
                     return `
                         <div class="space-y-6">
                             <div data-animate>
-                                <h1 class="text-2xl font-bold dark:text-white">Meu Perfil</h1>
-                                <p class="text-sm text-slate-500">Gerencie suas informações cadastrais acadêmicas.</p>
+                                <h1 class="text-2xl font-bold dark:text-white">Meu Perfil FNET</h1>
+                                <p class="text-sm text-slate-500">Gerencie suas informações cadastrais e acesse seus boletos.</p>
                             </div>
 
                             <div data-animate class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm max-w-xl space-y-4">
@@ -826,16 +916,21 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-semibold text-slate-500 mb-1">E-MAIL ACADÊMICO</label>
-                                    <input type="email" value="${currentUserRole === 'aluno' ? 'maria.silva@aluno.educonnect.br' : 'carlos.eduardo@prof.educonnect.br'}" readonly class="w-full bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm dark:text-white">
+                                    <label class="block text-xs font-semibold text-slate-500 mb-1">E-MAIL INSTITUCIONAL</label>
+                                    <input type="email" value="${currentUserRole === 'aluno' ? 'maria.silva@aluno.fnet.edu.br' : 'carlos.eduardo@prof.fnet.edu.br'}" readonly class="w-full bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm dark:text-white">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold text-slate-500 mb-1">CAMPUS / SEMESTRE</label>
-                                    <input type="text" value="Campus Central • 2026.2" readonly class="w-full bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm dark:text-white">
+                                    <input type="text" value="Faculdade Nova Era Tecnológica • 2026.2" readonly class="w-full bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm dark:text-white">
                                 </div>
-                                <button onclick="showToast('Dados cadastrais validados!')" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-all">
-                                    Atualizar Cadastro
-                                </button>
+                                <div class="flex gap-2">
+                                    <button onclick="showToast('Dados cadastrais validados!')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-xl text-xs transition-all shadow-md">
+                                        Atualizar Cadastro
+                                    </button>
+                                    <button onclick="showToast('Gerando 2ª via do boleto atualizado...')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl text-xs transition-all shadow-md flex items-center justify-center gap-1.5">
+                                        <i class="fa-solid fa-barcode"></i> Emitir Boleto
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     `;
@@ -843,6 +938,11 @@
                 default:
                     return `<div></div>`;
             }
+        }
+
+        function responderChatManual() {
+            const e = { preventDefault: () => {} };
+            enviarMensagemChatIA(e);
         }
 
         function animatePageElements() {
@@ -906,12 +1006,12 @@
                     body: JSON.stringify({
                         action: 'enviarSAC',
                         aluno: document.getElementById('evento-aluno').value,
-                        assunto: "Inscrição Evento: " + document.getElementById('evento-nome-hidden').value,
+                        assunto: "Inscrição Evento FNET: " + document.getElementById('evento-nome-hidden').value,
                         mensagem: "Projeto/Equipe: " + document.getElementById('evento-projeto').value
                     })
                 });
                 closeModal('modal-evento');
-                showToast("Inscrição confirmada na planilha do evento!");
+                showToast("Inscrição confirmada na planilha do evento FNET!");
                 e.target.reset();
             } catch(err) {
                 showToast("Inscrição registrada no sistema!");
@@ -942,7 +1042,7 @@
                 });
                 const data = await res.json();
                 closeModal('modal-sala');
-                showToast(data.message || "Reserva efetuada na planilha!");
+                showToast(data.message || "Reserva efetuada na planilha FNET!");
             } catch(err) {
                 showToast("Erro ao conectar com a API.");
             } finally {
@@ -997,7 +1097,7 @@
                     })
                 });
                 const data = await res.json();
-                showToast(data.message || "Nota lançada na planilha!");
+                showToast(data.message || "Nota lançada na planilha FNET!");
                 e.target.reset();
             } catch(err) {
                 showToast("Erro ao registrar nota.");
@@ -1030,7 +1130,7 @@
             } catch(err) {
                 showToast("Erro ao abrir protocolo.");
             } finally {
-                btn.innerText = "Enviar Protocolo ao SAC";
+                btn.innerText = "Enviar Protocolo para o Sheets";
                 btn.disabled = false;
             }
         }
