@@ -6,7 +6,7 @@
     <title>FNET — Faculdade Nova Era Tecnológica</title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f46e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M22 10v6M2 10l10-5 10 5-10 5z'/><path d='M6 12v5c3 3 9 3 12 0v-5'/></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23dc2626' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M22 10v6M2 10l10-5 10 5-10 5z'/><path d='M6 12v5c3 3 9 3 12 0v-5'/></svg>">
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -24,12 +24,12 @@
                 extend: {
                     colors: {
                         brand: {
-                            50: '#eef2ff',
-                            100: '#e0e7ff',
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            700: '#4338ca',
-                            900: '#312e81',
+                            50: '#fef2f2',
+                            100: '#fee2e2',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                            900: '#7f1d1d',
                         }
                     },
                     fontFamily: {
@@ -44,7 +44,7 @@
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
 
         .campus-slider {
             position: relative;
@@ -66,22 +66,22 @@
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-200 antialiased">
+<body class="bg-slate-100 text-black dark:bg-black dark:text-white min-h-screen transition-colors duration-200 antialiased">
 
     <!-- TELA DE LOGIN -->
-    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900 bg-cover bg-center" style="background-image: linear-gradient(rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.96)), url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1600&q=80');">
-        <div class="w-full max-w-md p-8 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md rounded-3xl shadow-2xl border border-white/20 dark:border-slate-700/50">
+    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-cover bg-center" style="background-image: linear-gradient(rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.97)), url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1600&q=80');">
+        <div class="w-full max-w-md p-8 bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800">
             <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-gradient-to-tr from-brand-600 to-indigo-500 rounded-2xl flex items-center justify-center text-white text-3xl font-extrabold mx-auto shadow-xl shadow-brand-500/40 mb-3">
+                <div class="w-16 h-16 bg-gradient-to-tr from-brand-600 to-red-500 rounded-2xl flex items-center justify-center text-white text-3xl font-extrabold mx-auto shadow-xl shadow-brand-600/40 mb-3">
                     <i class="fa-solid fa-atom"></i>
                 </div>
-                <h2 class="text-2xl font-black tracking-tight text-slate-900 dark:text-white">FNET Portal</h2>
+                <h2 class="text-2xl font-black tracking-tight text-black dark:text-white">FNET Portal</h2>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Faculdade Nova Era Tecnológica</p>
             </div>
 
             <!-- Abas Aluno/Professor -->
-            <div class="flex p-1 bg-slate-100 dark:bg-slate-700/60 rounded-xl mb-6">
-                <button type="button" id="tab-aluno" onclick="setLoginRole('aluno')" class="flex-1 py-2.5 text-xs font-bold rounded-lg transition-all bg-white dark:bg-slate-800 text-brand-600 shadow-sm">
+            <div class="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl mb-6">
+                <button type="button" id="tab-aluno" onclick="setLoginRole('aluno')" class="flex-1 py-2.5 text-xs font-bold rounded-lg transition-all bg-brand-600 text-white shadow-sm">
                     <i class="fa-solid fa-user-graduate mr-1"></i> Área do Aluno
                 </button>
                 <button type="button" id="tab-professor" onclick="setLoginRole('professor')" class="flex-1 py-2.5 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 transition-all">
@@ -92,29 +92,29 @@
             <!-- Formulário de Login -->
             <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
                 <div>
-                    <label id="label-login-id" class="block text-xs font-semibold text-slate-500 mb-1 uppercase">Matrícula / RA do Aluno</label>
+                    <label id="label-login-id" class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Matrícula / RA do Aluno</label>
                     <div class="relative">
                         <i class="fa-solid fa-id-card absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                        <input type="text" id="login-user" required value="2026849302" placeholder="Digite sua matrícula" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:outline-none focus:border-brand-500 dark:text-white">
+                        <input type="text" id="login-user" required value="2026849302" placeholder="Digite sua matrícula" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:outline-none focus:border-brand-600 dark:text-white">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase">Senha de Acesso</label>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Senha de Acesso</label>
                     <div class="relative">
                         <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                        <input type="password" id="login-pass" required value="123456" placeholder="••••••••" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:outline-none focus:border-brand-500 dark:text-white">
+                        <input type="password" id="login-pass" required value="123456" placeholder="••••••••" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:outline-none focus:border-brand-600 dark:text-white">
                     </div>
                 </div>
 
                 <div class="flex items-center justify-between text-xs">
-                    <label class="flex items-center text-slate-500 cursor-pointer">
-                        <input type="checkbox" checked class="rounded border-slate-300 text-brand-600 focus:ring-brand-500 mr-2"> Lembrar dados
+                    <label class="flex items-center text-slate-600 dark:text-slate-400 cursor-pointer">
+                        <input type="checkbox" checked class="rounded border-slate-300 text-brand-600 focus:ring-brand-600 mr-2"> Lembrar dados
                     </label>
-                    <a href="#" onclick="showToast('Link de recuperação enviado ao e-mail cadastrado.')" class="text-brand-600 hover:underline font-semibold">Esqueceu a senha?</a>
+                    <a href="#" onclick="showToast('Link de recuperação enviado ao e-mail cadastrado.')" class="text-brand-600 hover:underline font-bold">Esqueceu a senha?</a>
                 </div>
 
-                <button type="submit" id="btn-login" class="w-full bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-brand-500/30 transition-all flex items-center justify-center gap-2 text-sm">
+                <button type="submit" id="btn-login" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-brand-600/30 transition-all flex items-center justify-center gap-2 text-sm">
                     Entrar no Portal <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </form>
@@ -124,16 +124,16 @@
     <!-- MAIN APP CONTAINER -->
     <div id="app" class="flex h-screen overflow-hidden">
 
-        <!-- SIDEBAR -->
-        <aside id="sidebar" class="w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col justify-between transition-all duration-300 z-30 fixed md:relative h-full -translate-x-full md:translate-x-0">
+        <!-- SIDEBAR (BRANCO & PRETO & VERMELHO) -->
+        <aside id="sidebar" class="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between transition-all duration-300 z-30 fixed md:relative h-full -translate-x-full md:translate-x-0">
             <div>
                 <!-- Brand Header -->
-                <div class="h-16 flex items-center justify-between px-6 border-b border-slate-100 dark:border-slate-700/50">
+                <div class="h-16 flex items-center justify-between px-6 border-b border-slate-200 dark:border-slate-800">
                     <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-red-500 flex items-center justify-center text-white shadow-md shadow-brand-600/30">
                             <i class="fa-solid fa-atom text-lg"></i>
                         </div>
-                        <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-brand-600 to-indigo-500 bg-clip-text text-transparent">FNET</span>
+                        <span class="font-black text-xl tracking-tight text-brand-600">FNET</span>
                     </div>
                     <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-slate-600">
                         <i class="fa-solid fa-xmark text-xl"></i>
@@ -148,18 +148,18 @@
 
             <!-- API Status & Profile Bottom Bar -->
             <div>
-                <div class="px-4 py-2 text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-2 font-medium border-t border-slate-100 dark:border-slate-700/50">
+                <div class="px-4 py-2 text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-2 font-semibold border-t border-slate-200 dark:border-slate-800">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Google Sheets API On
                 </div>
-                <div class="p-4 border-t border-slate-100 dark:border-slate-700/50 flex items-center justify-between">
+                <div class="p-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
                     <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('perfil')">
-                        <img id="user-avatar-sidebar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150" alt="Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-brand-500">
+                        <img id="user-avatar-sidebar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150" alt="Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-brand-600">
                         <div class="overflow-hidden">
-                            <p id="user-name-sidebar" class="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate">Maria Silva</p>
-                            <p id="user-role-sidebar" class="text-xs text-slate-500 dark:text-slate-400 truncate">Aluno • Eng. de Software</p>
+                            <p id="user-name-sidebar" class="text-sm font-bold text-black dark:text-white truncate">Maria Silva</p>
+                            <p id="user-role-sidebar" class="text-xs text-slate-500 truncate">Aluno • Eng. de Software</p>
                         </div>
                     </div>
-                    <button onclick="logout()" title="Sair / Fazer Logoff" class="text-slate-400 hover:text-red-500 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                    <button onclick="logout()" title="Sair / Fazer Logoff" class="text-slate-400 hover:text-brand-600 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                         <i class="fa-solid fa-right-from-bracket"></i>
                     </button>
                 </div>
@@ -170,69 +170,69 @@
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
 
             <!-- TOP NAVBAR -->
-            <header class="h-16 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-4 md:px-8 z-20">
+            <header class="h-16 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 md:px-8 z-20">
                 <div class="flex items-center gap-4">
-                    <button onclick="toggleSidebar()" class="md:hidden text-slate-600 dark:text-slate-300 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
+                    <button onclick="toggleSidebar()" class="md:hidden text-black dark:text-white p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
                         <i class="fa-solid fa-bars text-lg"></i>
                     </button>
                     <div class="relative hidden sm:block">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                        <input type="text" placeholder="Buscar matérias, avisos, salas..." class="w-64 pl-9 pr-4 py-1.5 text-sm rounded-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 focus:outline-none focus:border-brand-500 transition-all">
+                        <input type="text" placeholder="Buscar matérias, avisos, salas..." class="w-64 pl-9 pr-4 py-1.5 text-sm rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:border-brand-600 transition-all dark:text-white">
                     </div>
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <span id="role-badge" class="px-2.5 py-1 text-xs font-semibold rounded-full bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300 border border-brand-200 dark:border-brand-800">
+                    <span id="role-badge" class="px-3 py-1 text-xs font-bold rounded-full bg-brand-50 text-brand-600 border border-brand-100 dark:bg-brand-900/30 dark:text-brand-500 dark:border-brand-900">
                         Modo Aluno
                     </span>
 
-                    <button onclick="toggleDarkMode()" class="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors">
+                    <button onclick="toggleDarkMode()" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
                         <i id="theme-icon" class="fa-solid fa-moon"></i>
                     </button>
 
-                    <button onclick="navigate('webmail')" class="relative p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors">
+                    <button onclick="navigate('webmail')" class="relative p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
                         <i class="fa-solid fa-envelope"></i>
-                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-brand-600 rounded-full"></span>
                     </button>
 
                     <!-- DROPDOWN DE NOTIFICAÇÕES -->
                     <div class="relative">
-                        <button onclick="toggleNotificationMenu()" class="relative p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors">
+                        <button onclick="toggleNotificationMenu()" class="relative p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
                             <i class="fa-solid fa-bell"></i>
-                            <span id="notif-badge" class="absolute top-1 right-1 w-2 h-2 bg-brand-500 rounded-full animate-ping"></span>
+                            <span id="notif-badge" class="absolute top-1 right-1 w-2 h-2 bg-brand-600 rounded-full animate-ping"></span>
                         </button>
 
-                        <div id="notif-dropdown" class="hidden absolute right-0 mt-3 w-80 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 z-50 overflow-hidden">
-                            <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-700/50">
-                                <h4 class="font-bold text-sm text-slate-800 dark:text-white">Central de Avisos</h4>
-                                <span class="text-[10px] bg-brand-100 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300 px-2 py-0.5 rounded-full font-bold">3 novos</span>
+                        <div id="notif-dropdown" class="hidden absolute right-0 mt-3 w-80 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 z-50 overflow-hidden">
+                            <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+                                <h4 class="font-bold text-sm text-black dark:text-white">Central de Avisos</h4>
+                                <span class="text-[10px] bg-brand-100 text-brand-600 dark:bg-brand-900/40 dark:text-brand-400 px-2 py-0.5 rounded-full font-bold">3 novos</span>
                             </div>
-                            <div class="divide-y divide-slate-100 dark:divide-slate-700 max-h-80 overflow-y-auto custom-scrollbar">
-                                <div class="p-3.5 hover:bg-slate-50 dark:hover:bg-slate-700/40 transition-colors cursor-pointer" onclick="navigate('salas')">
+                            <div class="divide-y divide-slate-100 dark:divide-slate-800 max-h-80 overflow-y-auto custom-scrollbar">
+                                <div class="p-3.5 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors cursor-pointer" onclick="navigate('salas')">
                                     <div class="flex gap-3">
-                                        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300 flex items-center justify-center shrink-0 text-xs"><i class="fa-solid fa-check"></i></div>
+                                        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 text-xs"><i class="fa-solid fa-check"></i></div>
                                         <div>
-                                            <p class="text-xs font-semibold text-slate-800 dark:text-white">Reserva de Sala Confirmada</p>
+                                            <p class="text-xs font-bold text-black dark:text-white">Reserva de Sala Confirmada</p>
                                             <p class="text-[11px] text-slate-500 mt-0.5">Sala de Estudos #101 confirmada no Google Sheets.</p>
                                             <span class="text-[9px] text-slate-400 mt-1 block">Há 5 minutos</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="p-3.5 hover:bg-slate-50 dark:hover:bg-slate-700/40 transition-colors cursor-pointer" onclick="navigate('notas')">
+                                <div class="p-3.5 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors cursor-pointer" onclick="navigate('notas')">
                                     <div class="flex gap-3">
-                                        <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300 flex items-center justify-center shrink-0 text-xs"><i class="fa-solid fa-file-signature"></i></div>
+                                        <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center shrink-0 text-xs"><i class="fa-solid fa-file-signature"></i></div>
                                         <div>
-                                            <p class="text-xs font-semibold text-slate-800 dark:text-white">Boletim Atualizado</p>
+                                            <p class="text-xs font-bold text-black dark:text-white">Boletim Atualizado</p>
                                             <p class="text-[11px] text-slate-500 mt-0.5">Nota de Engenharia de Software publicada.</p>
                                             <span class="text-[9px] text-slate-400 mt-1 block">Há 1 hora</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="p-3.5 hover:bg-slate-50 dark:hover:bg-slate-700/40 transition-colors cursor-pointer" onclick="navigate('dashboard')">
+                                <div class="p-3.5 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors cursor-pointer" onclick="navigate('dashboard')">
                                     <div class="flex gap-3">
-                                        <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300 flex items-center justify-center shrink-0 text-xs"><i class="fa-solid fa-graduation-cap"></i></div>
+                                        <div class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center shrink-0 text-xs"><i class="fa-solid fa-graduation-cap"></i></div>
                                         <div>
-                                            <p class="text-xs font-semibold text-slate-800 dark:text-white">Feira Tecnológica FNET 2026</p>
+                                            <p class="text-xs font-bold text-black dark:text-white">Feira Tecnológica FNET 2026</p>
                                             <p class="text-[11px] text-slate-500 mt-0.5">Inscreva seu projeto pelo carrossel do campus.</p>
                                             <span class="text-[9px] text-slate-400 mt-1 block">Ontem</span>
                                         </div>
@@ -251,13 +251,13 @@
         </div>
     </div>
 
-    <!-- AGENTE DE IA FLUTUANTE (BOLINHA NO CANTO INFERIOR DIREITO) -->
+    <!-- AGENTE DE IA FLUTUANTE (BOLINHA VERMELHA NO CANTO INFERIOR DIREITO) -->
     <div id="widget-ia-container" class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
         
         <!-- Janela do Chat Pop-up -->
-        <div id="chat-popup-ia" class="hidden mb-4 w-80 md:w-96 bg-white dark:bg-slate-800 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col h-[450px] transition-all">
-            <!-- Header do Chat -->
-            <div class="p-4 bg-gradient-to-r from-brand-600 to-indigo-600 text-white flex items-center justify-between">
+        <div id="chat-popup-ia" class="hidden mb-4 w-80 md:w-96 bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col h-[450px] transition-all">
+            <!-- Header do Chat Vermelho -->
+            <div class="p-4 bg-gradient-to-r from-brand-600 to-red-700 text-white flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-lg">
                         <i class="fa-solid fa-robot"></i>
@@ -275,92 +275,91 @@
             </div>
 
             <!-- Corpo de Mensagens -->
-            <div id="chat-messages-ia" class="flex-1 p-4 overflow-y-auto space-y-3 custom-scrollbar bg-slate-50/50 dark:bg-slate-900/50">
+            <div id="chat-messages-ia" class="flex-1 p-4 overflow-y-auto space-y-3 custom-scrollbar bg-slate-50 dark:bg-black/60">
                 <div class="flex items-start gap-2">
-                    <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-brand-600 to-purple-600 flex items-center justify-center text-white text-xs shrink-0 shadow-md">
+                    <div class="w-7 h-7 rounded-full bg-brand-600 flex items-center justify-center text-white text-xs shrink-0 shadow-md">
                         <i class="fa-solid fa-robot"></i>
                     </div>
-                    <div class="bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 p-3 rounded-2xl rounded-tl-none text-xs border border-slate-200/80 dark:border-slate-600 shadow-sm leading-relaxed">
+                    <div class="bg-white dark:bg-slate-800 text-black dark:text-white p-3 rounded-2xl rounded-tl-none text-xs border border-slate-200 dark:border-slate-700 shadow-sm leading-relaxed">
                         Olá! Sou o assistente de IA da FNET. Como posso te ajudar? Pergunte sobre <strong>Boletos</strong>, <strong>2ª chamada de prova</strong>, <strong>Horas complementares</strong> ou <strong>Rematrícula</strong>!
                     </div>
                 </div>
             </div>
 
             <!-- Botões de Atalho Rápido -->
-            <div class="p-2 border-t border-slate-100 dark:border-slate-700/60 flex gap-1.5 overflow-x-auto custom-scrollbar bg-white dark:bg-slate-800">
-                <button onclick="document.getElementById('chat-input-ia').value='Como tirar 2a via do boleto?'; responderChatManual();" class="px-2.5 py-1 bg-brand-50 dark:bg-slate-700 text-[10px] font-bold text-brand-600 dark:text-brand-300 rounded-full whitespace-nowrap hover:bg-brand-100">💳 Seg. Via Boleto</button>
-                <button onclick="document.getElementById('chat-input-ia').value='Como pedir reabertura de prova?'; responderChatManual();" class="px-2.5 py-1 bg-brand-50 dark:bg-slate-700 text-[10px] font-bold text-brand-600 dark:text-brand-300 rounded-full whitespace-nowrap hover:bg-brand-100">📝 2ª Chamada</button>
-                <button onclick="document.getElementById('chat-input-ia').value='Como validar horas complementares?'; responderChatManual();" class="px-2.5 py-1 bg-brand-50 dark:bg-slate-700 text-[10px] font-bold text-brand-600 dark:text-brand-300 rounded-full whitespace-nowrap hover:bg-brand-100">🎓 Horas</button>
+            <div class="p-2 border-t border-slate-200 dark:border-slate-800 flex gap-1.5 overflow-x-auto custom-scrollbar bg-white dark:bg-slate-900">
+                <button onclick="document.getElementById('chat-input-ia').value='Como tirar 2a via do boleto?'; responderChatManual();" class="px-2.5 py-1 bg-brand-50 dark:bg-slate-800 text-[10px] font-bold text-brand-600 dark:text-brand-400 rounded-full whitespace-nowrap hover:bg-brand-100">💳 Seg. Via Boleto</button>
+                <button onclick="document.getElementById('chat-input-ia').value='Como pedir reabertura de prova?'; responderChatManual();" class="px-2.5 py-1 bg-brand-50 dark:bg-slate-800 text-[10px] font-bold text-brand-600 dark:text-brand-400 rounded-full whitespace-nowrap hover:bg-brand-100">📝 2ª Chamada</button>
+                <button onclick="document.getElementById('chat-input-ia').value='Como validar horas complementares?'; responderChatManual();" class="px-2.5 py-1 bg-brand-50 dark:bg-slate-800 text-[10px] font-bold text-brand-600 dark:text-brand-400 rounded-full whitespace-nowrap hover:bg-brand-100">🎓 Horas</button>
             </div>
 
             <!-- Input de Texto -->
-            <form onsubmit="enviarMensagemChatIA(event)" class="p-3 border-t border-slate-100 dark:border-slate-700 flex gap-2 bg-white dark:bg-slate-800">
-                <input type="text" id="chat-input-ia" placeholder="Digite sua dúvida..." required class="flex-1 bg-slate-100 dark:bg-slate-700 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-brand-500 dark:text-white">
+            <form onsubmit="enviarMensagemChatIA(event)" class="p-3 border-t border-slate-200 dark:border-slate-800 flex gap-2 bg-white dark:bg-slate-900">
+                <input type="text" id="chat-input-ia" placeholder="Digite sua dúvida..." required class="flex-1 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-brand-600 dark:text-white">
                 <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-md">
                     <i class="fa-solid fa-paper-plane"></i>
                 </button>
             </form>
         </div>
 
-        <!-- Botão Bolinha Flutuante -->
-        <button onclick="toggleChatIA()" id="btn-ia-flutuante" class="w-14 h-14 bg-gradient-to-tr from-brand-600 to-indigo-600 text-white rounded-full flex items-center justify-center text-2xl shadow-2xl shadow-brand-500/50 hover:scale-110 active:scale-95 transition-all">
+        <!-- Botão Bolinha Flutuante Vermelha -->
+        <button onclick="toggleChatIA()" id="btn-ia-flutuante" class="w-14 h-14 bg-gradient-to-tr from-brand-600 to-red-600 text-white rounded-full flex items-center justify-center text-2xl shadow-2xl shadow-brand-600/50 hover:scale-110 active:scale-95 transition-all">
             <i class="fa-solid fa-robot"></i>
-            <span class="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full"></span>
+            <span class="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white dark:border-black rounded-full"></span>
         </button>
     </div>
 
-    <!-- MODAL INSCRIÇÃO EM EVENTOS DO CAMPUS -->
-    <div id="modal-evento" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 dark:border-slate-700">
+    <!-- MODAIS -->
+    <div id="modal-evento" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800">
             <div class="flex justify-between items-center mb-4">
-                <h3 id="modal-evento-titulo" class="text-lg font-bold dark:text-white">Inscrição no Evento</h3>
+                <h3 id="modal-evento-titulo" class="text-lg font-bold text-black dark:text-white">Inscrição no Evento</h3>
                 <button onclick="closeModal('modal-evento')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form onsubmit="confirmarInscricaoEvento(event)" class="space-y-4">
                 <input type="hidden" id="evento-nome-hidden">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">EVENTO SELECIONADO</label>
-                    <input type="text" id="evento-nome-display" readonly class="w-full bg-slate-100 dark:bg-slate-700 font-medium px-3 py-2 rounded-lg text-sm dark:text-white">
+                    <label class="block text-xs font-bold text-slate-500 mb-1">EVENTO SELECIONADO</label>
+                    <input type="text" id="evento-nome-display" readonly class="w-full bg-slate-100 dark:bg-slate-800 font-bold px-3 py-2 rounded-lg text-sm text-black dark:text-white">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">NOME COMPLETO / LÍDER DO GRUPO</label>
-                    <input type="text" id="evento-aluno" placeholder="Ex: Maria Silva" required class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm dark:text-white">
+                    <label class="block text-xs font-bold text-slate-500 mb-1">NOME COMPLETO / LÍDER DO GRUPO</label>
+                    <input type="text" id="evento-aluno" placeholder="Ex: Maria Silva" required class="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm text-black dark:text-white">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">TÍTULO DO PROJETO / NOME DO TIME</label>
-                    <input type="text" id="evento-projeto" placeholder="Ex: App EduConnect / Time Engenharia" required class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm dark:text-white">
+                    <label class="block text-xs font-bold text-slate-500 mb-1">TÍTULO DO PROJETO / NOME DO TIME</label>
+                    <input type="text" id="evento-projeto" placeholder="Ex: App EduConnect / Time Engenharia" required class="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm text-black dark:text-white">
                 </div>
-                <button type="submit" id="btn-sub-evento" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-xl shadow-lg shadow-brand-500/20 transition-all flex items-center justify-center gap-2">
+                <button type="submit" id="btn-sub-evento" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 rounded-xl shadow-lg shadow-brand-600/30 transition-all flex items-center justify-center gap-2">
                     <i class="fa-solid fa-check"></i> Enviar Inscrição para a Planilha
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- MODAL RESERVA DE SALAS DE ESTUDO -->
-    <div id="modal-sala" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 dark:border-slate-700">
+    <div id="modal-sala" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold dark:text-white">Reservar Sala de Estudo</h3>
+                <h3 class="text-lg font-bold text-black dark:text-white">Reservar Sala de Estudo</h3>
                 <button onclick="closeModal('modal-sala')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form onsubmit="confirmarReservaSala(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">SALA SELECIONADA</label>
-                    <input type="text" id="sala-nome-modal" readonly class="w-full bg-slate-100 dark:bg-slate-700 font-medium px-3 py-2 rounded-lg text-sm dark:text-white">
+                    <label class="block text-xs font-bold text-slate-500 mb-1">SALA SELECIONADA</label>
+                    <input type="text" id="sala-nome-modal" readonly class="w-full bg-slate-100 dark:bg-slate-800 font-bold px-3 py-2 rounded-lg text-sm text-black dark:text-white">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">NOME DO ALUNO / GRUPO</label>
-                    <input type="text" id="reser-aluno-modal" placeholder="Ex: Maria Silva" required class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm dark:text-white">
+                    <label class="block text-xs font-bold text-slate-500 mb-1">NOME DO ALUNO / GRUPO</label>
+                    <input type="text" id="reser-aluno-modal" placeholder="Ex: Maria Silva" required class="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm text-black dark:text-white">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1">DATA</label>
-                        <input type="date" id="reser-data-modal" required class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm dark:text-white">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">DATA</label>
+                        <input type="date" id="reser-data-modal" required class="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm text-black dark:text-white">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1">HORÁRIO</label>
-                        <select id="reser-horario-modal" required class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm dark:text-white">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">HORÁRIO</label>
+                        <select id="reser-horario-modal" required class="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm text-black dark:text-white">
                             <option value="08:00 - 10:00">08:00 - 10:00</option>
                             <option value="10:00 - 12:00">10:00 - 12:00</option>
                             <option value="14:00 - 16:00">14:00 - 16:00</option>
@@ -368,7 +367,7 @@
                         </select>
                     </div>
                 </div>
-                <button type="submit" id="btn-sub-reserva" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-xl shadow-lg shadow-brand-500/20 transition-all">Confirmar Agendamento</button>
+                <button type="submit" id="btn-sub-reserva" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 rounded-xl shadow-lg shadow-brand-600/30 transition-all">Confirmar Agendamento</button>
             </form>
         </div>
     </div>
@@ -386,12 +385,12 @@
         let carouselInterval = null;
 
         const mockData = {
-            // CORRIGIDO: GRADIENTES DIRETOS EM CSS INLINE PARA EVITAR ERRO DO TAILWIND COMPILER
+            // DISCIPLINAS COM CORES EM HEXADECIMAL DIRETO PARA GARANTIR 100% DE FUNCIONAMENTO
             disciplinas: [
-                { id: 1, nome: "Programação FrontEnd SPA", prof: "Profa. Ana", progresso: 88, gradient: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)", icone: "fa-laptop-code", badge: "Avançado", desc: "React, Vite, Single Page Application e Tailwind CSS." },
-                { id: 2, nome: "UX/UI Design System", prof: "Prof. Carlos", progresso: 64, gradient: "linear-gradient(135deg, #9333ea 0%, #e11d48 100%)", icone: "fa-wand-magic-sparkles", badge: "Design", desc: "Figma, Design Tokens e acessibilidade de interfaces." },
-                { id: 3, nome: "Banco de Dados NoSQL & Cloud", prof: "Profa. Marina", progresso: 92, gradient: "linear-gradient(135deg, #059669 0%, #0891b2 100%)", icone: "fa-server", badge: "Backend", desc: "MongoDB, Firebase e Arquitetura Serverless em Nuvem." },
-                { id: 4, nome: "Engenharia de Software & IA", prof: "Prof. Roberto", progresso: 95, gradient: "linear-gradient(135deg, #d97706 0%, #dc2626 100%)", icone: "fa-brain", badge: "IA & Dev", desc: "Metodologias Ágeis, CI/CD e Agentes Autônomos de IA." }
+                { id: 1, nome: "Programação FrontEnd SPA", prof: "Profa. Ana", progresso: 88, headerColor: "#dc2626", icone: "fa-laptop-code", badge: "Avançado", desc: "React, Vite, Single Page Application e Tailwind CSS." },
+                { id: 2, nome: "UX/UI Design System", prof: "Prof. Carlos", progresso: 64, headerColor: "#991b1b", icone: "fa-wand-magic-sparkles", badge: "Design", desc: "Figma, Design Tokens e acessibilidade de interfaces." },
+                { id: 3, nome: "Banco de Dados NoSQL & Cloud", prof: "Profa. Marina", progresso: 92, headerColor: "#111827", icone: "fa-server", badge: "Backend", desc: "MongoDB, Firebase e Arquitetura Serverless em Nuvem." },
+                { id: 4, nome: "Engenharia de Software & IA", prof: "Prof. Roberto", progresso: 95, headerColor: "#ef4444", icone: "fa-brain", badge: "IA & Dev", desc: "Metodologias Ágeis, CI/CD e Agentes Autônomos de IA." }
             ],
             notas: [
                 { disciplina: "Programação FrontEnd SPA", p1: 9.2, p2: 8.8, trabalho: 10.0, media: 9.3, status: "Aprovado" },
@@ -405,10 +404,11 @@
                 { id: 'B205', nome: "Sala Mac / Design Lab", capacidade: "8 pessoas", recurso: "Workstations & Monitor Ultrawide", status: "Livre" },
                 { id: 'C301', nome: "Espaço Silencioso Individual", capacidade: "1 pessoa", recurso: "Tomadas & Isolamento Acústico", status: "Livre" }
             ],
+            // IMAGENS DE ALTA DEFINIÇÃO DO CAMPUS COM GARANTIA DE CARREGAMENTO
             campusPhotos: [
-                { title: "Campus MIT — Instalações Tecnológicas FNET", tag: "Pesquisa & Robótica", desc: "Laboratórios e auditórios equipados para o desenvolvimento de soluções em tecnologia.", btnTxt: "Inscrever Projeto", img: "./assets/mit.jpg" },
-                { title: "Harvard University — Annenberg Hall", tag: "Excelência Acadêmica", desc: "Auditórios de alto padrão e fóruns de debate para estudantes e docentes.", btnTxt: "Garantir Vaga", img: "./assets/harvard.jpg" },
-                { title: "Auditório Central de Palestras e Simpósios", tag: "Eventos Acadêmicos", desc: "Participe das conferências presenciais e garanta suas horas complementares.", btnTxt: "Inscrever Equipe", img: "./assets/auditorio.jpg" }
+                { title: "Campus MIT — Instalações Tecnológicas FNET", tag: "Pesquisa & Robótica", desc: "Laboratórios e auditórios equipados para o desenvolvimento de soluções em tecnologia.", btnTxt: "Inscrever Projeto", img: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1200&q=80" },
+                { title: "Harvard University — Annenberg Hall", tag: "Excelência Acadêmica", desc: "Auditórios de alto padrão e fóruns de debate para estudantes e docentes.", btnTxt: "Garantir Vaga", img: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80" },
+                { title: "Auditório Central de Palestras e Simpósios", tag: "Eventos Acadêmicos", desc: "Participe das conferências presenciais e garanta suas horas complementares.", btnTxt: "Inscrever Equipe", img: "https://images.unsplash.com/photo-1492538368677-f6e0afe31dcc?auto=format&fit=crop&w=1200&q=80" }
             ],
             livros: [
                 { titulo: "Design Systems no Mundo Real", autor: "Carlos Eduardo", ano: "2024", cat: "UX/UI", icone: "fa-book" },
@@ -447,12 +447,12 @@
             const inputUser = document.getElementById('login-user');
 
             if (role === 'aluno') {
-                tabAluno.className = "flex-1 py-2.5 text-xs font-bold rounded-lg transition-all bg-white dark:bg-slate-800 text-brand-600 shadow-sm";
+                tabAluno.className = "flex-1 py-2.5 text-xs font-bold rounded-lg transition-all bg-brand-600 text-white shadow-sm";
                 tabProf.className = "flex-1 py-2.5 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 transition-all";
                 labelId.innerText = "Matrícula / RA do Aluno";
                 inputUser.value = "2026849302";
             } else {
-                tabProf.className = "flex-1 py-2.5 text-xs font-bold rounded-lg transition-all bg-white dark:bg-slate-800 text-brand-600 shadow-sm";
+                tabProf.className = "flex-1 py-2.5 text-xs font-bold rounded-lg transition-all bg-brand-600 text-white shadow-sm";
                 tabAluno.className = "flex-1 py-2.5 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 transition-all";
                 labelId.innerText = "ID / Registro do Professor";
                 inputUser.value = "DOC-883920";
@@ -499,8 +499,8 @@
             navItems.forEach(item => {
                 if (item.roles.includes(currentUserRole)) {
                     const activeClass = currentView === item.id 
-                        ? 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300 font-bold shadow-sm' 
-                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50';
+                        ? 'bg-brand-50 text-brand-600 dark:bg-slate-800 dark:text-brand-500 font-bold shadow-sm' 
+                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800';
 
                     menu.innerHTML += `
                         <button onclick="navigate('${item.id}')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm transition-all duration-150 ${activeClass}">
@@ -533,13 +533,13 @@
 
         function renderStatCard(title, val, icon, color, sub) {
             return `
-                <div data-animate class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+                <div data-animate class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
                     <div>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">${title}</p>
-                        <h3 class="text-2xl font-bold dark:text-white mt-1">${val}</h3>
-                        <span class="text-[11px] text-slate-400">${sub}</span>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold">${title}</p>
+                        <h3 class="text-2xl font-black text-black dark:text-white mt-1">${val}</h3>
+                        <span class="text-[11px] text-slate-400 font-medium">${sub}</span>
                     </div>
-                    <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-700/60 flex items-center justify-center ${color} text-xl shadow-inner">
+                    <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center ${color} text-xl shadow-inner">
                         <i class="fa-solid ${icon}"></i>
                     </div>
                 </div>
@@ -560,15 +560,15 @@
         function responderAgenteIA(msg) {
             const texto = msg.toLowerCase();
             if (texto.includes("boleto") || texto.includes("mensalidade") || texto.includes("pagamento")) {
-                return "💳 **Segunda Via de Boleto:** Você pode emitir seus boletos e consultar comprovantes diretamente na aba 'Meu Perfil'. Caso haja atraso, os juros são atualizados automaticamente.";
+                return "💳 **Segunda Via de Boleto:** Emita seus boletos e comprovantes direto na aba 'Meu Perfil'. Em caso de atraso, os juros são atualizados automaticamente.";
             } else if (texto.includes("reabertura") || texto.includes("prova") || texto.includes("segunda chamada")) {
-                return "📝 **Reabertura de Prova / 2ª Chamada:** A solicitação deve ser feita em até 5 dias úteis após a avaliação através do formulário do SAC. Anexe seu atestado médico ou justificativa.";
+                return "📝 **Reabertura de Prova / 2ª Chamada:** Solicite em até 5 dias úteis após a avaliação pelo formulário do SAC anexando o atestado médico.";
             } else if (texto.includes("horas") || texto.includes("complementar")) {
-                return "🎓 **Horas Complementares:** Envie seus certificados em PDF via Webmail oficial para 'atendimento@fnet.edu.br'. Prazo de análise de até 10 dias úteis.";
+                return "🎓 **Horas Complementares:** Envie seus certificados em PDF pelo Webmail oficial para 'atendimento@fnet.edu.br'.";
             } else if (texto.includes("trancamento") || texto.includes("rematricula") || texto.includes("matricula")) {
-                return "📌 **Rematrícula & Trancamento:** A rematrícula ocorre online no final de cada semestre. Para trancamentos, contate a secretaria acadêmica pelo formulário oficial.";
+                return "📌 **Rematrícula & Trancamento:** A rematrícula é realizada online no final de cada semestre pelo portal.";
             } else {
-                return "🤖 **FNET IA:** Entendi sua dúvida! Caso precise de um protocolo oficial, envie uma solicitação no formulário do SAC que a secretaria entrará em contato via Webmail.";
+                return "🤖 **FNET IA:** Dúvida registrada! Caso necessite de um protocolo presencial, abra um chamado no formulário de SAC.";
             }
         }
 
@@ -581,7 +581,7 @@
 
             chatBox.innerHTML += `
                 <div class="flex justify-end">
-                    <div class="bg-brand-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[80%] text-xs shadow-md">
+                    <div class="bg-brand-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[80%] text-xs shadow-md font-medium">
                         ${userMsg}
                     </div>
                 </div>
@@ -593,10 +593,10 @@
                 const botRes = responderAgenteIA(userMsg);
                 chatBox.innerHTML += `
                     <div class="flex items-start gap-2">
-                        <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-brand-600 to-purple-600 flex items-center justify-center text-white text-xs shrink-0 shadow-md">
+                        <div class="w-7 h-7 rounded-full bg-brand-600 flex items-center justify-center text-white text-xs shrink-0 shadow-md">
                             <i class="fa-solid fa-robot"></i>
                         </div>
-                        <div class="bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 p-3 rounded-2xl rounded-tl-none text-xs border border-slate-200/80 dark:border-slate-600 shadow-sm leading-relaxed">
+                        <div class="bg-white dark:bg-slate-800 text-black dark:text-white p-3 rounded-2xl rounded-tl-none text-xs border border-slate-200 dark:border-slate-700 shadow-sm leading-relaxed">
                             ${botRes.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
                         </div>
                     </div>
@@ -615,15 +615,15 @@
                 case 'dashboard':
                     return `
                         <div class="space-y-6">
-                            <!-- CARROSSEL DAS FOTOS DO CAMPUS -->
+                            <!-- CARROSSEL DAS FOTOS DO CAMPUS COM IMAGENS HD -->
                             <div data-animate class="campus-slider shadow-2xl">
                                 ${mockData.campusPhotos.map((photo, i) => `
-                                    <div class="campus-slide ${i === 0 ? 'active' : ''}" style="background-image: linear-gradient(90deg, rgba(15, 23, 42, 0.92) 0%, rgba(15, 23, 42, 0.4) 100%), url('${photo.img}')">
+                                    <div class="campus-slide ${i === 0 ? 'active' : ''}" style="background-image: linear-gradient(90deg, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.45) 100%), url('${photo.img}')">
                                         <div class="p-6 md:p-8 flex flex-col justify-center h-full max-w-xl text-white">
-                                            <span class="inline-block px-3 py-1 bg-brand-600 text-white rounded-full text-xs font-bold w-max mb-2 shadow-lg">${photo.tag}</span>
-                                            <h2 class="text-2xl md:text-3xl font-extrabold mb-2 leading-tight">${photo.title}</h2>
+                                            <span class="inline-block px-3 py-1 bg-brand-600 text-white rounded-full text-xs font-extrabold w-max mb-2 shadow-lg">${photo.tag}</span>
+                                            <h2 class="text-2xl md:text-3xl font-black mb-2 leading-tight">${photo.title}</h2>
                                             <p class="text-slate-200 text-sm mb-4 line-clamp-2">${photo.desc}</p>
-                                            <button onclick="openModalEvento('${photo.title}')" class="bg-white text-slate-900 px-4 py-2.5 rounded-xl text-xs font-bold w-max hover:bg-brand-50 transition-all flex items-center gap-2 shadow-lg">
+                                            <button onclick="openModalEvento('${photo.title}')" class="bg-white text-black px-4 py-2.5 rounded-xl text-xs font-bold w-max hover:bg-brand-50 transition-all flex items-center gap-2 shadow-lg">
                                                 <i class="fa-solid fa-pen-to-square text-brand-600"></i> ${photo.btnTxt}
                                             </button>
                                         </div>
@@ -631,24 +631,24 @@
                                 `).join('')}
                             </div>
 
-                            <div data-animate class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 p-6 md:p-8 text-white shadow-xl">
+                            <div data-animate class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-black via-slate-900 to-brand-700 p-6 md:p-8 text-white shadow-2xl border border-slate-800">
                                 <div class="relative z-10 max-w-xl">
-                                    <span class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-semibold mb-3">Faculdade Nova Era Tecnológica</span>
-                                    <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight mb-2">Bem-vindo(a) ao Portal FNET!</h1>
-                                    <p class="text-brand-100 text-sm md:text-base mb-6">Acompanhe suas matérias, envie atividades diretamente para a planilha do professor e tire dúvidas pelo assistente virtual no canto da tela.</p>
+                                    <span class="inline-block px-3 py-1 bg-brand-600 text-white rounded-full text-xs font-bold mb-3">Faculdade Nova Era Tecnológica</span>
+                                    <h1 class="text-2xl md:text-4xl font-black tracking-tight mb-2">Bem-vindo(a) ao Portal FNET!</h1>
+                                    <p class="text-slate-300 text-sm md:text-base mb-6">Acompanhe suas matérias, envie atividades diretamente para a planilha do professor e tire dúvidas pelo assistente virtual no canto da tela.</p>
                                     <div class="flex flex-wrap gap-3">
-                                        <button onclick="navigate('salas')" class="bg-white text-brand-600 hover:bg-brand-50 px-5 py-2.5 rounded-xl font-bold text-sm shadow-md transition-all flex items-center gap-2">
-                                            <i class="fa-solid fa-calendar-plus text-brand-600"></i>Reservar Sala de Estudo
+                                        <button onclick="navigate('salas')" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-md transition-all flex items-center gap-2">
+                                            <i class="fa-solid fa-calendar-plus"></i>Reservar Sala de Estudo
                                         </button>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                                ${renderStatCard("CR Geral", "8,9", "fa-chart-line", "text-emerald-500", "Top 5% da turma")}
-                                ${renderStatCard("Frequência", "96%", "fa-user-check", "text-blue-500", "Excelente marca")}
-                                ${renderStatCard("Atividades", "12/14", "fa-list-check", "text-purple-500", "2 pendentes")}
-                                ${renderStatCard("Livros Salvos", "5", "fa-bookmark", "text-amber-500", "Biblioteca Virtual")}
+                                ${renderStatCard("CR Geral", "8,9", "fa-chart-line", "text-brand-600", "Top 5% da turma")}
+                                ${renderStatCard("Frequência", "96%", "fa-user-check", "text-black dark:text-white", "Excelente marca")}
+                                ${renderStatCard("Atividades", "12/14", "fa-list-check", "text-brand-600", "2 pendentes")}
+                                ${renderStatCard("Livros Salvos", "5", "fa-bookmark", "text-black dark:text-white", "Biblioteca Virtual")}
                             </div>
                         </div>
                     `;
@@ -658,46 +658,46 @@
                         <div class="space-y-6">
                             <div data-animate class="flex justify-between items-center">
                                 <div>
-                                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Disciplinas do Semestre</h1>
-                                    <p class="text-sm text-slate-500">Confira suas matérias ativas com conteúdo integrado.</p>
+                                    <h1 class="text-2xl font-black text-black dark:text-white">Disciplinas do Semestre</h1>
+                                    <p class="text-sm text-slate-500 font-medium">Confira suas matérias ativas com conteúdo integrado.</p>
                                 </div>
                             </div>
 
-                            <!-- CARDS DE MATÉRIAS CORRIGIDOS COM GRADIENTE INLINE E TEXTO NÍTIDO -->
+                            <!-- CARDS COM VISIBILIDADE 100% CORRIGIDA EM ESTILO BRANCO/PRETO/VERMELHO -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 ${mockData.disciplinas.map(c => `
-                                    <div data-animate class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden flex flex-col justify-between">
+                                    <div data-animate class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden flex flex-col justify-between">
                                         <div>
-                                            <!-- Cabeçalho com Gradient Inline Seguro -->
-                                            <div class="p-6 text-white" style="background: ${c.gradient}">
+                                            <!-- Cabeçalho Vermelho/Escuro Garantido -->
+                                            <div class="p-6 text-white" style="background-color: ${c.headerColor};">
                                                 <div class="flex justify-between items-start">
-                                                    <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[11px] font-bold uppercase shadow-sm">${c.badge}</span>
+                                                    <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[11px] font-black uppercase tracking-wider">${c.badge}</span>
                                                     <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl shadow-md">
                                                         <i class="fa-solid ${c.icone}"></i>
                                                     </div>
                                                 </div>
-                                                <h3 class="text-xl font-extrabold mt-4 mb-1 text-white">${c.nome}</h3>
-                                                <p class="text-xs text-white/90 font-medium"><i class="fa-solid fa-user-tie mr-1"></i> ${c.prof}</p>
+                                                <h3 class="text-xl font-black mt-4 mb-1 text-white">${c.nome}</h3>
+                                                <p class="text-xs text-white/90 font-bold"><i class="fa-solid fa-user-tie mr-1"></i> ${c.prof}</p>
                                             </div>
                                             
-                                            <!-- Corpo do Card -->
-                                            <div class="p-6 space-y-4 bg-white dark:bg-slate-800">
-                                                <p class="text-xs text-slate-700 dark:text-slate-200 font-semibold leading-relaxed">${c.desc}</p>
+                                            <!-- Corpo com Fundo Branco / Escuro e Texto Totalmente Visível -->
+                                            <div class="p-6 space-y-4">
+                                                <p class="text-xs text-slate-800 dark:text-slate-200 font-semibold leading-relaxed">${c.desc}</p>
                                                 <div>
                                                     <div class="flex justify-between text-xs font-bold mb-1.5">
-                                                        <span class="text-slate-600 dark:text-slate-400">Progresso do Módulo</span>
-                                                        <span class="text-brand-600 dark:text-brand-400 font-extrabold">${c.progresso}%</span>
+                                                        <span class="text-slate-500 dark:text-slate-400">Progresso do Módulo</span>
+                                                        <span class="text-brand-600 font-extrabold">${c.progresso}%</span>
                                                     </div>
-                                                    <div class="w-full h-3 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                                                    <div class="w-full h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                                         <div class="h-full bg-brand-600 rounded-full" style="width: ${c.progresso}%"></div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <!-- Footer com Botões -->
-                                        <div class="px-6 pb-6 pt-2 flex gap-2 bg-white dark:bg-slate-800">
-                                            <button onclick="showToast('Acessando gravação das aulas...')" class="flex-1 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 font-bold rounded-xl text-xs transition-all">Aulas Gravadas</button>
+                                        <!-- Botões -->
+                                        <div class="px-6 pb-6 pt-2 flex gap-2">
+                                            <button onclick="showToast('Acessando gravação das aulas...')" class="flex-1 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-black dark:text-white font-bold rounded-xl text-xs transition-all">Aulas Gravadas</button>
                                             <button onclick="navigate('notas')" class="flex-1 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-xs transition-all shadow-md">Enviar Trabalho</button>
                                         </div>
                                     </div>
@@ -711,25 +711,25 @@
                         <div class="space-y-6">
                             <div data-animate class="flex justify-between items-center">
                                 <div>
-                                    <h1 class="text-2xl font-bold dark:text-white">Reserva de Salas de Estudo</h1>
+                                    <h1 class="text-2xl font-black text-black dark:text-white">Reserva de Salas de Estudo</h1>
                                     <p class="text-sm text-slate-500">Agende um espaço para estudo individual ou trabalhos em grupo.</p>
                                 </div>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                                 ${mockData.salasEstudo.map(sala => `
-                                    <div data-animate class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                                    <div data-animate class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
                                         <div>
                                             <div class="flex justify-between items-center mb-3">
-                                                <span class="text-xs font-bold px-2.5 py-1 rounded-full ${sala.status === 'Livre' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300'}">
+                                                <span class="text-xs font-bold px-2.5 py-1 rounded-full ${sala.status === 'Livre' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300' : 'bg-brand-100 text-brand-800 dark:bg-brand-900/40 dark:text-brand-300'}">
                                                     ${sala.status}
                                                 </span>
                                                 <i class="fa-solid fa-door-closed text-slate-400 text-xl"></i>
                                             </div>
-                                            <h3 class="font-bold text-slate-800 dark:text-white mb-2">${sala.nome}</h3>
+                                            <h3 class="font-bold text-black dark:text-white mb-2">${sala.nome}</h3>
                                             <p class="text-xs text-slate-500 mb-1"><i class="fa-solid fa-users mr-1"></i> ${sala.capacidade}</p>
                                             <p class="text-xs text-slate-500 mb-4"><i class="fa-solid fa-tv mr-1"></i> ${sala.recurso}</p>
                                         </div>
-                                        <button onclick="openModalSala('${sala.nome}')" ${sala.status !== 'Livre' ? 'disabled' : ''} class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 disabled:bg-slate-300 text-white rounded-xl text-xs font-bold transition-all shadow-md">
+                                        <button onclick="openModalSala('${sala.nome}')" ${sala.status !== 'Livre' ? 'disabled' : ''} class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 disabled:bg-slate-300 dark:disabled:bg-slate-800 text-white rounded-xl text-xs font-bold transition-all shadow-md">
                                             ${sala.status === 'Livre' ? 'Reservar Agora' : 'Indisponível'}
                                         </button>
                                     </div>
@@ -742,17 +742,17 @@
                     return `
                         <div class="space-y-6">
                             <div data-animate>
-                                <h1 class="text-2xl font-bold dark:text-white">Boletim & Envio de Atividades</h1>
+                                <h1 class="text-2xl font-black text-black dark:text-white">Boletim & Envio de Atividades</h1>
                                 <p class="text-sm text-slate-500">Consulte seu desempenho acadêmico e envie novos exercícios para avaliação.</p>
                             </div>
 
-                            <div data-animate class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
-                                <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700">
-                                    <h3 class="font-bold text-slate-800 dark:text-white">Histórico de Notas do Semestre</h3>
+                            <div data-animate class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+                                <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800">
+                                    <h3 class="font-bold text-black dark:text-white">Histórico de Notas do Semestre</h3>
                                 </div>
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-left text-sm">
-                                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 uppercase text-xs">
+                                        <thead class="bg-slate-50 dark:bg-slate-800 text-slate-500 uppercase text-xs">
                                             <tr>
                                                 <th class="px-6 py-3">Disciplina</th>
                                                 <th class="px-6 py-3">P1</th>
@@ -762,16 +762,16 @@
                                                 <th class="px-6 py-3">Status</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+                                        <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
                                             ${mockData.notas.map(n => `
-                                                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-700/30">
-                                                    <td class="px-6 py-4 font-semibold text-slate-800 dark:text-white">${n.disciplina}</td>
+                                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                                                    <td class="px-6 py-4 font-bold text-black dark:text-white">${n.disciplina}</td>
                                                     <td class="px-6 py-4">${n.p1}</td>
                                                     <td class="px-6 py-4">${n.p2}</td>
                                                     <td class="px-6 py-4">${n.trabalho}</td>
-                                                    <td class="px-6 py-4 font-bold text-brand-600 dark:text-brand-400">${n.media}</td>
+                                                    <td class="px-6 py-4 font-black text-brand-600">${n.media}</td>
                                                     <td class="px-6 py-4">
-                                                        <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">
+                                                        <span class="px-2.5 py-1 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
                                                             ${n.status}
                                                         </span>
                                                     </td>
@@ -782,26 +782,26 @@
                                 </div>
                             </div>
 
-                            <div data-animate class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-                                <h3 class="font-bold dark:text-white mb-4">Enviar Novo Trabalho / Exercício para a Planilha</h3>
+                            <div data-animate class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                                <h3 class="font-bold text-black dark:text-white mb-4">Enviar Novo Trabalho / Exercício para a Planilha</h3>
                                 <form onsubmit="handleEnviarAtividadeAPI(event)" class="space-y-4 max-w-xl">
                                     <div>
-                                        <label class="block text-xs font-semibold text-slate-500 mb-1">DISCIPLINA</label>
-                                        <select id="atv-disc" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm dark:text-white">
+                                        <label class="block text-xs font-bold text-slate-500 mb-1">DISCIPLINA</label>
+                                        <select id="atv-disc" class="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm text-black dark:text-white">
                                             <option value="Programação FrontEnd SPA">Programação FrontEnd SPA</option>
                                             <option value="UX/UI Design System">UX/UI Design System</option>
                                             <option value="Banco de Dados NoSQL">Banco de Dados NoSQL</option>
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-semibold text-slate-500 mb-1">NOME DO ALUNO</label>
-                                        <input type="text" id="atv-aluno" required placeholder="Digite seu nome completo" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm dark:text-white">
+                                        <label class="block text-xs font-bold text-slate-500 mb-1">NOME DO ALUNO</label>
+                                        <input type="text" id="atv-aluno" required placeholder="Digite seu nome completo" class="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm text-black dark:text-white">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-semibold text-slate-500 mb-1">LINK DO TRABALHO (GitHub / Drive / Figma)</label>
-                                        <input type="url" id="atv-link" required placeholder="https://..." class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm dark:text-white">
+                                        <label class="block text-xs font-bold text-slate-500 mb-1">LINK DO TRABALHO (GitHub / Drive / Figma)</label>
+                                        <input type="url" id="atv-link" required placeholder="https://..." class="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm text-black dark:text-white">
                                     </div>
-                                    <button type="submit" id="btn-env-atv" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-all shadow-md">
+                                    <button type="submit" id="btn-env-atv" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition-all shadow-md">
                                         Enviar Atividade
                                     </button>
                                 </form>
@@ -813,30 +813,30 @@
                     return `
                         <div class="space-y-6">
                             <div data-animate>
-                                <h1 class="text-2xl font-bold dark:text-white">Painel do Docente</h1>
+                                <h1 class="text-2xl font-black text-black dark:text-white">Painel do Docente</h1>
                                 <p class="text-sm text-slate-500">Lance as notas dos seus alunos direto no banco de dados da instituição.</p>
                             </div>
 
-                            <div data-animate class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm max-w-xl">
-                                <h3 class="font-bold dark:text-white mb-4">Lançar Nota de Aluno</h3>
+                            <div data-animate class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm max-w-xl">
+                                <h3 class="font-bold text-black dark:text-white mb-4">Lançar Nota de Aluno</h3>
                                 <form onsubmit="handleLancarNotaAPI(event)" class="space-y-4">
                                     <div>
-                                        <label class="block text-xs font-semibold text-slate-500 mb-1">DISCIPLINA</label>
-                                        <select id="nota-disc" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm dark:text-white">
+                                        <label class="block text-xs font-bold text-slate-500 mb-1">DISCIPLINA</label>
+                                        <select id="nota-disc" class="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm text-black dark:text-white">
                                             <option value="Programação FrontEnd SPA">Programação FrontEnd SPA</option>
                                             <option value="UX/UI Design System">UX/UI Design System</option>
                                             <option value="Banco de Dados NoSQL">Banco de Dados NoSQL</option>
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-semibold text-slate-500 mb-1">NOME DO ALUNO</label>
-                                        <input type="text" id="nota-aluno" required placeholder="Ex: Maria Silva" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm dark:text-white">
+                                        <label class="block text-xs font-bold text-slate-500 mb-1">NOME DO ALUNO</label>
+                                        <input type="text" id="nota-aluno" required placeholder="Ex: Maria Silva" class="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm text-black dark:text-white">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-semibold text-slate-500 mb-1">NOTA (0.0 A 10.0)</label>
-                                        <input type="number" step="0.1" min="0" max="10" id="nota-val" required placeholder="Ex: 9.5" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm dark:text-white">
+                                        <label class="block text-xs font-bold text-slate-500 mb-1">NOTA (0.0 A 10.0)</label>
+                                        <input type="number" step="0.1" min="0" max="10" id="nota-val" required placeholder="Ex: 9.5" class="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm text-black dark:text-white">
                                     </div>
-                                    <button type="submit" id="btn-lan-nota" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-all shadow-md">
+                                    <button type="submit" id="btn-lan-nota" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition-all shadow-md">
                                         Registrar Nota na Planilha
                                     </button>
                                 </form>
@@ -849,22 +849,22 @@
                         <div class="space-y-6">
                             <div data-animate class="flex justify-between items-center">
                                 <div>
-                                    <h1 class="text-2xl font-bold dark:text-white">Biblioteca Virtual FNET</h1>
+                                    <h1 class="text-2xl font-black text-black dark:text-white">Biblioteca Virtual FNET</h1>
                                     <p class="text-sm text-slate-500">Consulte livros digitais, artigos acadêmicos e referências bibliográficas.</p>
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 ${mockData.livros.map(l => `
-                                    <div data-animate class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-start gap-4">
-                                        <div class="w-12 h-16 rounded-lg bg-brand-100 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300 flex items-center justify-center text-xl shrink-0">
+                                    <div data-animate class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-start gap-4">
+                                        <div class="w-12 h-16 rounded-lg bg-brand-100 text-brand-600 dark:bg-brand-900/40 dark:text-brand-400 flex items-center justify-center text-xl shrink-0">
                                             <i class="fa-solid ${l.icone}"></i>
                                         </div>
                                         <div class="flex-1">
-                                            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">${l.cat}</span>
-                                            <h3 class="font-bold text-slate-800 dark:text-white text-sm mt-1">${l.titulo}</h3>
+                                            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">${l.cat}</span>
+                                            <h3 class="font-bold text-black dark:text-white text-sm mt-1">${l.titulo}</h3>
                                             <p class="text-xs text-slate-500">${l.autor} • ${l.ano}</p>
-                                            <button onclick="showToast('Acessando e-book no leitor digital...')" class="mt-3 text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline">
+                                            <button onclick="showToast('Acessando e-book no leitor digital...')" class="mt-3 text-xs font-bold text-brand-600 hover:underline">
                                                 Ler E-Book <i class="fa-solid fa-arrow-right ml-1"></i>
                                             </button>
                                         </div>
@@ -878,19 +878,19 @@
                     return `
                         <div class="space-y-6">
                             <div data-animate>
-                                <h1 class="text-2xl font-bold dark:text-white">Webmail Universitário FNET</h1>
+                                <h1 class="text-2xl font-black text-black dark:text-white">Webmail Universitário FNET</h1>
                                 <p class="text-sm text-slate-500">Caixa de entrada oficial de comunicados da faculdade.</p>
                             </div>
 
-                            <div data-animate class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
-                                <div class="divide-y divide-slate-100 dark:divide-slate-700">
+                            <div data-animate class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+                                <div class="divide-y divide-slate-100 dark:divide-slate-800">
                                     ${mockData.emails.map(m => `
-                                        <div class="p-4 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors cursor-pointer" onclick="showToast('Abrindo e-mail...')">
+                                        <div class="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors cursor-pointer" onclick="showToast('Abrindo e-mail...')">
                                             <div class="flex justify-between items-center mb-1">
-                                                <span class="font-bold text-sm text-slate-800 dark:text-white">${m.de}</span>
+                                                <span class="font-bold text-sm text-black dark:text-white">${m.de}</span>
                                                 <span class="text-xs text-slate-400">${m.data}</span>
                                             </div>
-                                            <h4 class="text-xs font-semibold text-brand-600 dark:text-brand-400 mb-1">${m.assunto}</h4>
+                                            <h4 class="text-xs font-bold text-brand-600 mb-1">${m.assunto}</h4>
                                             <p class="text-xs text-slate-500 truncate">${m.desc}</p>
                                         </div>
                                     `).join('')}
@@ -903,21 +903,21 @@
                     return `
                         <div class="space-y-6">
                             <div data-animate>
-                                <h1 class="text-2xl font-bold dark:text-white">Atendimento / SAC Acadêmico</h1>
+                                <h1 class="text-2xl font-black text-black dark:text-white">Atendimento / SAC Acadêmico</h1>
                                 <p class="text-sm text-slate-500">Abra um chamado direto com a secretaria da faculdade.</p>
                             </div>
 
-                            <div data-animate class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-lg max-w-xl">
-                                <h3 class="font-bold text-base dark:text-white mb-1">Abrir Chamado / Protocolo</h3>
+                            <div data-animate class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-lg max-w-xl">
+                                <h3 class="font-bold text-base text-black dark:text-white mb-1">Abrir Chamado / Protocolo</h3>
                                 <p class="text-xs text-slate-500 mb-4">Sua solicitação será gravada no Google Sheets da Secretaria FNET.</p>
                                 <form onsubmit="handleSACAPI(event)" class="space-y-3.5">
                                     <div>
-                                        <label class="block text-xs font-semibold text-slate-500 mb-1">SEU NOME COMPLETO</label>
-                                        <input type="text" id="sac-aluno" required placeholder="Digite seu nome" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-xl px-3 py-2 text-xs dark:text-white">
+                                        <label class="block text-xs font-bold text-slate-500 mb-1">SEU NOME COMPLETO</label>
+                                        <input type="text" id="sac-aluno" required placeholder="Digite seu nome" class="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-xl px-3 py-2 text-xs text-black dark:text-white">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-semibold text-slate-500 mb-1">ASSUNTO DA SOLICITAÇÃO</label>
-                                        <select id="sac-assunto" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-xl px-3 py-2 text-xs dark:text-white">
+                                        <label class="block text-xs font-bold text-slate-500 mb-1">ASSUNTO DA SOLICITAÇÃO</label>
+                                        <select id="sac-assunto" class="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-xl px-3 py-2 text-xs text-black dark:text-white">
                                             <option value="Dúvida Acadêmica">Dúvida Acadêmica</option>
                                             <option value="Secretaria / Matrícula">Secretaria / Matrícula</option>
                                             <option value="Financeiro / Boletos">Financeiro / Boletos</option>
@@ -925,8 +925,8 @@
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-semibold text-slate-500 mb-1">MENSAGEM / JUSTIFICATIVA</label>
-                                        <textarea id="sac-msg" rows="4" required placeholder="Descreva os detalhes..." class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-xl px-3 py-2 text-xs dark:text-white"></textarea>
+                                        <label class="block text-xs font-bold text-slate-500 mb-1">MENSAGEM / JUSTIFICATIVA</label>
+                                        <textarea id="sac-msg" rows="4" required placeholder="Descreva os detalhes..." class="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-xl px-3 py-2 text-xs text-black dark:text-white"></textarea>
                                     </div>
                                     <button type="submit" id="btn-env-sac" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-md">
                                         Enviar Protocolo para o Sheets
@@ -940,31 +940,31 @@
                     return `
                         <div class="space-y-6">
                             <div data-animate>
-                                <h1 class="text-2xl font-bold dark:text-white">Meu Perfil FNET</h1>
+                                <h1 class="text-2xl font-black text-black dark:text-white">Meu Perfil FNET</h1>
                                 <p class="text-sm text-slate-500">Gerencie suas informações cadastrais e acesse seus boletos.</p>
                             </div>
 
-                            <div data-animate class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm max-w-xl space-y-4">
-                                <div class="flex items-center gap-4 pb-4 border-b border-slate-100 dark:border-slate-700">
-                                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150" class="w-16 h-16 rounded-full border-2 border-brand-500 object-cover">
+                            <div data-animate class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm max-w-xl space-y-4">
+                                <div class="flex items-center gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+                                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150" class="w-16 h-16 rounded-full border-2 border-brand-600 object-cover">
                                     <div>
-                                        <h3 class="font-bold text-slate-800 dark:text-white">${currentUserRole === 'aluno' ? 'Maria Silva' : 'Prof. Carlos Eduardo'}</h3>
+                                        <h3 class="font-bold text-black dark:text-white">${currentUserRole === 'aluno' ? 'Maria Silva' : 'Prof. Carlos Eduardo'}</h3>
                                         <p class="text-xs text-slate-500">${currentUserRole === 'aluno' ? 'RA: 2026849302 • Eng. de Software' : 'ID: DOC-883920 • Ciência da Computação'}</p>
                                     </div>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-semibold text-slate-500 mb-1">E-MAIL INSTITUCIONAL</label>
-                                    <input type="email" value="${currentUserRole === 'aluno' ? 'maria.silva@aluno.fnet.edu.br' : 'carlos.eduardo@prof.fnet.edu.br'}" readonly class="w-full bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm dark:text-white">
+                                    <label class="block text-xs font-bold text-slate-500 mb-1">E-MAIL INSTITUCIONAL</label>
+                                    <input type="email" value="${currentUserRole === 'aluno' ? 'maria.silva@aluno.fnet.edu.br' : 'carlos.eduardo@prof.fnet.edu.br'}" readonly class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-black dark:text-white">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-semibold text-slate-500 mb-1">CAMPUS / SEMESTRE</label>
-                                    <input type="text" value="Faculdade Nova Era Tecnológica • 2026.2" readonly class="w-full bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm dark:text-white">
+                                    <label class="block text-xs font-bold text-slate-500 mb-1">CAMPUS / SEMESTRE</label>
+                                    <input type="text" value="Faculdade Nova Era Tecnológica • 2026.2" readonly class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-black dark:text-white">
                                 </div>
                                 <div class="flex gap-2">
-                                    <button onclick="showToast('Dados cadastrais validados!')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-xl text-xs transition-all shadow-md">
+                                    <button onclick="showToast('Dados cadastrais validados!')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-md">
                                         Atualizar Cadastro
                                     </button>
-                                    <button onclick="showToast('Gerando 2ª via do boleto atualizado...')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl text-xs transition-all shadow-md flex items-center justify-center gap-1.5">
+                                    <button onclick="showToast('Gerando 2ª via do boleto atualizado...')" class="flex-1 bg-black dark:bg-slate-800 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-md flex items-center justify-center gap-1.5">
                                         <i class="fa-solid fa-barcode"></i> Emitir Boleto
                                     </button>
                                 </div>
@@ -1019,8 +1019,8 @@
         function showToast(msg) {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            toast.className = 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-4 py-3 rounded-xl shadow-2xl text-xs font-semibold flex items-center gap-2';
-            toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> ${msg}`;
+            toast.className = 'bg-black text-white px-4 py-3 rounded-xl shadow-2xl text-xs font-bold flex items-center gap-2 border border-slate-800';
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-brand-600"></i> ${msg}`;
             container.appendChild(toast);
             setTimeout(() => toast.remove(), 3500);
         }
