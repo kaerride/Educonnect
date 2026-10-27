@@ -386,11 +386,12 @@
         let carouselInterval = null;
 
         const mockData = {
+            // CORRIGIDO: GRADIENTES DIRETOS EM CSS INLINE PARA EVITAR ERRO DO TAILWIND COMPILER
             disciplinas: [
-                { id: 1, nome: "Programação FrontEnd SPA", prof: "Profa. Ana", progresso: 88, headerBg: "bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600", icone: "fa-laptop-code", badge: "Avançado", desc: "React, Vite, Single Page Application e Tailwind CSS." },
-                { id: 2, nome: "UX/UI Design System", prof: "Prof. Carlos", progresso: 64, headerBg: "bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600", icone: "fa-wand-magic-sparkles", badge: "Design", desc: "Figma, Design Tokens e acessibilidade de interfaces." },
-                { id: 3, nome: "Banco de Dados NoSQL & Cloud", prof: "Profa. Marina", progresso: 92, headerBg: "bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600", icone: "fa-server", badge: "Backend", desc: "MongoDB, Firebase e Arquitetura Serverless em Nuvem." },
-                { id: 4, nome: "Engenharia de Software & IA", prof: "Prof. Roberto", progresso: 95, headerBg: "bg-gradient-to-r from-amber-600 via-orange-600 to-red-600", icone: "fa-brain", badge: "IA & Dev", desc: "Metodologias Ágeis, CI/CD e Agentes Autônomos de IA." }
+                { id: 1, nome: "Programação FrontEnd SPA", prof: "Profa. Ana", progresso: 88, gradient: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)", icone: "fa-laptop-code", badge: "Avançado", desc: "React, Vite, Single Page Application e Tailwind CSS." },
+                { id: 2, nome: "UX/UI Design System", prof: "Prof. Carlos", progresso: 64, gradient: "linear-gradient(135deg, #9333ea 0%, #e11d48 100%)", icone: "fa-wand-magic-sparkles", badge: "Design", desc: "Figma, Design Tokens e acessibilidade de interfaces." },
+                { id: 3, nome: "Banco de Dados NoSQL & Cloud", prof: "Profa. Marina", progresso: 92, gradient: "linear-gradient(135deg, #059669 0%, #0891b2 100%)", icone: "fa-server", badge: "Backend", desc: "MongoDB, Firebase e Arquitetura Serverless em Nuvem." },
+                { id: 4, nome: "Engenharia de Software & IA", prof: "Prof. Roberto", progresso: 95, gradient: "linear-gradient(135deg, #d97706 0%, #dc2626 100%)", icone: "fa-brain", badge: "IA & Dev", desc: "Metodologias Ágeis, CI/CD e Agentes Autônomos de IA." }
             ],
             notas: [
                 { disciplina: "Programação FrontEnd SPA", p1: 9.2, p2: 8.8, trabalho: 10.0, media: 9.3, status: "Aprovado" },
@@ -404,7 +405,6 @@
                 { id: 'B205', nome: "Sala Mac / Design Lab", capacidade: "8 pessoas", recurso: "Workstations & Monitor Ultrawide", status: "Livre" },
                 { id: 'C301', nome: "Espaço Silencioso Individual", capacidade: "1 pessoa", recurso: "Tomadas & Isolamento Acústico", status: "Livre" }
             ],
-            // FOTOS COM CAMINHOS SIMPLIFICADOS
             campusPhotos: [
                 { title: "Campus MIT — Instalações Tecnológicas FNET", tag: "Pesquisa & Robótica", desc: "Laboratórios e auditórios equipados para o desenvolvimento de soluções em tecnologia.", btnTxt: "Inscrever Projeto", img: "./assets/mit.jpg" },
                 { title: "Harvard University — Annenberg Hall", tag: "Excelência Acadêmica", desc: "Auditórios de alto padrão e fóruns de debate para estudantes e docentes.", btnTxt: "Garantir Vaga", img: "./assets/harvard.jpg" },
@@ -663,13 +663,15 @@
                                 </div>
                             </div>
 
+                            <!-- CARDS DE MATÉRIAS CORRIGIDOS COM GRADIENTE INLINE E TEXTO NÍTIDO -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 ${mockData.disciplinas.map(c => `
-                                    <div data-animate class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-lg overflow-hidden flex flex-col justify-between hover:shadow-2xl transition-all duration-200">
+                                    <div data-animate class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden flex flex-col justify-between">
                                         <div>
-                                            <div class="p-6 ${c.headerBg} text-white">
+                                            <!-- Cabeçalho com Gradient Inline Seguro -->
+                                            <div class="p-6 text-white" style="background: ${c.gradient}">
                                                 <div class="flex justify-between items-start">
-                                                    <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[11px] font-bold tracking-wide uppercase shadow-sm">${c.badge}</span>
+                                                    <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[11px] font-bold uppercase shadow-sm">${c.badge}</span>
                                                     <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl shadow-md">
                                                         <i class="fa-solid ${c.icone}"></i>
                                                     </div>
@@ -678,22 +680,24 @@
                                                 <p class="text-xs text-white/90 font-medium"><i class="fa-solid fa-user-tie mr-1"></i> ${c.prof}</p>
                                             </div>
                                             
-                                            <div class="p-6 space-y-4">
-                                                <p class="text-xs text-slate-600 dark:text-slate-300 font-medium leading-relaxed">${c.desc}</p>
+                                            <!-- Corpo do Card -->
+                                            <div class="p-6 space-y-4 bg-white dark:bg-slate-800">
+                                                <p class="text-xs text-slate-700 dark:text-slate-200 font-semibold leading-relaxed">${c.desc}</p>
                                                 <div>
                                                     <div class="flex justify-between text-xs font-bold mb-1.5">
-                                                        <span class="text-slate-500 dark:text-slate-400">Progresso do Módulo</span>
+                                                        <span class="text-slate-600 dark:text-slate-400">Progresso do Módulo</span>
                                                         <span class="text-brand-600 dark:text-brand-400 font-extrabold">${c.progresso}%</span>
                                                     </div>
-                                                    <div class="w-full h-2.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                                                    <div class="w-full h-3 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                                                         <div class="h-full bg-brand-600 rounded-full" style="width: ${c.progresso}%"></div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div class="px-6 pb-6 pt-2 flex gap-2">
-                                            <button onclick="showToast('Acessando gravação das aulas...')" class="flex-1 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-bold rounded-xl text-xs transition-all">Aulas Gravadas</button>
+                                        <!-- Footer com Botões -->
+                                        <div class="px-6 pb-6 pt-2 flex gap-2 bg-white dark:bg-slate-800">
+                                            <button onclick="showToast('Acessando gravação das aulas...')" class="flex-1 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 font-bold rounded-xl text-xs transition-all">Aulas Gravadas</button>
                                             <button onclick="navigate('notas')" class="flex-1 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-xs transition-all shadow-md">Enviar Trabalho</button>
                                         </div>
                                     </div>
