@@ -48,7 +48,7 @@
 
         .campus-slider {
             position: relative;
-            height: 300px;
+            height: 320px;
             border-radius: 1.75rem;
             overflow: hidden;
         }
@@ -251,6 +251,64 @@
         </div>
     </div>
 
+    <!-- AGENTE DE IA FLUTUANTE (BOLINHA NO CANTO INFERIOR DIREITO) -->
+    <div id="widget-ia-container" class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+        
+        <!-- Janela do Chat Pop-up -->
+        <div id="chat-popup-ia" class="hidden mb-4 w-80 md:w-96 bg-white dark:bg-slate-800 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col h-[450px] transition-all">
+            <!-- Header do Chat -->
+            <div class="p-4 bg-gradient-to-r from-brand-600 to-indigo-600 text-white flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-sm">FNET IA Assistant</h3>
+                        <p class="text-[10px] text-emerald-300 font-medium flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Online 24/7
+                        </p>
+                    </div>
+                </div>
+                <button onclick="toggleChatIA()" class="text-white/80 hover:text-white p-1 rounded-lg">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Corpo de Mensagens -->
+            <div id="chat-messages-ia" class="flex-1 p-4 overflow-y-auto space-y-3 custom-scrollbar bg-slate-50/50 dark:bg-slate-900/50">
+                <div class="flex items-start gap-2">
+                    <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-brand-600 to-purple-600 flex items-center justify-center text-white text-xs shrink-0 shadow-md">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 p-3 rounded-2xl rounded-tl-none text-xs border border-slate-200/80 dark:border-slate-600 shadow-sm leading-relaxed">
+                        Olá! Sou o assistente de IA da FNET. Como posso te ajudar? Pergunte sobre <strong>Boletos</strong>, <strong>2ª chamada de prova</strong>, <strong>Horas complementares</strong> ou <strong>Rematrícula</strong>!
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botões de Atalho Rápido -->
+            <div class="p-2 border-t border-slate-100 dark:border-slate-700/60 flex gap-1.5 overflow-x-auto custom-scrollbar bg-white dark:bg-slate-800">
+                <button onclick="document.getElementById('chat-input-ia').value='Como tirar 2a via do boleto?'; responderChatManual();" class="px-2.5 py-1 bg-brand-50 dark:bg-slate-700 text-[10px] font-bold text-brand-600 dark:text-brand-300 rounded-full whitespace-nowrap hover:bg-brand-100">💳 Seg. Via Boleto</button>
+                <button onclick="document.getElementById('chat-input-ia').value='Como pedir reabertura de prova?'; responderChatManual();" class="px-2.5 py-1 bg-brand-50 dark:bg-slate-700 text-[10px] font-bold text-brand-600 dark:text-brand-300 rounded-full whitespace-nowrap hover:bg-brand-100">📝 2ª Chamada</button>
+                <button onclick="document.getElementById('chat-input-ia').value='Como validar horas complementares?'; responderChatManual();" class="px-2.5 py-1 bg-brand-50 dark:bg-slate-700 text-[10px] font-bold text-brand-600 dark:text-brand-300 rounded-full whitespace-nowrap hover:bg-brand-100">🎓 Horas</button>
+            </div>
+
+            <!-- Input de Texto -->
+            <form onsubmit="enviarMensagemChatIA(event)" class="p-3 border-t border-slate-100 dark:border-slate-700 flex gap-2 bg-white dark:bg-slate-800">
+                <input type="text" id="chat-input-ia" placeholder="Digite sua dúvida..." required class="flex-1 bg-slate-100 dark:bg-slate-700 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-brand-500 dark:text-white">
+                <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-md">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Botão Bolinha Flutuante -->
+        <button onclick="toggleChatIA()" id="btn-ia-flutuante" class="w-14 h-14 bg-gradient-to-tr from-brand-600 to-indigo-600 text-white rounded-full flex items-center justify-center text-2xl shadow-2xl shadow-brand-500/50 hover:scale-110 active:scale-95 transition-all">
+            <i class="fa-solid fa-robot"></i>
+            <span class="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full"></span>
+        </button>
+    </div>
+
     <!-- MODAL INSCRIÇÃO EM EVENTOS DO CAMPUS -->
     <div id="modal-evento" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 dark:border-slate-700">
@@ -329,10 +387,10 @@
 
         const mockData = {
             disciplinas: [
-                { id: 1, nome: "Programação FrontEnd SPA", prof: "Profa. Ana", progresso: 88, cor: "from-blue-600 via-indigo-600 to-violet-600", icone: "fa-laptop-code", badge: "Avançado", desc: "React, Vite, Single Page Application e Tailwind CSS." },
-                { id: 2, nome: "UX/UI Design System", prof: "Prof. Carlos", progresso: 64, cor: "from-pink-500 via-purple-600 to-indigo-600", icone: "fa-wand-magic-sparkles", badge: "Design", desc: "Figma, Design Tokens e acessibilidade de interfaces." },
-                { id: 3, nome: "Banco de Dados NoSQL & Cloud", prof: "Profa. Marina", progresso: 92, cor: "from-emerald-500 via-teal-600 to-cyan-600", icone: "fa-server", badge: "Backend", desc: "MongoDB, Firebase e Arquitetura Serverless em Nuvem." },
-                { id: 4, nome: "Engenharia de Software & IA", prof: "Prof. Roberto", progresso: 95, cor: "from-amber-500 via-orange-600 to-red-600", icone: "fa-brain", badge: "IA & Dev", desc: "Metodologias Ágeis, CI/CD e Agentes Autônomos de IA." }
+                { id: 1, nome: "Programação FrontEnd SPA", prof: "Profa. Ana", progresso: 88, headerBg: "bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600", icone: "fa-laptop-code", badge: "Avançado", desc: "React, Vite, Single Page Application e Tailwind CSS." },
+                { id: 2, nome: "UX/UI Design System", prof: "Prof. Carlos", progresso: 64, headerBg: "bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600", icone: "fa-wand-magic-sparkles", badge: "Design", desc: "Figma, Design Tokens e acessibilidade de interfaces." },
+                { id: 3, nome: "Banco de Dados NoSQL & Cloud", prof: "Profa. Marina", progresso: 92, headerBg: "bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600", icone: "fa-server", badge: "Backend", desc: "MongoDB, Firebase e Arquitetura Serverless em Nuvem." },
+                { id: 4, nome: "Engenharia de Software & IA", prof: "Prof. Roberto", progresso: 95, headerBg: "bg-gradient-to-r from-amber-600 via-orange-600 to-red-600", icone: "fa-brain", badge: "IA & Dev", desc: "Metodologias Ágeis, CI/CD e Agentes Autônomos de IA." }
             ],
             notas: [
                 { disciplina: "Programação FrontEnd SPA", p1: 9.2, p2: 8.8, trabalho: 10.0, media: 9.3, status: "Aprovado" },
@@ -346,11 +404,11 @@
                 { id: 'B205', nome: "Sala Mac / Design Lab", capacidade: "8 pessoas", recurso: "Workstations & Monitor Ultrawide", status: "Livre" },
                 { id: 'C301', nome: "Espaço Silencioso Individual", capacidade: "1 pessoa", recurso: "Tomadas & Isolamento Acústico", status: "Livre" }
             ],
-            // CAMINHOS LOCAIS DAS FOTOS DA PASTA ASSETS
+            // FOTOS COM CAMINHOS SIMPLIFICADOS
             campusPhotos: [
-                { title: "Campus MIT — Instalações Tecnológicas FNET", tag: "Pesquisa & Robótica", desc: "Laboratórios e auditórios equipados para o desenvolvimento de soluções em tecnologia.", btnTxt: "Inscrever Projeto", img: "./assets/MIT_Massachusetts%20Institute%20of%20Technology.jpg" },
-                { title: "Harvard University — Annenberg Hall", tag: "Excelência Acadêmica", desc: "Auditórios de alto padrão e fóruns de debate para estudantes e docentes.", btnTxt: "Garantir Vaga", img: "./assets/-%20Harvard%20University%20%F0%9F%90%BE.jpg" },
-                { title: "Auditório Central de Palestras e Simpósios", tag: "Eventos Acadêmicos", desc: "Participe das conferências presenciais e garanta suas horas complementares.", btnTxt: "Inscrever Equipe", img: "./assets/finding%20emily%20(2026).jpg" }
+                { title: "Campus MIT — Instalações Tecnológicas FNET", tag: "Pesquisa & Robótica", desc: "Laboratórios e auditórios equipados para o desenvolvimento de soluções em tecnologia.", btnTxt: "Inscrever Projeto", img: "./assets/mit.jpg" },
+                { title: "Harvard University — Annenberg Hall", tag: "Excelência Acadêmica", desc: "Auditórios de alto padrão e fóruns de debate para estudantes e docentes.", btnTxt: "Garantir Vaga", img: "./assets/harvard.jpg" },
+                { title: "Auditório Central de Palestras e Simpósios", tag: "Eventos Acadêmicos", desc: "Participe das conferências presenciais e garanta suas horas complementares.", btnTxt: "Inscrever Equipe", img: "./assets/auditorio.jpg" }
             ],
             livros: [
                 { titulo: "Design Systems no Mundo Real", autor: "Carlos Eduardo", ano: "2024", cat: "UX/UI", icone: "fa-book" },
@@ -373,7 +431,7 @@
             { id: 'professor-painel', label: 'Painel Docente', icon: 'fa-chalkboard-user', roles: ['professor'] },
             { id: 'biblioteca', label: 'Biblioteca Virtual', icon: 'fa-book-bookmark', roles: ['aluno', 'professor'] },
             { id: 'webmail', label: 'Webmail', icon: 'fa-envelope', roles: ['aluno', 'professor'] },
-            { id: 'sac', label: 'SAC & Agente IA', icon: 'fa-robot', roles: ['aluno', 'professor'] },
+            { id: 'sac', label: 'Atendimento / SAC', icon: 'fa-headset', roles: ['aluno', 'professor'] },
             { id: 'perfil', label: 'Meu Perfil', icon: 'fa-user', roles: ['aluno', 'professor'] }
         ];
 
@@ -427,6 +485,11 @@
         function toggleNotificationMenu() {
             const dropdown = document.getElementById('notif-dropdown');
             dropdown.classList.toggle('hidden');
+        }
+
+        function toggleChatIA() {
+            const popup = document.getElementById('chat-popup-ia');
+            popup.classList.toggle('hidden');
         }
 
         function renderSidebar() {
@@ -497,15 +560,15 @@
         function responderAgenteIA(msg) {
             const texto = msg.toLowerCase();
             if (texto.includes("boleto") || texto.includes("mensalidade") || texto.includes("pagamento")) {
-                return "💳 **Segunda Via de Boleto:** Você pode emitir seus boletos e consultar comprovantes diretamente no portal financeiro em 'Meu Perfil > Financeiro'. Caso haja atraso de pagamento, os juros são atualizados automaticamente sem necessidade de novo cálculo na secretaria.";
+                return "💳 **Segunda Via de Boleto:** Você pode emitir seus boletos e consultar comprovantes diretamente na aba 'Meu Perfil'. Caso haja atraso, os juros são atualizados automaticamente.";
             } else if (texto.includes("reabertura") || texto.includes("prova") || texto.includes("segunda chamada")) {
-                return "📝 **Reabertura de Prova / Segunda Chamada:** A solicitação de 2ª chamada deve ser realizada em até 5 dias úteis após a data da avaliação regular. É necessário anexar um atestado médico ou justificativa de trabalho válida através do formulário oficial do SAC.";
+                return "📝 **Reabertura de Prova / 2ª Chamada:** A solicitação deve ser feita em até 5 dias úteis após a avaliação através do formulário do SAC. Anexe seu atestado médico ou justificativa.";
             } else if (texto.includes("horas") || texto.includes("complementar")) {
-                return "🎓 **Horas Complementares:** O envio de certificados de cursos, eventos e simpósios deve ser realizado via Webmail para 'atendimento@fnet.edu.br'. A validação é concluída no prazo de até 10 dias úteis pelo coordenador do curso.";
+                return "🎓 **Horas Complementares:** Envie seus certificados em PDF via Webmail oficial para 'atendimento@fnet.edu.br'. Prazo de análise de até 10 dias úteis.";
             } else if (texto.includes("trancamento") || texto.includes("rematricula") || texto.includes("matricula")) {
-                return "📌 **Rematrícula & Trancamento:** O período oficial de rematrícula para o próximo semestre ocorre online de 1 a 15 de Dezembro. Para trancamento de curso, o aluno deve agendar um atendimento presencial na Secretaria Acadêmica.";
+                return "📌 **Rematrícula & Trancamento:** A rematrícula ocorre online no final de cada semestre. Para trancamentos, contate a secretaria acadêmica pelo formulário oficial.";
             } else {
-                return "🤖 **Atendimento FNET-Bot:** Entendi sua dúvida! Caso precise de um atendimento humanizado específico para este caso, preencha o formulário de chamado ao lado para que nossa secretaria responda diretamente no seu Webmail acadêmico.";
+                return "🤖 **FNET IA:** Entendi sua dúvida! Caso precise de um protocolo oficial, envie uma solicitação no formulário do SAC que a secretaria entrará em contato via Webmail.";
             }
         }
 
@@ -529,17 +592,22 @@
             setTimeout(() => {
                 const botRes = responderAgenteIA(userMsg);
                 chatBox.innerHTML += `
-                    <div class="flex items-start gap-2.5">
+                    <div class="flex items-start gap-2">
                         <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-brand-600 to-purple-600 flex items-center justify-center text-white text-xs shrink-0 shadow-md">
                             <i class="fa-solid fa-robot"></i>
                         </div>
-                        <div class="bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 p-3 rounded-2xl rounded-tl-none max-w-[85%] text-xs border border-slate-200 dark:border-slate-600 shadow-sm leading-relaxed">
+                        <div class="bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 p-3 rounded-2xl rounded-tl-none text-xs border border-slate-200/80 dark:border-slate-600 shadow-sm leading-relaxed">
                             ${botRes.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
                         </div>
                     </div>
                 `;
                 chatBox.scrollTop = chatBox.scrollHeight;
-            }, 600);
+            }, 500);
+        }
+
+        function responderChatManual() {
+            const e = { preventDefault: () => {} };
+            enviarMensagemChatIA(e);
         }
 
         function getPageTemplate(viewId) {
@@ -547,6 +615,7 @@
                 case 'dashboard':
                     return `
                         <div class="space-y-6">
+                            <!-- CARROSSEL DAS FOTOS DO CAMPUS -->
                             <div data-animate class="campus-slider shadow-2xl">
                                 ${mockData.campusPhotos.map((photo, i) => `
                                     <div class="campus-slide ${i === 0 ? 'active' : ''}" style="background-image: linear-gradient(90deg, rgba(15, 23, 42, 0.92) 0%, rgba(15, 23, 42, 0.4) 100%), url('${photo.img}')">
@@ -566,7 +635,7 @@
                                 <div class="relative z-10 max-w-xl">
                                     <span class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-semibold mb-3">Faculdade Nova Era Tecnológica</span>
                                     <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight mb-2">Bem-vindo(a) ao Portal FNET!</h1>
-                                    <p class="text-brand-100 text-sm md:text-base mb-6">Acompanhe suas matérias, envie atividades diretamente para a planilha do professor e tire dúvidas pelo SAC com IA.</p>
+                                    <p class="text-brand-100 text-sm md:text-base mb-6">Acompanhe suas matérias, envie atividades diretamente para a planilha do professor e tire dúvidas pelo assistente virtual no canto da tela.</p>
                                     <div class="flex flex-wrap gap-3">
                                         <button onclick="navigate('salas')" class="bg-white text-brand-600 hover:bg-brand-50 px-5 py-2.5 rounded-xl font-bold text-sm shadow-md transition-all flex items-center gap-2">
                                             <i class="fa-solid fa-calendar-plus text-brand-600"></i>Reservar Sala de Estudo
@@ -589,39 +658,43 @@
                         <div class="space-y-6">
                             <div data-animate class="flex justify-between items-center">
                                 <div>
-                                    <h1 class="text-2xl font-bold dark:text-white">Disciplinas do Semestre</h1>
+                                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Disciplinas do Semestre</h1>
                                     <p class="text-sm text-slate-500">Confira suas matérias ativas com conteúdo integrado.</p>
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 ${mockData.disciplinas.map(c => `
-                                    <div data-animate class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden hover:scale-[1.02] transition-all duration-200">
-                                        <div class="p-6 bg-gradient-to-br ${c.cor} text-white relative">
-                                            <div class="flex justify-between items-start">
-                                                <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[11px] font-bold tracking-wide uppercase">${c.badge}</span>
-                                                <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl shadow-lg">
-                                                    <i class="fa-solid ${c.icone}"></i>
+                                    <div data-animate class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-lg overflow-hidden flex flex-col justify-between hover:shadow-2xl transition-all duration-200">
+                                        <div>
+                                            <div class="p-6 ${c.headerBg} text-white">
+                                                <div class="flex justify-between items-start">
+                                                    <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[11px] font-bold tracking-wide uppercase shadow-sm">${c.badge}</span>
+                                                    <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl shadow-md">
+                                                        <i class="fa-solid ${c.icone}"></i>
+                                                    </div>
+                                                </div>
+                                                <h3 class="text-xl font-extrabold mt-4 mb-1 text-white">${c.nome}</h3>
+                                                <p class="text-xs text-white/90 font-medium"><i class="fa-solid fa-user-tie mr-1"></i> ${c.prof}</p>
+                                            </div>
+                                            
+                                            <div class="p-6 space-y-4">
+                                                <p class="text-xs text-slate-600 dark:text-slate-300 font-medium leading-relaxed">${c.desc}</p>
+                                                <div>
+                                                    <div class="flex justify-between text-xs font-bold mb-1.5">
+                                                        <span class="text-slate-500 dark:text-slate-400">Progresso do Módulo</span>
+                                                        <span class="text-brand-600 dark:text-brand-400 font-extrabold">${c.progresso}%</span>
+                                                    </div>
+                                                    <div class="w-full h-2.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                                                        <div class="h-full bg-brand-600 rounded-full" style="width: ${c.progresso}%"></div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <h3 class="text-xl font-extrabold mt-4 mb-1">${c.nome}</h3>
-                                            <p class="text-xs text-white/80 font-medium"><i class="fa-solid fa-user-tie mr-1"></i> ${c.prof}</p>
                                         </div>
-                                        <div class="p-6 space-y-4">
-                                            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">${c.desc}</p>
-                                            <div>
-                                                <div class="flex justify-between text-xs font-bold mb-1.5">
-                                                    <span class="text-slate-500">Progresso do Módulo</span>
-                                                    <span class="text-brand-600 dark:text-brand-400 font-extrabold">${c.progresso}%</span>
-                                                </div>
-                                                <div class="w-full h-2.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden p-0.5">
-                                                    <div class="h-full bg-gradient-to-r from-brand-600 to-indigo-500 rounded-full" style="width: ${c.progresso}%"></div>
-                                                </div>
-                                            </div>
-                                            <div class="flex gap-2 pt-2">
-                                                <button onclick="showToast('Acessando gravação das aulas...')" class="flex-1 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-slate-200 font-bold rounded-xl text-xs transition-all">Aulas Gravadas</button>
-                                                <button onclick="navigate('notas')" class="flex-1 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-xs transition-all shadow-md">Enviar Trabalho</button>
-                                            </div>
+
+                                        <div class="px-6 pb-6 pt-2 flex gap-2">
+                                            <button onclick="showToast('Acessando gravação das aulas...')" class="flex-1 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-bold rounded-xl text-xs transition-all">Aulas Gravadas</button>
+                                            <button onclick="navigate('notas')" class="flex-1 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-xs transition-all shadow-md">Enviar Trabalho</button>
                                         </div>
                                     </div>
                                 `).join('')}
@@ -826,75 +899,35 @@
                     return `
                         <div class="space-y-6">
                             <div data-animate>
-                                <h1 class="text-2xl font-bold dark:text-white">SAC & Agente de Inteligência Artificial</h1>
-                                <p class="text-sm text-slate-500">Tire suas dúvidas instantaneamente com o assistente FNET ou abra um chamado oficial.</p>
+                                <h1 class="text-2xl font-bold dark:text-white">Atendimento / SAC Acadêmico</h1>
+                                <p class="text-sm text-slate-500">Abra um chamado direto com a secretaria da faculdade.</p>
                             </div>
 
-                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                <div data-animate class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-lg flex flex-col h-[480px] overflow-hidden">
-                                    <div class="p-4 bg-gradient-to-r from-brand-600 to-indigo-600 text-white flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-xl">
-                                            <i class="fa-solid fa-robot"></i>
-                                        </div>
-                                        <div>
-                                            <h3 class="font-bold text-sm">FNET Assistente Virtual</h3>
-                                            <p class="text-[11px] text-white/80">Respostas automáticas 24/7</p>
-                                        </div>
-                                    </div>
-
-                                    <div id="chat-messages-ia" class="flex-1 p-4 overflow-y-auto space-y-3 custom-scrollbar">
-                                        <div class="flex items-start gap-2.5">
-                                            <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-brand-600 to-purple-600 flex items-center justify-center text-white text-xs shrink-0 shadow-md">
-                                                <i class="fa-solid fa-robot"></i>
-                                            </div>
-                                            <div class="bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 p-3 rounded-2xl rounded-tl-none max-w-[85%] text-xs border border-slate-200 dark:border-slate-600 shadow-sm leading-relaxed">
-                                                Olá! Sou o assistente da FNET. Como posso te ajudar hoje? Tópicos frequentes: <strong>Boleto</strong>, <strong>Reabertura de Prova</strong>, <strong>Horas Complementares</strong> ou <strong>Rematrícula</strong>.
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="p-2 border-t border-slate-100 dark:border-slate-700 flex gap-1.5 overflow-x-auto custom-scrollbar bg-slate-50 dark:bg-slate-900/50">
-                                        <button onclick="document.getElementById('chat-input-ia').value='Como tirar 2a via do boleto?'; responderChatManual();" class="px-2.5 py-1 bg-white dark:bg-slate-800 text-[10px] font-bold text-brand-600 rounded-full border border-slate-200 dark:border-slate-700 whitespace-nowrap hover:bg-brand-50">💳 Seg. Via Boleto</button>
-                                        <button onclick="document.getElementById('chat-input-ia').value='Como pedir reabertura de prova?'; responderChatManual();" class="px-2.5 py-1 bg-white dark:bg-slate-800 text-[10px] font-bold text-brand-600 rounded-full border border-slate-200 dark:border-slate-700 whitespace-nowrap hover:bg-brand-50">📝 Pedir 2ª Chamada</button>
-                                        <button onclick="document.getElementById('chat-input-ia').value='Como validar horas complementares?'; responderChatManual();" class="px-2.5 py-1 bg-white dark:bg-slate-800 text-[10px] font-bold text-brand-600 rounded-full border border-slate-200 dark:border-slate-700 whitespace-nowrap hover:bg-brand-50">🎓 Horas Complementares</button>
-                                    </div>
-
-                                    <form onsubmit="enviarMensagemChatIA(event)" class="p-3 border-t border-slate-100 dark:border-slate-700 flex gap-2 bg-white dark:bg-slate-800">
-                                        <input type="text" id="chat-input-ia" placeholder="Pergunte sobre boletos, provas..." required class="flex-1 bg-slate-100 dark:bg-slate-700 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-brand-500 dark:text-white">
-                                        <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-md">
-                                            <i class="fa-solid fa-paper-plane"></i>
-                                        </button>
-                                    </form>
-                                </div>
-
-                                <div data-animate class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-lg flex flex-col justify-between">
+                            <div data-animate class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-lg max-w-xl">
+                                <h3 class="font-bold text-base dark:text-white mb-1">Abrir Chamado / Protocolo</h3>
+                                <p class="text-xs text-slate-500 mb-4">Sua solicitação será gravada no Google Sheets da Secretaria FNET.</p>
+                                <form onsubmit="handleSACAPI(event)" class="space-y-3.5">
                                     <div>
-                                        <h3 class="font-bold text-base dark:text-white mb-1">Abrir Chamado Presencial / Protocolo</h3>
-                                        <p class="text-xs text-slate-500 mb-4">Sua solicitação será gravada no Google Sheets da Secretaria FNET.</p>
-                                        <form onsubmit="handleSACAPI(event)" class="space-y-3.5">
-                                            <div>
-                                                <label class="block text-xs font-semibold text-slate-500 mb-1">SEU NOME COMPLETO</label>
-                                                <input type="text" id="sac-aluno" required placeholder="Digite seu nome" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-xl px-3 py-2 text-xs dark:text-white">
-                                            </div>
-                                            <div>
-                                                <label class="block text-xs font-semibold text-slate-500 mb-1">ASSUNTO DA SOLICITAÇÃO</label>
-                                                <select id="sac-assunto" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-xl px-3 py-2 text-xs dark:text-white">
-                                                    <option value="Dúvida Acadêmica">Dúvida Acadêmica</option>
-                                                    <option value="Secretaria / Matrícula">Secretaria / Matrícula</option>
-                                                    <option value="Financeiro / Boletos">Financeiro / Boletos</option>
-                                                    <option value="Segunda Chamada de Prova">Segunda Chamada de Prova</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label class="block text-xs font-semibold text-slate-500 mb-1">MENSAGEM / JUSTIFICATIVA</label>
-                                                <textarea id="sac-msg" rows="3" required placeholder="Descreva os detalhes..." class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-xl px-3 py-2 text-xs dark:text-white"></textarea>
-                                            </div>
-                                            <button type="submit" id="btn-env-sac" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-md">
-                                                Enviar Protocolo para o Sheets
-                                            </button>
-                                        </form>
+                                        <label class="block text-xs font-semibold text-slate-500 mb-1">SEU NOME COMPLETO</label>
+                                        <input type="text" id="sac-aluno" required placeholder="Digite seu nome" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-xl px-3 py-2 text-xs dark:text-white">
                                     </div>
-                                </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 mb-1">ASSUNTO DA SOLICITAÇÃO</label>
+                                        <select id="sac-assunto" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-xl px-3 py-2 text-xs dark:text-white">
+                                            <option value="Dúvida Acadêmica">Dúvida Acadêmica</option>
+                                            <option value="Secretaria / Matrícula">Secretaria / Matrícula</option>
+                                            <option value="Financeiro / Boletos">Financeiro / Boletos</option>
+                                            <option value="Segunda Chamada de Prova">Segunda Chamada de Prova</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 mb-1">MENSAGEM / JUSTIFICATIVA</label>
+                                        <textarea id="sac-msg" rows="4" required placeholder="Descreva os detalhes..." class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-xl px-3 py-2 text-xs dark:text-white"></textarea>
+                                    </div>
+                                    <button type="submit" id="btn-env-sac" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-md">
+                                        Enviar Protocolo para o Sheets
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     `;
@@ -938,11 +971,6 @@
                 default:
                     return `<div></div>`;
             }
-        }
-
-        function responderChatManual() {
-            const e = { preventDefault: () => {} };
-            enviarMensagemChatIA(e);
         }
 
         function animatePageElements() {
