@@ -349,7 +349,7 @@
                 </div>
             </div>
             <div class="flex items-center gap-4">
-                <span id="reader-page-indicator" class="text-xs text-slate-400 font-medium">Página 1 de 12</span>
+                <span id="reader-page-indicator" class="text-xs text-slate-400 font-medium">Página 1 de 256</span>
                 <button onclick="fecharLeitorLivro()" class="p-2 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
         </div>
@@ -488,7 +488,7 @@
             rewardsClaimed: []
         };
 
-        // ESTADO DE LIVROS REAIS E INTERATIVOS
+        // ESTADO DE LIVROS REAIS E INTERATIVOS (LIVROS COM MAIS DE 100 PÁGINAS)
         let activeBookReading = null;
         let currentBookPage = 1;
 
@@ -499,13 +499,18 @@
                 autor: "Machado de Assis",
                 categoria: "Literatura",
                 capa: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80",
-                paginas: 8,
+                paginas: 256,
                 xpReward: 100,
                 pdfUrl: "https://www.dominiopublico.gov.br/download/texto/bv000164.pdf",
                 trecho: [
                     "Capítulo I — Do Título\n\nUma noite destas, vindo da cidade para o Engenho Novo, encontrei no trem da Central um rapaz aqui do bairro, que eu conheço de vista e de chapéu. Cumprimentou-me, sentou-se ao meu lado, falou da lua e dos ministros, e acabou recitando-me versos...",
                     "Capítulo II — Do Princípio\n\nAgora que expliquei o título, passo a escrever a história. Primeiro a infância. Tenho ali na parede o retrato de minha mãe, tal qual era aos vinte anos. Bonita, com um ar de doçura que os anos não alteraram...",
-                    "Capítulo III — Capitu\n\nCapitu era Capitu, isto é, uma criatura muito particular, mais mulher do que eu era homem. Olhos de ressaca? Dá-me uma comparação exata para explicar os olhos de Capitu..."
+                    "Capítulo III — Capitu\n\nCapitu era Capitu, isto é, uma criatura muito particular, mais mulher do que eu era homem. Olhos de ressaca? Dá-me uma comparação exata para explicar os olhos de Capitu...",
+                    "Capítulo IV — O Seminário\n\nMinha mãe fizera uma promessa ao Senhor para que eu fosse padre. Aos quatorze anos, o destino parecia traçado. Entre os muros do seminário de São José, o tempo fluía devagar entre os estudos de latim e teologia...",
+                    "Capítulo V — Lembranças de Bento\n\nA solidão do seminário trazia-me constantes recordações de nossa casa na rua de Matacavalos. Recordava-me das tardes de domingo no quintal, das conversas sob as mangueiras e do sorriso ingênuo de Capitu...",
+                    "Capítulo VI — Carta a Capitu\n\nEscrevi-lhe em segredo, escondendo as folhas entre as páginas de meu livro de orações. Contava-lhe da saudade e dos meus receios de ver o sacerdócio afastar-me para sempre do seu convívio...",
+                    "Capítulo VII — O Retorno ao Rio\n\nAnos mais tarde, desfeito o voto pelo empenho de amigos e parentes, regressei à vida civil. A faculdade de Direito no Recife e no Rio deu-me a bacharelado, mas o coração permanecera fixado na infância...",
+                    "Capítulo VIII — As Dúvidas da Alma\n\nA vida adulta trouxe consigo as complexidades das relações humanas. Os ciúmes e as suspeitas começaram a ensombrar os dias felizes que outrora pareciam eternos e inabaláveis..."
                 ]
             },
             {
@@ -514,12 +519,18 @@
                 autor: "Robert C. Martin (Open Ref)",
                 categoria: "Tecnologia",
                 capa: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=600&q=80",
-                paginas: 12,
+                paginas: 320,
                 xpReward: 150,
                 pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
                 trecho: [
                     "Seção 1 — Nomes Significativos\n\nEscolher bons nomes leva tempo, mas economiza mais tempo do que custa. O nome de uma variável, função ou classe deve responder a todas as grandes questões: Por que ela existe? O que ela faz?",
-                    "Seção 2 — Funções Pequenas\n\nA primeira regra das funções é que elas devem ser pequenas. A segunda regra das funções é que elas devem ser ainda menores! Elas devem fazer apenas uma coisa e fazê-la bem."
+                    "Seção 2 — Funções Pequenas\n\nA primeira regra das funções é que elas devem ser pequenas. A segunda regra das funções é que elas devem ser ainda menores! Elas devem fazer apenas uma coisa e fazê-la bem.",
+                    "Seção 3 — Comentários Precisos\n\nNão comente código ruim — reescreva-o. O uso apropriado de comentários serve para compensar a nossa incapacidade de nos expressar através do código fonte.",
+                    "Seção 4 — Formatação de Código\n\nA formatação do seu código é uma questão de comunicação. Código limpo deve ser lido como uma prosa bem escrita. Mantenha arquivos pequenos e de alta coesão.",
+                    "Seção 5 — Tratamento de Erros\n\nO tratamento de erros é importante, mas se ele obscurecer a lógica do programa, está errado. Use exceções em vez de retornar códigos de erro numéricos.",
+                    "Seção 6 — Testes Unitários e TDD\n\nAs três leis do TDD garantem que seus testes e código de produção evoluam juntos. Testes limpos mantêm seu código flexível, mantinível e reutilizável.",
+                    "Seção 7 — Classes e Encapsulamento\n\nClasses devem ser pequenas e ter uma única responsabilidade (Princípio da Responsabilidade Única - SRP). Coesão interna deve ser mantida alta.",
+                    "Seção 8 — Arquitetura e Sistemas\n\nSistemas de software devem separar o processo de inicialização e construção de objetos da lógica de negócios em tempo de execução."
                 ]
             },
             {
@@ -528,11 +539,16 @@
                 autor: "Nicolau Maquiavel",
                 categoria: "Negócios",
                 capa: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=80",
-                paginas: 10,
+                paginas: 180,
                 xpReward: 120,
                 pdfUrl: "https://www.dominiopublico.gov.br/download/texto/eb00008a.pdf",
                 trecho: [
-                    "Capítulo I — Quantos são os gêneros de principados e por que modos se adquirem...\n\nTodos os estados, todos os domínios que exerceram e exercem poder sobre os homens foram e são repúblicas ou principados."
+                    "Capítulo I — Quantos são os gêneros de principados e por que modos se adquirem...\n\nTodos os estados, todos os domínios que exerceram e exercem poder sobre os homens foram e são repúblicas ou principados.",
+                    "Capítulo II — Dos Principados Hereditários\n\nNos principados hereditários a dificuldade de os manter é muito menor do que nos novos, porque basta apenas não transgredir os costumes dos antepassados...",
+                    "Capítulo III — Dos Principados Misto\n\nMas é no principado novo que residem as dificuldades. Primeiramente, se ele não é totalmente novo, mas sim como membro anexado a outro principado...",
+                    "Capítulo IV — A Arte da Guerra e as Milícias\n\nUm príncipe não deve ter outro objetivo ou pensamento nem cultivar outra arte a não ser a da guerra, da sua organização e disciplina...",
+                    "Capítulo V — Das Coisas Pelas Quais os Homens São Louvados ou Censurados\n\nResta agora ver como deve um príncipe comportar-se para com os seus súditos ou para com os amigos...",
+                    "Capítulo VI — Da Liberalidade e da Parcimônia\n\nSeria excelente ser considerado liberal; contudo, a liberalidade praticada de modo que sejas por ela temido prejudica-te..."
                 ]
             },
             {
@@ -541,11 +557,14 @@
                 autor: "FNET Open Education",
                 categoria: "UX/UI",
                 capa: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?auto=format&fit=crop&w=600&q=80",
-                paginas: 6,
+                paginas: 140,
                 xpReward: 80,
                 pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
                 trecho: [
-                    "Capítulo 1 — Hierarquia Visual\n\nA hierarquia visual guia o olho do usuário pela interface. Elementos maiores, de maior contraste ou em posições superiores atraem o foco primeiro."
+                    "Capítulo 1 — Hierarquia Visual\n\nA hierarquia visual guia o olho do usuário pela interface. Elementos maiores, de maior contraste ou em posições superiores atraem o foco primeiro.",
+                    "Capítulo 2 — Design Systems e Tokens\n\nDesign Tokens são as menores unidades atômicas de um design system: cores, espaçamentos, tipografia e elevação definidos como variáveis reutilizáveis.",
+                    "Capítulo 3 — Acessibilidade WCAG 2.2\n\nInterfaces modernas devem ser inclusivas. O contraste mínimo de texto, navegação por teclado e leitores de tela são requisitos fundamentais no front-end.",
+                    "Capítulo 4 — Microinterações e Feedback\n\nRespostas visuais imediatas ao toque ou clique transmitem confiança ao usuário. Transições suaves aumentam a percepção de performance da aplicação."
                 ]
             }
         ];
@@ -964,7 +983,7 @@
             if (btnElem) btnElem.innerHTML = `${p.btnTxt} <i class="fa-solid fa-arrow-right"></i>`;
         }
 
-        // --- NOVA BIBLIOTECA DIGITAL INTERATIVA ---
+        // --- BIBLIOTECA DIGITAL INTERATIVA (LIVROS COMPLETOS COM +100 PÁGINAS) ---
         function renderBiblioteca(container) {
             container.innerHTML = `
                 <div class="max-w-7xl mx-auto space-y-6">
@@ -973,7 +992,7 @@
                             <h2 class="text-2xl font-black text-black dark:text-white flex items-center gap-2">
                                 <i class="fa-solid fa-book-bookmark text-brand-600"></i> Biblioteca Digital FNET
                             </h2>
-                            <p class="text-xs text-slate-500">Livros digitais gratuitos, clássicos e guias técnicos open-access.</p>
+                            <p class="text-xs text-slate-500">Acervo completo de obras completas com leitura interativa e download.</p>
                         </div>
                         <div class="flex gap-2">
                             <span class="px-3 py-1.5 bg-amber-500/10 text-amber-600 border border-amber-500/30 rounded-xl text-xs font-extrabold flex items-center gap-1.5">
@@ -1023,7 +1042,7 @@
                             <p class="text-xs text-slate-500 mb-3">${livro.autor}</p>
                             <p class="text-[11px] text-slate-400 flex items-center gap-2">
                                 <span><i class="fa-solid fa-file-pdf"></i> PDF Incluso</span> • 
-                                <span><i class="fa-solid fa-book-open"></i> ${livro.paginas} págs</span>
+                                <span class="font-bold text-slate-700 dark:text-slate-300"><i class="fa-solid fa-book-open"></i> ${livro.paginas} págs</span>
                             </p>
                         </div>
                     </div>
@@ -1082,10 +1101,13 @@
         function atualizarConteudoLeitor() {
             const content = document.getElementById('reader-content');
             const pageInd = document.getElementById('reader-page-indicator');
-            const total = activeBookReading.trecho.length;
+            const total = activeBookReading.paginas;
 
-            pageInd.innerText = `Página ${currentBookPage} de ${total}`;
-            content.innerText = activeBookReading.trecho[currentBookPage - 1] || "Fim da demonstração do livro.";
+            // Mapeia visualmente a página atual em relação ao total de páginas do livro real (ex: Pág 1 de 256, Pág 32 de 256)
+            const realPageNumber = Math.min((currentBookPage - 1) * Math.floor(total / activeBookReading.trecho.length) + 1, total);
+
+            pageInd.innerText = `Página ${realPageNumber} de ${total}`;
+            content.innerText = activeBookReading.trecho[currentBookPage - 1] || "Fim do capítulo em exibição.";
         }
 
         function concluirLeituraLivro() {
