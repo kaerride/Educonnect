@@ -77,22 +77,12 @@
                 <div class="w-16 h-16 bg-gradient-to-tr from-brand-600 to-red-500 rounded-2xl flex items-center justify-center text-white text-3xl font-extrabold mx-auto shadow-xl shadow-brand-600/40 mb-3">
                     <i class="fa-solid fa-atom"></i>
                 </div>
-                <h2 class="text-2xl font-black tracking-tight text-black dark:text-white">FNET Portal</h2>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Faculdade Nova Era Tecnológica</p>
-            </div>
-
-            <!-- Chave entre Entrar e Criar Conta -->
-            <div class="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl mb-4">
-                <button type="button" id="tab-auth-login" onclick="setAuthMode('login')" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-white dark:bg-slate-700 text-black dark:text-white shadow-sm">
-                    Entrar
-                </button>
-                <button type="button" id="tab-auth-register" onclick="setAuthMode('register')" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 transition-all">
-                    Criar Conta
-                </button>
+                <h2 id="login-title-text" class="text-2xl font-black tracking-tight text-black dark:text-white">FNET Portal</h2>
+                <p id="login-subtitle-text" class="text-xs text-slate-500 dark:text-slate-400 mt-1">Faculdade Nova Era Tecnológica</p>
             </div>
 
             <!-- Abas Aluno/Professor -->
-            <div class="flex p-1 bg-slate-100/60 dark:bg-slate-800/60 rounded-xl mb-6">
+            <div class="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl mb-4">
                 <button type="button" id="tab-aluno" onclick="setLoginRole('aluno')" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-brand-600 text-white shadow-sm">
                     <i class="fa-solid fa-user-graduate mr-1"></i> Área do Aluno
                 </button>
@@ -101,8 +91,32 @@
                 </button>
             </div>
 
-            <!-- FORMULÁRIO DE LOGIN -->
-            <form id="form-login-mode" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+            <!-- Alternador de Modo: Entrar ou Criar Conta -->
+            <div class="flex border-b border-slate-200 dark:border-slate-800 mb-5 text-xs font-bold">
+                <button type="button" id="btn-mode-login" onclick="toggleAuthMode('login')" class="flex-1 pb-2 border-b-2 border-brand-600 text-brand-600">Entrar na Conta</button>
+                <button type="button" id="btn-mode-register" onclick="toggleAuthMode('register')" class="flex-1 pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-600">Criar Nova Conta</button>
+            </div>
+
+            <!-- Formulário de Login / Cadastro -->
+            <form onsubmit="handleAuthSubmit(event)" class="space-y-3.5">
+                <!-- Campo Adicional para Cadastro (Nome Completo) -->
+                <div id="field-nome-completo" class="hidden">
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Nome Completo</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input type="text" id="auth-nome" placeholder="Seu nome e sobrenome" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:outline-none focus:border-brand-600 dark:text-white">
+                    </div>
+                </div>
+
+                <!-- Campo E-mail para Cadastro -->
+                <div id="field-email-cadastro" class="hidden">
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">E-mail Acadêmico ou Pessoal</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input type="email" id="auth-email" placeholder="seuemail@fnet.edu.br" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:outline-none focus:border-brand-600 dark:text-white">
+                    </div>
+                </div>
+
                 <div>
                     <label id="label-login-id" class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Matrícula / RA do Aluno</label>
                     <div class="relative">
@@ -121,44 +135,13 @@
 
                 <div class="flex items-center justify-between text-xs">
                     <label class="flex items-center text-slate-600 dark:text-slate-400 cursor-pointer">
-                        <input type="checkbox" id="remember-me-check" checked class="rounded border-slate-300 text-brand-600 focus:ring-brand-600 mr-2"> Manter conectado
+                        <input type="checkbox" id="chk-lembrar" checked class="rounded border-slate-300 text-brand-600 focus:ring-brand-600 mr-2"> Lembrar neste navegador
                     </label>
                     <a href="#" onclick="showToast('Link de recuperação enviado ao e-mail cadastrado.')" class="text-brand-600 hover:underline font-bold">Esqueceu a senha?</a>
                 </div>
 
-                <button type="submit" id="btn-login" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-brand-600/30 transition-all flex items-center justify-center gap-2 text-sm">
-                    Entrar no Portal <i class="fa-solid fa-arrow-right"></i>
-                </button>
-            </form>
-
-            <!-- FORMULÁRIO DE CADASTRO -->
-            <form id="form-register-mode" onsubmit="handleRegisterSubmit(event)" class="space-y-4 hidden">
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Nome Completo</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                        <input type="text" id="reg-nome" required placeholder="Ex: Maria Silva" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:outline-none focus:border-brand-600 dark:text-white">
-                    </div>
-                </div>
-
-                <div>
-                    <label id="label-reg-id" class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Matrícula / RA do Aluno</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-id-card absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                        <input type="text" id="reg-user" required placeholder="Digite sua matrícula" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:outline-none focus:border-brand-600 dark:text-white">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Crie uma Senha</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                        <input type="password" id="reg-pass" required placeholder="••••••••" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:outline-none focus:border-brand-600 dark:text-white">
-                    </div>
-                </div>
-
-                <button type="submit" id="btn-register" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-brand-600/30 transition-all flex items-center justify-center gap-2 text-sm">
-                    Cadastrar e Entrar <i class="fa-solid fa-user-plus"></i>
+                <button type="submit" id="btn-login-submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-brand-600/30 transition-all flex items-center justify-center gap-2 text-sm">
+                    <span>Entrar no Portal</span> <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </form>
         </div>
@@ -192,7 +175,7 @@
             <!-- Status Bar & Profile -->
             <div>
                 <div class="px-4 py-2 text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-2 font-semibold border-t border-slate-200 dark:border-slate-800">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Auth & DB Active
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> DB & Auth Active
                 </div>
                 <div class="p-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
                     <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('perfil')">
@@ -364,7 +347,7 @@
         </div>
     </div>
 
-    <!-- MODAIS DE EVENTOS & SALAS -->
+    <!-- MODAIS EXISTENTES (EVENTOS & SALAS) -->
     <div id="modal-evento" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800">
             <div class="flex justify-between items-center mb-4">
@@ -443,18 +426,18 @@
 
         let currentUserRole = 'aluno';
         let loginSelectedRole = 'aluno';
-        let currentAuthMode = 'login'; // 'login' ou 'register'
+        let authMode = 'login';
         let currentView = 'dashboard';
         let currentCarouselIndex = 0;
         let carouselInterval = null;
         let activeSelectedEmailId = 1;
-        let currentUserProfile = null; // Armazena a sessão ativa do usuário
+        let activeUserSession = null;
 
         // ESTADO DINÂMICO DOS E-MAILS DO WEBMAIL
         let stateEmails = [
             { id: 1, de: "Secretaria FNET", emailDe: "secretaria@fnet.edu.br", assunto: "Confirmação de Matrícula 2026.2", data: "Hoje, 14:30", desc: "Sua rematrícula foi processada com sucesso no sistema FNET.", conteudo: "Prezado(a) aluno(a),\n\nInformamos que sua rematrícula para o semestre 2026.2 foi processada e confirmada com sucesso em nosso sistema acadêmico.\n\nCaso necessite do comprovante ou da grade de horários atualizada, acesse a aba 'Meu Perfil' ou solicite diretamente no balcão da secretaria.\n\nAtenciosamente,\nEquipe de Secretaria FNET." },
             { id: 2, de: "Profa. Ana Paula", emailDe: "ana.souza@fnet.edu.br", assunto: "Lembrete: Entrega do Projeto de FrontEnd", data: "Ontem, 09:15", desc: "Envie o link do seu repositório diretamente na aba 'Notas & Atividades'.", conteudo: "Olá pessoal,\n\nLembrando que o prazo final para envio do projeto de Single Page Application (SPA) encerra nesta sexta-feira às 23:59.\n\nCertifiquem-se de que o repositório no GitHub está público e com o README documentado.\n\nBons estudos!" },
-            { id: 3, de: "Biblioteca Central", emailDe: "biblioteca@fnet.edu.br", assunto: "Reserva de Sala de Estudos Aprovada", data: "24 Out", desc: "Sua reserva de sala de estudos foi registrada no banco de dados da FNET.", conteudo: "Olá,\n\nSua reserva de sala de estudos em grupo foi confirmada.\n\nPor favor, apresente o RA na recepção da biblioteca ao retirar a chave no horário agendado.\n\nTenha um ótimo estudo!" }
+            { id: 3, de: "Biblioteca Central", emailDe: "biblioteca@fnet.edu.br", assunto: "Reserva de Sala de Estudos Aprovada", data: "24 Out", desc: "Sua reserva de sala de estudos foi registrada no banco de dados da FNET.", conteudo: "Olá,\n\nSua reserva de sala de estudos em grupo foi confirmada.\n\nPor favor, apresente seu comprovante na recepção da biblioteca ao retirar a chave no horário agendado.\n\nTenha um ótimo estudo!" }
         ];
 
         const mockData = {
@@ -499,171 +482,152 @@
             { id: 'perfil', label: 'Meu Perfil', icon: 'fa-user-gear', roles: ['aluno', 'professor'] }
         ];
 
-        // MUDAR ENTRE ENTRAR E CRIAR CONTA
-        function setAuthMode(mode) {
-            currentAuthMode = mode;
-            const btnTabLogin = document.getElementById('tab-auth-login');
-            const btnTabReg = document.getElementById('tab-auth-register');
-            const formLogin = document.getElementById('form-login-mode');
-            const formReg = document.getElementById('form-register-mode');
-
-            if (mode === 'login') {
-                btnTabLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-white dark:bg-slate-700 text-black dark:text-white shadow-sm";
-                btnTabReg.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 transition-all";
-                formLogin.classList.remove('hidden');
-                formReg.classList.add('hidden');
-            } else {
-                btnTabReg.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-white dark:bg-slate-700 text-black dark:text-white shadow-sm";
-                btnTabLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 transition-all";
-                formReg.classList.remove('hidden');
-                formLogin.classList.add('hidden');
-            }
-        }
-
+        // --- SISTEMA DE AUTENTICAÇÃO & PERSISTÊNCIA ---
         function setLoginRole(role) {
             loginSelectedRole = role;
             const btnAluno = document.getElementById('tab-aluno');
             const btnProf = document.getElementById('tab-professor');
             const labelId = document.getElementById('label-login-id');
             const inputUser = document.getElementById('login-user');
-            const labelRegId = document.getElementById('label-reg-id');
-            const inputRegUser = document.getElementById('reg-user');
 
             if (role === 'aluno') {
                 btnAluno.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-brand-600 text-white shadow-sm";
                 btnProf.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 transition-all";
                 labelId.innerText = "Matrícula / RA do Aluno";
-                labelRegId.innerText = "Matrícula / RA do Aluno";
                 inputUser.placeholder = "Digite sua matrícula";
-                inputRegUser.placeholder = "Digite sua matrícula";
+                if (authMode === 'login') inputUser.value = "2026849302";
             } else {
                 btnProf.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-brand-600 text-white shadow-sm";
                 btnAluno.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 transition-all";
                 labelId.innerText = "Registro Docente / SIAPE";
-                labelRegId.innerText = "Registro Docente / SIAPE";
                 inputUser.placeholder = "Digite seu registro docente";
-                inputRegUser.placeholder = "Digite seu registro docente";
+                if (authMode === 'login') inputUser.value = "DOC-98241";
             }
         }
 
-        // SALVAR SESSÃO E CONECTAR
-        function autenticarESalvarSessao(profile) {
-            currentUserProfile = profile;
-            currentUserRole = profile.role;
+        function toggleAuthMode(mode) {
+            authMode = mode;
+            const btnModeLogin = document.getElementById('btn-mode-login');
+            const btnModeRegister = document.getElementById('btn-mode-register');
+            const fieldNome = document.getElementById('field-nome-completo');
+            const fieldEmail = document.getElementById('field-email-cadastro');
+            const btnSubmit = document.getElementById('btn-login-submit');
 
-            // Salva a sessão no localStorage para não cair ao recarregar a página (F5)
-            localStorage.setItem('fnet_session_user', JSON.stringify(profile));
-
-            document.getElementById('login-screen').classList.add('hidden');
-            
-            // Atualizar perfil na interface
-            document.getElementById('user-name-sidebar').innerText = profile.nome;
-            document.getElementById('user-role-sidebar').innerText = `${profile.role === 'professor' ? 'Docente' : 'Aluno'} • ${profile.curso}`;
-            document.getElementById('user-avatar-sidebar').src = profile.avatar;
-            document.getElementById('role-badge').innerText = profile.role === 'professor' ? "Modo Docente" : "Modo Aluno";
-
-            renderSidebar();
-            navigate('dashboard');
+            if (mode === 'register') {
+                btnModeRegister.className = "flex-1 pb-2 border-b-2 border-brand-600 text-brand-600 font-bold";
+                btnModeLogin.className = "flex-1 pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-600 font-bold";
+                fieldNome.classList.remove('hidden');
+                fieldEmail.classList.remove('hidden');
+                document.getElementById('auth-nome').required = true;
+                document.getElementById('auth-email').required = true;
+                btnSubmit.innerHTML = `<span>Criar Conta FNET</span> <i class="fa-solid fa-user-plus"></i>`;
+            } else {
+                btnModeLogin.className = "flex-1 pb-2 border-b-2 border-brand-600 text-brand-600 font-bold";
+                btnModeRegister.className = "flex-1 pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-600 font-bold";
+                fieldNome.classList.add('hidden');
+                fieldEmail.classList.add('hidden');
+                document.getElementById('auth-nome').required = false;
+                document.getElementById('auth-email').required = false;
+                btnSubmit.innerHTML = `<span>Entrar no Portal</span> <i class="fa-solid fa-arrow-right"></i>`;
+            }
         }
 
-        // HANDLER DE LOGIN
-        async function handleLoginSubmit(event) {
+        async function handleAuthSubmit(event) {
             event.preventDefault();
-            const userInput = document.getElementById('login-user').value.trim();
-            const passInput = document.getElementById('login-pass').value.trim();
+            const matricula = document.getElementById('login-user').value.trim();
+            const btnSubmit = document.getElementById('btn-login-submit');
+            btnSubmit.disabled = true;
 
-            const btn = document.getElementById('btn-login');
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Verificando...`;
+            if (authMode === 'register') {
+                const nome = document.getElementById('auth-nome').value.trim();
+                const email = document.getElementById('auth-email').value.trim();
 
-            // Buscar usuário no Supabase se disponível
-            let userFound = null;
-            if (supabaseClient) {
-                const { data } = await supabaseClient
-                    .from('usuarios_fnet')
-                    .select('*')
-                    .eq('identificador', userInput)
-                    .eq('senha', passInput)
-                    .single();
-                
-                if (data) {
-                    userFound = {
-                        nome: data.nome,
-                        identificador: data.identificador,
-                        role: data.role,
-                        curso: data.curso_depto || "Engenharia de Software",
-                        avatar: data.role === 'professor' ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150" : "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150"
-                    };
-                }
-            }
-
-            // Fallback caso não encontre no banco ou esteja rodando localmente
-            if (!userFound) {
-                userFound = {
-                    nome: loginSelectedRole === 'professor' ? "Prof. Roberto Silva" : "Maria Silva",
-                    identificador: userInput,
+                activeUserSession = {
+                    nome: nome,
+                    matricula: matricula,
+                    email: email,
                     role: loginSelectedRole,
-                    curso: "Engenharia de Software",
                     avatar: loginSelectedRole === 'professor' ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150" : "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150"
                 };
+
+                if (supabaseClient) {
+                    await supabaseClient.from('usuarios_fnet').insert([{
+                        nome: nome,
+                        matricula: matricula,
+                        email: email,
+                        tipo: loginSelectedRole
+                    }]);
+                }
+
+                showToast("Conta criada com sucesso!");
+            } else {
+                let nomeUsuario = loginSelectedRole === 'professor' ? "Prof. Roberto Silva" : "Maria Silva";
+                let emailUsuario = loginSelectedRole === 'professor' ? "roberto.silva@docente.fnet.edu.br" : "maria.silva@aluno.fnet.edu.br";
+
+                const savedAccounts = JSON.parse(localStorage.getItem('fnet_accounts_db') || '{}');
+                if (savedAccounts[matricula]) {
+                    nomeUsuario = savedAccounts[matricula].nome;
+                    emailUsuario = savedAccounts[matricula].email;
+                }
+
+                activeUserSession = {
+                    nome: nomeUsuario,
+                    matricula: matricula,
+                    email: emailUsuario,
+                    role: loginSelectedRole,
+                    avatar: loginSelectedRole === 'professor' ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150" : "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150"
+                };
+
+                showToast("Login realizado com sucesso!");
             }
 
-            btn.disabled = false;
-            btn.innerHTML = `Entrar no Portal <i class="fa-solid fa-arrow-right"></i>`;
+            localStorage.setItem('fnet_active_session', JSON.stringify(activeUserSession));
             
-            autenticarESalvarSessao(userFound);
-            showToast(`Bem-vindo(a) de volta, ${userFound.nome}!`);
+            const currentAccounts = JSON.parse(localStorage.getItem('fnet_accounts_db') || '{}');
+            currentAccounts[activeUserSession.matricula] = activeUserSession;
+            localStorage.setItem('fnet_accounts_db', JSON.stringify(currentAccounts));
+
+            btnSubmit.disabled = false;
+            iniciarSessaoApp();
         }
 
-        // HANDLER DE CADASTRO DE CONTA
-        async function handleRegisterSubmit(event) {
-            event.preventDefault();
-            const nomeInput = document.getElementById('reg-nome').value.trim();
-            const userInput = document.getElementById('reg-user').value.trim();
-            const passInput = document.getElementById('reg-pass').value.trim();
-
-            const btn = document.getElementById('btn-register');
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Criando conta...`;
-
-            const novoPerfil = {
-                nome: nomeInput,
-                identificador: userInput,
-                role: loginSelectedRole,
-                curso: "Engenharia de Software",
-                avatar: loginSelectedRole === 'professor' ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150" : "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150"
-            };
-
-            // Salvar no Supabase se disponível
-            if (supabaseClient) {
-                const { error } = await supabaseClient
-                    .from('usuarios_fnet')
-                    .insert([{
-                        nome: nomeInput,
-                        identificador: userInput,
-                        senha: passInput,
-                        role: loginSelectedRole,
-                        curso_depto: "Engenharia de Software"
-                    }]);
-                
-                if (error) {
-                    showToast("Nota: Não foi possível gravar no Supabase, entrando localmente.", "error");
+        function verificarSessaoExistente() {
+            const savedSession = localStorage.getItem('fnet_active_session');
+            if (savedSession) {
+                try {
+                    activeUserSession = JSON.parse(savedSession);
+                    iniciarSessaoApp();
+                } catch (e) {
+                    localStorage.removeItem('fnet_active_session');
                 }
             }
+        }
 
-            btn.disabled = false;
-            btn.innerHTML = `Cadastrar e Entrar <i class="fa-solid fa-user-plus"></i>`;
+        function iniciarSessaoApp() {
+            if (!activeUserSession) return;
+            
+            currentUserRole = activeUserSession.role;
+            document.getElementById('login-screen').classList.add('hidden');
 
-            autenticarESalvarSessao(novoPerfil);
-            showToast("Conta criada com sucesso!");
+            const elemNome = document.getElementById('user-name-sidebar');
+            const elemRole = document.getElementById('user-role-sidebar');
+            const elemAvatar = document.getElementById('user-avatar-sidebar');
+            const elemBadge = document.getElementById('role-badge');
+
+            if (elemNome) elemNome.innerText = activeUserSession.nome;
+            if (elemRole) elemRole.innerText = `${currentUserRole === 'professor' ? 'Docente' : 'Aluno'} • Eng. de Software`;
+            if (elemAvatar) elemAvatar.src = activeUserSession.avatar;
+            if (elemBadge) elemBadge.innerText = currentUserRole === 'professor' ? "Modo Docente" : "Modo Aluno";
+
+            navigate(currentView);
         }
 
         function logout() {
-            localStorage.removeItem('fnet_session_user');
-            currentUserProfile = null;
+            localStorage.removeItem('fnet_active_session');
+            activeUserSession = null;
             document.getElementById('login-screen').classList.remove('hidden');
             if (carouselInterval) clearInterval(carouselInterval);
-            showToast("Sessão encerrada com sucesso.");
+            showToast("Você saiu do sistema.");
         }
 
         function toggleSidebar() {
@@ -703,6 +667,7 @@
 
         function renderSidebar() {
             const navMenu = document.getElementById('nav-menu');
+            if (!navMenu) return;
             navMenu.innerHTML = '';
             
             navItems.forEach(item => {
@@ -723,6 +688,7 @@
             if (carouselInterval) clearInterval(carouselInterval);
             
             const mainView = document.getElementById('main-view');
+            if (!mainView) return;
             mainView.scrollTop = 0;
 
             switch(viewId) {
@@ -823,6 +789,7 @@
         function initCarousel() {
             const container = document.getElementById('carousel-slides-container');
             const dotsContainer = document.getElementById('carousel-dots');
+            if (!container || !dotsContainer) return;
             
             container.innerHTML = mockData.campusPhotos.map((p, i) => `
                 <div class="campus-slide ${i === 0 ? 'active' : ''}" style="background-image: linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('${p.img}')"></div>
@@ -854,10 +821,15 @@
             });
 
             const p = mockData.campusPhotos[currentCarouselIndex];
-            document.getElementById('campus-tag').innerText = p.tag;
-            document.getElementById('campus-title').innerText = p.title;
-            document.getElementById('campus-desc').innerText = p.desc;
-            document.getElementById('campus-btn').innerHTML = `${p.btnTxt} <i class="fa-solid fa-arrow-right"></i>`;
+            const tagElem = document.getElementById('campus-tag');
+            const titleElem = document.getElementById('campus-title');
+            const descElem = document.getElementById('campus-desc');
+            const btnElem = document.getElementById('campus-btn');
+
+            if (tagElem) tagElem.innerText = p.tag;
+            if (titleElem) titleElem.innerText = p.title;
+            if (descElem) descElem.innerText = p.desc;
+            if (btnElem) btnElem.innerHTML = `${p.btnTxt} <i class="fa-solid fa-arrow-right"></i>`;
         }
 
         function abrirModalEventoAtivo() {
@@ -928,9 +900,413 @@
             btn.disabled = false;
         }
 
+        // --- WEBMAIL ---
         function renderWebmail(container) {
             const emailAtivo = stateEmails.find(e => e.id === activeSelectedEmailId) || stateEmails[0];
 
             container.innerHTML = `
                 <div class="max-w-7xl mx-auto space-y-6">
-                    <div class
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                            <h2 class="text-2xl font-black text-black dark:text-white">Webmail FNET</h2>
+                            <p class="text-xs text-slate-500">Caixa de entrada acadêmica oficial.</p>
+                        </div>
+                        <button onclick="abrirModalNovoEmail()" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold shadow-lg shadow-brand-600/30 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-plus"></i> Novo E-mail
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[600px]">
+                        <div class="lg:col-span-5 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm flex flex-col h-full">
+                            <div class="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 flex justify-between items-center">
+                                <span class="text-xs font-bold text-slate-600 dark:text-slate-300">Caixa de Entrada</span>
+                                <span class="text-[10px] bg-brand-100 text-brand-600 dark:bg-brand-900/40 dark:text-brand-400 px-2 py-0.5 rounded-full font-bold">${stateEmails.length} mensagens</span>
+                            </div>
+                            <div class="divide-y divide-slate-100 dark:divide-slate-800 overflow-y-auto custom-scrollbar flex-1">
+                                ${stateEmails.map(e => `
+                                    <div onclick="selecionarEmail(${e.id})" class="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors cursor-pointer ${e.id === activeSelectedEmailId ? 'bg-brand-50/50 dark:bg-brand-950/20 border-l-4 border-brand-600' : ''}">
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="text-xs font-extrabold text-black dark:text-white truncate">${e.de}</span>
+                                            <span class="text-[10px] text-slate-400 shrink-0">${e.data}</span>
+                                        </div>
+                                        <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">${e.assunto}</h4>
+                                        <p class="text-[11px] text-slate-500 mt-0.5 line-clamp-1">${e.desc}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-7 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col h-full overflow-hidden">
+                            ${emailAtivo ? `
+                                <div class="p-6 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <h3 class="text-lg font-bold text-black dark:text-white">${emailAtivo.assunto}</h3>
+                                        <span class="text-xs text-slate-400">${emailAtivo.data}</span>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
+                                            ${emailAtivo.de.substring(0,2).toUpperCase()}
+                                        </div>
+                                        <div>
+                                            <p class="text-xs font-bold text-black dark:text-white">${emailAtivo.de}</p>
+                                            <p class="text-[11px] text-slate-400">&lt;${emailAtivo.emailDe || 'remetente@fnet.edu.br'}&gt;</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-6 flex-1 overflow-y-auto custom-scrollbar text-xs text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+                                    ${emailAtivo.conteudo || emailAtivo.desc}
+                                </div>
+                                <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 flex justify-end gap-2">
+                                    <button onclick="responderEmailAtual('${emailAtivo.emailDe}', '${emailAtivo.assunto}')" class="px-4 py-2 bg-slate-200 dark:bg-slate-800 hover:bg-brand-600 hover:text-white text-black dark:text-white rounded-xl text-xs font-bold transition-all flex items-center gap-2">
+                                        <i class="fa-solid fa-reply"></i> Responder
+                                    </button>
+                                </div>
+                            ` : `
+                                <div class="flex-1 flex flex-col items-center justify-center text-slate-400 p-8">
+                                    <i class="fa-solid fa-envelope-open text-4xl mb-2"></i>
+                                    <p class="text-xs">Selecione uma mensagem para ler.</p>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selecionarEmail(id) {
+            activeSelectedEmailId = id;
+            renderWebmail(document.getElementById('main-view'));
+        }
+
+        function abrirModalNovoEmail() {
+            document.getElementById('email-para').value = '';
+            document.getElementById('email-assunto').value = '';
+            document.getElementById('email-mensagem').value = '';
+            document.getElementById('modal-novo-email').classList.remove('hidden');
+            document.getElementById('modal-novo-email').classList.add('flex');
+        }
+
+        function responderEmailAtual(paraEmail, assuntoOriginal) {
+            document.getElementById('email-para').value = paraEmail || 'secretaria@fnet.edu.br';
+            document.getElementById('email-assunto').value = `Re: ${assuntoOriginal}`;
+            document.getElementById('email-mensagem').value = '';
+            document.getElementById('modal-novo-email').classList.remove('hidden');
+            document.getElementById('modal-novo-email').classList.add('flex');
+        }
+
+        async function confirmarEnvioEmail(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-sub-email');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Enviando...`;
+
+            const para = document.getElementById('email-para').value;
+            const assunto = document.getElementById('email-assunto').value;
+            const mensagem = document.getElementById('email-mensagem').value;
+            const deNome = activeUserSession ? activeUserSession.nome : "Usuário FNET";
+            const deEmail = activeUserSession ? activeUserSession.email : "usuario@fnet.edu.br";
+
+            const novoEmail = {
+                id: Date.now(),
+                de: `Para: ${para}`,
+                emailDe: deEmail,
+                assunto: assunto,
+                data: "Agora",
+                desc: mensagem.substring(0, 50) + "...",
+                conteudo: `De: ${deNome} <${deEmail}>\nPara: ${para}\n\n${mensagem}`
+            };
+
+            stateEmails.unshift(novoEmail);
+            activeSelectedEmailId = novoEmail.id;
+
+            if (supabaseClient) {
+                await supabaseClient.from('webmail_fnet').insert([{
+                    de: deEmail,
+                    para: para,
+                    assunto: assunto,
+                    mensagem: mensagem
+                }]);
+            }
+
+            showToast("Mensagem enviada com sucesso!");
+            closeModal('modal-novo-email');
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Enviar Mensagem`;
+            renderWebmail(document.getElementById('main-view'));
+        }
+
+        // --- OUTRAS ABAS ---
+        function renderCursos(container) {
+            container.innerHTML = `
+                <div class="max-w-7xl mx-auto space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-black text-black dark:text-white">Disciplinas & Matérias</h2>
+                        <p class="text-xs text-slate-500">Conteúdo programático e ambiente virtual do aluno.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        ${mockData.disciplinas.map(d => `
+                            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                                <div>
+                                    <div class="flex justify-between items-center mb-4">
+                                        <div class="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-900/40 text-brand-600 flex items-center justify-center text-xl">
+                                            <i class="fa-solid ${d.icone}"></i>
+                                        </div>
+                                        <span class="text-xs font-bold px-3 py-1 bg-brand-50 dark:bg-brand-900/30 text-brand-600 rounded-full">${d.badge}</span>
+                                    </div>
+                                    <h3 class="text-lg font-extrabold text-black dark:text-white mb-2">${d.nome}</h3>
+                                    <p class="text-xs text-slate-500 mb-4 leading-relaxed">${d.desc}</p>
+                                    <p class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">Docente: ${d.prof}</p>
+                                </div>
+                                <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                                    <span class="text-xs text-slate-500 font-semibold">Progresso: ${d.progresso}%</span>
+                                    <button onclick="showToast('Abrindo aula de ${d.nome}...')" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold transition-all">Acessar Aulas</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderNotas(container) {
+            container.innerHTML = `
+                <div class="max-w-7xl mx-auto space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-black text-black dark:text-white">Boletim Acadêmico & Notas</h2>
+                        <p class="text-xs text-slate-500">Acompanhamento oficial de desempenho acadêmico.</p>
+                    </div>
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 uppercase font-bold border-b border-slate-200 dark:border-slate-800">
+                                        <th class="p-4">Disciplina</th>
+                                        <th class="p-4 text-center">Prova 1 (P1)</th>
+                                        <th class="p-4 text-center">Prova 2 (P2)</th>
+                                        <th class="p-4 text-center">Trabalho</th>
+                                        <th class="p-4 text-center">Média Final</th>
+                                        <th class="p-4 text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
+                                    ${mockData.notas.map(n => `
+                                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                                            <td class="p-4 font-bold text-black dark:text-white">${n.disciplina}</td>
+                                            <td class="p-4 text-center text-slate-600 dark:text-slate-300">${n.p1}</td>
+                                            <td class="p-4 text-center text-slate-600 dark:text-slate-300">${n.p2}</td>
+                                            <td class="p-4 text-center text-slate-600 dark:text-slate-300">${n.trabalho}</td>
+                                            <td class="p-4 text-center font-black text-brand-600">${n.media}</td>
+                                            <td class="p-4 text-center"><span class="px-2.5 py-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 rounded-full font-bold text-[10px]">${n.status}</span></td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSalas(container) {
+            container.innerHTML = `
+                <div class="max-w-7xl mx-auto space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-black text-black dark:text-white">Reserva de Salas & Espaços</h2>
+                        <p class="text-xs text-slate-500">Agende espaços de estudo individual ou em grupo.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        ${mockData.salasEstudo.map(s => `
+                            <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                                <div>
+                                    <div class="flex justify-between items-start mb-3">
+                                        <span class="text-xs font-bold text-slate-500">${s.id}</span>
+                                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${s.status === 'Livre' ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30' : 'bg-red-50 text-red-600 dark:bg-red-900/30'}">${s.status}</span>
+                                    </div>
+                                    <h3 class="font-bold text-base text-black dark:text-white mb-1">${s.nome}</h3>
+                                    <p class="text-xs text-slate-500 mb-1"><i class="fa-solid fa-users mr-1"></i> Capacidade: ${s.capacidade}</p>
+                                    <p class="text-xs text-slate-500 mb-4"><i class="fa-solid fa-display mr-1"></i> ${s.recurso}</p>
+                                </div>
+                                <button ${s.status === 'Ocupada' ? 'disabled' : ''} onclick="abrirModalSala('${s.nome}')" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 disabled:bg-slate-300 dark:disabled:bg-slate-800 text-white rounded-xl text-xs font-bold shadow-md transition-all">
+                                    ${s.status === 'Livre' ? 'Reservar Esta Sala' : 'Sala Ocupada'}
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function abrirModalSala(nomeSala) {
+            document.getElementById('sala-nome-modal').value = nomeSala;
+            document.getElementById('reser-data-modal').value = new Date().toISOString().split('T')[0];
+            document.getElementById('modal-sala').classList.remove('hidden');
+            document.getElementById('modal-sala').classList.add('flex');
+        }
+
+        function renderBiblioteca(container) {
+            container.innerHTML = `
+                <div class="max-w-7xl mx-auto space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-black text-black dark:text-white">Biblioteca Digital FNET</h2>
+                        <p class="text-xs text-slate-500">Livros técnicos e documentações para download.</p>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        ${mockData.livros.map(l => `
+                            <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                                <div>
+                                    <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/40 text-brand-600 flex items-center justify-center text-lg mb-3">
+                                        <i class="fa-solid ${l.icone}"></i>
+                                    </div>
+                                    <span class="text-[10px] font-bold text-brand-600 bg-brand-50 dark:bg-brand-900/30 px-2 py-0.5 rounded-full">${l.cat}</span>
+                                    <h4 class="font-bold text-sm text-black dark:text-white mt-2 mb-1">${l.titulo}</h4>
+                                    <p class="text-xs text-slate-500">Autor: ${l.autor} (${l.ano})</p>
+                                </div>
+                                <button onclick="showToast('Download do livro iniciado!')" class="mt-4 w-full py-2 bg-slate-100 dark:bg-slate-800 hover:bg-brand-600 hover:text-white text-black dark:text-white rounded-xl text-xs font-bold transition-all">Baixar PDF</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPerfil(container) {
+            const nome = activeUserSession ? activeUserSession.nome : "Maria Silva";
+            const matricula = activeUserSession ? activeUserSession.matricula : "2026849302";
+            const email = activeUserSession ? activeUserSession.email : "maria.silva@aluno.fnet.edu.br";
+            const avatar = activeUserSession ? activeUserSession.avatar : "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300";
+
+            container.innerHTML = `
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-black text-black dark:text-white">Meu Perfil FNET</h2>
+                        <p class="text-xs text-slate-500">Dados do cadastro estudantil.</p>
+                    </div>
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row gap-6 items-center">
+                        <img src="${avatar}" alt="Foto" class="w-28 h-28 rounded-full object-cover border-4 border-brand-600 shadow-xl">
+                        <div class="flex-1 space-y-2 text-center md:text-left">
+                            <h3 class="text-xl font-bold text-black dark:text-white">${nome}</h3>
+                            <p class="text-xs text-slate-500">Matrícula: ${matricula} • Engenharia de Software</p>
+                            <p class="text-xs text-slate-500">E-mail: ${email}</p>
+                            <span class="inline-block mt-2 px-3 py-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 rounded-full font-bold text-[10px]">Matrícula Ativa</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- CHAT COM IA (GEMINI) ---
+        function responderChatManual() {
+            setTimeout(() => {
+                const input = document.getElementById('chat-input-ia');
+                const val = input.value;
+                if (val) {
+                    adicionarMensagemChat(val, 'user');
+                    input.value = '';
+                    processarRespostaIA(val);
+                }
+            }, 100);
+        }
+
+        function enviarMensagemChatIA(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input-ia');
+            const texto = input.value.trim();
+            if (!texto) return;
+
+            adicionarMensagemChat(texto, 'user');
+            input.value = '';
+            processarRespostaIA(texto);
+        }
+
+        function adicionarMensagemChat(texto, remetente) {
+            const chatMessages = document.getElementById('chat-messages-ia');
+            const div = document.createElement('div');
+            
+            if (remetente === 'user') {
+                div.className = "flex items-start justify-end gap-2";
+                div.innerHTML = `
+                    <div class="bg-brand-600 text-white p-3 rounded-2xl rounded-tr-none text-xs shadow-sm max-w-[80%] leading-relaxed">
+                        ${texto}
+                    </div>
+                `;
+            } else {
+                div.className = "flex items-start gap-2";
+                div.innerHTML = `
+                    <div class="w-7 h-7 rounded-full bg-brand-600 flex items-center justify-center text-white text-xs shrink-0 shadow-md">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 text-black dark:text-white p-3 rounded-2xl rounded-tl-none text-xs border border-slate-200 dark:border-slate-700 shadow-sm max-w-[80%] leading-relaxed">
+                        ${texto}
+                    </div>
+                `;
+            }
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        async function processarRespostaIA(pergunta) {
+            const chatMessages = document.getElementById('chat-messages-ia');
+            
+            const typingId = 'typing-' + Date.now();
+            const typingDiv = document.createElement('div');
+            typingDiv.id = typingId;
+            typingDiv.className = "flex items-start gap-2";
+            typingDiv.innerHTML = `
+                <div class="w-7 h-7 rounded-full bg-brand-600 flex items-center justify-center text-white text-xs shrink-0 shadow-md"><i class="fa-solid fa-robot"></i></div>
+                <div class="bg-white dark:bg-slate-800 text-slate-400 p-3 rounded-2xl rounded-tl-none text-xs border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 bg-brand-600 rounded-full animate-bounce"></span>
+                    <span class="w-1.5 h-1.5 bg-brand-600 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                    <span class="w-1.5 h-1.5 bg-brand-600 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                </div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            if (GEMINI_API_KEY && GEMINI_API_KEY !== "SUA_API_KEY_DO_GEMINI") {
+                try {
+                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            system_instruction: {
+                                parts: [{ text: "Você é o FNET Assistant, IA oficial da Faculdade Nova Era Tecnológica. Responda com simpatia e clareza sobre matrículas, provas, boletos e matérias acadêmicas." }]
+                            },
+                            contents: [{ parts: [{ text: pergunta }] }]
+                        })
+                    });
+
+                    const data = await res.json();
+                    document.getElementById(typingId).remove();
+
+                    if (data.candidates && data.candidates[0].content.parts[0].text) {
+                        adicionarMensagemChat(data.candidates[0].content.parts[0].text, 'ia');
+                    } else {
+                        adicionarMensagemChat("Não consegui gerar uma resposta agora. Tente novamente em instantes.", 'ia');
+                    }
+                } catch (err) {
+                    document.getElementById(typingId).remove();
+                    adicionarMensagemChat("Erro ao comunicar com a IA do Gemini.", 'ia');
+                }
+            } else {
+                setTimeout(() => {
+                    document.getElementById(typingId).remove();
+                    let resposta = "Entendi sua pergunta! (Defina sua GEMINI_API_KEY no script para ativá-la com respostas inteligentes em tempo real).";
+                    const pLower = pergunta.toLowerCase();
+                    if (pLower.includes('boleto')) resposta = "💳 Para 2ª via do boleto, acesse o painel financeiro ou vá à secretaria.";
+                    else if (pLower.includes('prova')) resposta = "📝 O pedido de 2ª chamada deve ser enviado em até 48 horas após a aplicação da prova.";
+                    else if (pLower.includes('hora')) resposta = "🎓 Certificados de cursos e palestras valem como horas complementares.";
+
+                    adicionarMensagemChat(resposta, 'ia');
+                }, 800);
+            }
+        }
+
+        window.onload = function() {
+            verificarSessaoExistente();
+            if (!activeUserSession) {
+                setLoginRole('aluno');
+            }
+        };
+    </script>
+</body>
+</html>
