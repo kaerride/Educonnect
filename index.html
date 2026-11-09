@@ -99,7 +99,6 @@
 
             <!-- Formulário de Login / Cadastro -->
             <form onsubmit="handleAuthSubmit(event)" class="space-y-3.5">
-                <!-- Campo Adicional para Cadastro (Nome Completo) -->
                 <div id="field-nome-completo" class="hidden">
                     <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">Nome Completo</label>
                     <div class="relative">
@@ -108,7 +107,6 @@
                     </div>
                 </div>
 
-                <!-- Campo E-mail para Cadastro -->
                 <div id="field-email-cadastro" class="hidden">
                     <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1 uppercase">E-mail Acadêmico ou Pessoal</label>
                     <div class="relative">
@@ -167,13 +165,29 @@
                 </div>
 
                 <!-- Navigation Links -->
-                <nav class="p-4 space-y-1 custom-scrollbar overflow-y-auto max-h-[calc(100vh-180px)]" id="nav-menu">
+                <nav class="p-4 space-y-1 custom-scrollbar overflow-y-auto max-h-[calc(100vh-220px)]" id="nav-menu">
                     <!-- Dynamic Nav Items via JS -->
                 </nav>
             </div>
 
-            <!-- Status Bar & Profile -->
+            <!-- Status Bar, Gamification Stats & Profile -->
             <div>
+                <!-- MINICARD GAMIFICAÇÃO SIDEBAR -->
+                <div class="mx-3 mb-2 p-3 bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-2xl flex items-center justify-between cursor-pointer hover:border-amber-500/50 transition-all" onclick="navigate('gamificacao')">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center font-black text-xs shadow-md shadow-amber-500/30">
+                            <i class="fa-solid fa-fire"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Ofensiva FNET</p>
+                            <p id="sidebar-streak-text" class="text-xs font-black text-black dark:text-white">5 Dias Seguidos</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span id="sidebar-xp-badge" class="text-xs font-extrabold text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/40 px-2 py-0.5 rounded-full">450 XP</span>
+                    </div>
+                </div>
+
                 <div class="px-4 py-2 text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-2 font-semibold border-t border-slate-200 dark:border-slate-800">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> DB & Auth Active
                 </div>
@@ -203,11 +217,17 @@
                     </button>
                     <div class="relative hidden sm:block">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                        <input type="text" placeholder="Buscar matérias, avisos, salas..." class="w-64 pl-9 pr-4 py-1.5 text-sm rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:border-brand-600 transition-all dark:text-white">
+                        <input type="text" placeholder="Buscar matérias, avisos, livros..." class="w-64 pl-9 pr-4 py-1.5 text-sm rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:border-brand-600 transition-all dark:text-white">
                     </div>
                 </div>
 
                 <div class="flex items-center gap-3">
+                    <!-- XP Topbar -->
+                    <button onclick="navigate('gamificacao')" class="flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 rounded-full text-xs font-bold hover:bg-amber-500/20 transition-all">
+                        <i class="fa-solid fa-trophy text-amber-500"></i>
+                        <span id="topbar-xp-val">450 XP</span>
+                    </button>
+
                     <span id="role-badge" class="px-3 py-1 text-xs font-bold rounded-full bg-brand-50 text-brand-600 border border-brand-100 dark:bg-brand-900/30 dark:text-brand-500 dark:border-brand-900">
                         Modo Aluno
                     </span>
@@ -234,23 +254,23 @@
                                 <span class="text-[10px] bg-brand-100 text-brand-600 dark:bg-brand-900/40 dark:text-brand-400 px-2 py-0.5 rounded-full font-bold">3 novos</span>
                             </div>
                             <div class="divide-y divide-slate-100 dark:divide-slate-800 max-h-80 overflow-y-auto custom-scrollbar">
+                                <div class="p-3.5 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors cursor-pointer" onclick="navigate('gamificacao')">
+                                    <div class="flex gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 text-xs"><i class="fa-solid fa-gift"></i></div>
+                                        <div>
+                                            <p class="text-xs font-bold text-black dark:text-white">Nova Recompensa Liberada!</p>
+                                            <p class="text-[11px] text-slate-500 mt-0.5">Você atingiu XP suficiente para resgatar vale-café.</p>
+                                            <span class="text-[9px] text-slate-400 mt-1 block">Agora</span>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="p-3.5 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors cursor-pointer" onclick="navigate('salas')">
                                     <div class="flex gap-3">
                                         <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 text-xs"><i class="fa-solid fa-check"></i></div>
                                         <div>
                                             <p class="text-xs font-bold text-black dark:text-white">Reserva de Sala Confirmada</p>
                                             <p class="text-[11px] text-slate-500 mt-0.5">Sua reserva de sala foi vinculada ao Supabase.</p>
-                                            <span class="text-[9px] text-slate-400 mt-1 block">Agora</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="p-3.5 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors cursor-pointer" onclick="navigate('notas')">
-                                    <div class="flex gap-3">
-                                        <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center shrink-0 text-xs"><i class="fa-solid fa-file-signature"></i></div>
-                                        <div>
-                                            <p class="text-xs font-bold text-black dark:text-white">Boletim Atualizado</p>
-                                            <p class="text-[11px] text-slate-500 mt-0.5">Nota de Engenharia de Software publicada.</p>
-                                            <span class="text-[9px] text-slate-400 mt-1 block">Há 1 hora</span>
+                                            <span class="text-[9px] text-slate-400 mt-1 block">Há 10 min</span>
                                         </div>
                                     </div>
                                 </div>
@@ -293,15 +313,15 @@
                         <i class="fa-solid fa-robot"></i>
                     </div>
                     <div class="bg-white dark:bg-slate-800 text-black dark:text-white p-3 rounded-2xl rounded-tl-none text-xs border border-slate-200 dark:border-slate-700 shadow-sm leading-relaxed">
-                        Olá! Sou a IA oficial da FNET alimentada pelo Gemini. Como posso ajudar com seus estudos, prazos ou boletos hoje?
+                        Olá! Sou a IA oficial da FNET alimentada pelo Gemini. Como posso ajudar com seus estudos, prazos ou recomendação de livros hoje?
                     </div>
                 </div>
             </div>
 
             <div class="p-2 border-t border-slate-200 dark:border-slate-800 flex gap-1.5 overflow-x-auto custom-scrollbar bg-white dark:bg-slate-900">
                 <button onclick="document.getElementById('chat-input-ia').value='Como tiro 2a via do boleto?'; responderChatManual();" class="px-2.5 py-1 bg-brand-50 dark:bg-slate-800 text-[10px] font-bold text-brand-600 dark:text-brand-400 rounded-full whitespace-nowrap hover:bg-brand-100">💳 Seg. Via Boleto</button>
-                <button onclick="document.getElementById('chat-input-ia').value='Qual o prazo de 2a chamada de prova?'; responderChatManual();" class="px-2.5 py-1 bg-brand-50 dark:bg-slate-800 text-[10px] font-bold text-brand-600 dark:text-brand-400 rounded-full whitespace-nowrap hover:bg-brand-100">📝 2ª Chamada</button>
-                <button onclick="document.getElementById('chat-input-ia').value='Como lançar horas complementares?'; responderChatManual();" class="px-2.5 py-1 bg-brand-50 dark:bg-slate-800 text-[10px] font-bold text-brand-600 dark:text-brand-400 rounded-full whitespace-nowrap hover:bg-brand-100">🎓 Horas</button>
+                <button onclick="document.getElementById('chat-input-ia').value='Me recomende um livro de Engenharia de Software'; responderChatManual();" class="px-2.5 py-1 bg-brand-50 dark:bg-slate-800 text-[10px] font-bold text-brand-600 dark:text-brand-400 rounded-full whitespace-nowrap hover:bg-brand-100">📚 Livro Recomendado</button>
+                <button onclick="document.getElementById('chat-input-ia').value='Como troco XP por horas complementares?'; responderChatManual();" class="px-2.5 py-1 bg-brand-50 dark:bg-slate-800 text-[10px] font-bold text-brand-600 dark:text-brand-400 rounded-full whitespace-nowrap hover:bg-brand-100">🏆 Trocar XP</button>
             </div>
 
             <form onsubmit="enviarMensagemChatIA(event)" class="p-3 border-t border-slate-200 dark:border-slate-800 flex gap-2 bg-white dark:bg-slate-900">
@@ -318,7 +338,34 @@
         </button>
     </div>
 
-    <!-- MODAL DE NOVO E-MAIL (WEBMAIL) -->
+    <!-- MODAL DE LEITURA DE LIVRO (KINDLE READER SIMULATOR) -->
+    <div id="modal-leitor-livro" class="fixed inset-0 bg-black/90 backdrop-blur-md hidden flex-col z-50">
+        <div class="h-14 bg-slate-900 border-b border-slate-800 px-6 flex justify-between items-center text-white">
+            <div class="flex items-center gap-3">
+                <span class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center text-xs font-bold"><i class="fa-solid fa-book-open"></i></span>
+                <div>
+                    <h4 id="reader-title" class="text-sm font-extrabold truncate">Título do Livro</h4>
+                    <p id="reader-author" class="text-[10px] text-slate-400">Autor do Livro</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <span id="reader-page-indicator" class="text-xs text-slate-400 font-medium">Página 1 de 12</span>
+                <button onclick="fecharLeitorLivro()" class="p-2 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+        </div>
+        <div class="flex-1 overflow-y-auto p-6 md:p-12 max-w-4xl mx-auto text-slate-200 leading-relaxed font-serif text-sm md:text-base custom-scrollbar" id="reader-content">
+            <!-- Conteúdo dinâmico do livro -->
+        </div>
+        <div class="h-16 bg-slate-900 border-t border-slate-800 px-6 flex justify-between items-center">
+            <button onclick="mudarPaginaLeitor(-1)" id="btn-prev-page" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold"><i class="fa-solid fa-chevron-left mr-1"></i> Anterior</button>
+            <button onclick="concluirLeituraLivro()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-600/30">
+                <i class="fa-solid fa-check-circle mr-1"></i> Concluir Leitura (+100 XP)
+            </button>
+            <button onclick="mudarPaginaLeitor(1)" id="btn-next-page" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold">Próxima <i class="fa-solid fa-chevron-right ml-1"></i></button>
+        </div>
+    </div>
+
+    <!-- MODAIS EXISTENTES (WEBMAIL, EVENTOS, SALAS) -->
     <div id="modal-novo-email" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800">
             <div class="flex justify-between items-center mb-4">
@@ -347,7 +394,6 @@
         </div>
     </div>
 
-    <!-- MODAIS EXISTENTES (EVENTOS & SALAS) -->
     <div id="modal-evento" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800">
             <div class="flex justify-between items-center mb-4">
@@ -433,7 +479,77 @@
         let activeSelectedEmailId = 1;
         let activeUserSession = null;
 
-        // ESTADO DINÂMICO DOS E-MAILS DO WEBMAIL
+        // ESTADO DE GAMIFICAÇÃO (LOCALSTORAGE PERSISTENTE)
+        let gamificationState = {
+            xp: 450,
+            level: 3,
+            streak: 5,
+            readBooks: [1],
+            rewardsClaimed: []
+        };
+
+        // ESTADO DE LIVROS REAIS E INTERATIVOS
+        let activeBookReading = null;
+        let currentBookPage = 1;
+
+        const booksData = [
+            {
+                id: 1,
+                titulo: "Dom Casmurro",
+                autor: "Machado de Assis",
+                categoria: "Literatura",
+                capa: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80",
+                paginas: 8,
+                xpReward: 100,
+                pdfUrl: "https://www.dominiopublico.gov.br/download/texto/bv000164.pdf",
+                trecho: [
+                    "Capítulo I — Do Título\n\nUma noite destas, vindo da cidade para o Engenho Novo, encontrei no trem da Central um rapaz aqui do bairro, que eu conheço de vista e de chapéu. Cumprimentou-me, sentou-se ao meu lado, falou da lua e dos ministros, e acabou recitando-me versos...",
+                    "Capítulo II — Do Princípio\n\nAgora que expliquei o título, passo a escrever a história. Primeiro a infância. Tenho ali na parede o retrato de minha mãe, tal qual era aos vinte anos. Bonita, com um ar de doçura que os anos não alteraram...",
+                    "Capítulo III — Capitu\n\nCapitu era Capitu, isto é, uma criatura muito particular, mais mulher do que eu era homem. Olhos de ressaca? Dá-me uma comparação exata para explicar os olhos de Capitu..."
+                ]
+            },
+            {
+                id: 2,
+                titulo: "Clean Code: Conceitos Fundamentais",
+                autor: "Robert C. Martin (Open Ref)",
+                categoria: "Tecnologia",
+                capa: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=600&q=80",
+                paginas: 12,
+                xpReward: 150,
+                pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+                trecho: [
+                    "Seção 1 — Nomes Significativos\n\nEscolher bons nomes leva tempo, mas economiza mais tempo do que custa. O nome de uma variável, função ou classe deve responder a todas as grandes questões: Por que ela existe? O que ela faz?",
+                    "Seção 2 — Funções Pequenas\n\nA primeira regra das funções é que elas devem ser pequenas. A segunda regra das funções é que elas devem ser ainda menores! Elas devem fazer apenas uma coisa e fazê-la bem."
+                ]
+            },
+            {
+                id: 3,
+                titulo: "O Príncipe",
+                autor: "Nicolau Maquiavel",
+                categoria: "Negócios",
+                capa: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=80",
+                paginas: 10,
+                xpReward: 120,
+                pdfUrl: "https://www.dominiopublico.gov.br/download/texto/eb00008a.pdf",
+                trecho: [
+                    "Capítulo I — Quantos são os gêneros de principados e por que modos se adquirem...\n\nTodos os estados, todos os domínios que exerceram e exercem poder sobre os homens foram e são repúblicas ou principados."
+                ]
+            },
+            {
+                id: 4,
+                titulo: "Guia Completo de UX & Interfaces",
+                autor: "FNET Open Education",
+                categoria: "UX/UI",
+                capa: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?auto=format&fit=crop&w=600&q=80",
+                paginas: 6,
+                xpReward: 80,
+                pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+                trecho: [
+                    "Capítulo 1 — Hierarquia Visual\n\nA hierarquia visual guia o olho do usuário pela interface. Elementos maiores, de maior contraste ou em posições superiores atraem o foco primeiro."
+                ]
+            }
+        ];
+
         let stateEmails = [
             { id: 1, de: "Secretaria FNET", emailDe: "secretaria@fnet.edu.br", assunto: "Confirmação de Matrícula 2026.2", data: "Hoje, 14:30", desc: "Sua rematrícula foi processada com sucesso no sistema FNET.", conteudo: "Prezado(a) aluno(a),\n\nInformamos que sua rematrícula para o semestre 2026.2 foi processada e confirmada com sucesso em nosso sistema acadêmico.\n\nCaso necessite do comprovante ou da grade de horários atualizada, acesse a aba 'Meu Perfil' ou solicite diretamente no balcão da secretaria.\n\nAtenciosamente,\nEquipe de Secretaria FNET." },
             { id: 2, de: "Profa. Ana Paula", emailDe: "ana.souza@fnet.edu.br", assunto: "Lembrete: Entrega do Projeto de FrontEnd", data: "Ontem, 09:15", desc: "Envie o link do seu repositório diretamente na aba 'Notas & Atividades'.", conteudo: "Olá pessoal,\n\nLembrando que o prazo final para envio do projeto de Single Page Application (SPA) encerra nesta sexta-feira às 23:59.\n\nCertifiquem-se de que o repositório no GitHub está público e com o README documentado.\n\nBons estudos!" },
@@ -463,12 +579,6 @@
                 { title: "Campus MIT — Instalações Tecnológicas FNET", tag: "Pesquisa & Robótica", desc: "Laboratórios e auditórios equipados para o desenvolvimento de soluções em tecnologia.", btnTxt: "Inscrever Projeto", img: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1200&q=80" },
                 { title: "Harvard University — Annenberg Hall", tag: "Excelência Acadêmica", desc: "Auditórios de alto padrão e fóruns de debate para estudantes e docentes.", btnTxt: "Garantir Vaga", img: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80" },
                 { title: "Auditório Central de Palestras e Simpósios", tag: "Eventos Acadêmicos", desc: "Participe das conferências presenciais e garanta suas horas complementares.", btnTxt: "Inscrever Equipe", img: "https://images.unsplash.com/photo-1492538368677-f6e0afe31dcc?auto=format&fit=crop&w=1200&q=80" }
-            ],
-            livros: [
-                { titulo: "Design Systems no Mundo Real", autor: "Carlos Eduardo", ano: "2024", cat: "UX/UI", icone: "fa-book" },
-                { titulo: "Arquitetura de SPA com React & Vite", autor: "Ana Paula Souza", ano: "2025", cat: "FrontEnd", icone: "fa-code" },
-                { titulo: "Modelagem NoSQL e Alta Performance", autor: "Marina R. Lima", ano: "2023", cat: "Banco de Dados", icone: "fa-database" },
-                { titulo: "Engenharia de Software Moderna", autor: "Roberto Silva", ano: "2026", cat: "Engenharia", icone: "fa-gears" }
             ]
         };
 
@@ -476,13 +586,45 @@
             { id: 'dashboard', label: 'Início', icon: 'fa-house', roles: ['aluno', 'professor'] },
             { id: 'cursos', label: 'Disciplinas', icon: 'fa-book-open', roles: ['aluno', 'professor'] },
             { id: 'notas', label: 'Notas & Atividades', icon: 'fa-chart-pie', roles: ['aluno', 'professor'] },
-            { id: 'salas', label: 'Salas & Espaços', icon: 'fa-door-open', roles: ['aluno', 'professor'] },
             { id: 'biblioteca', label: 'Biblioteca Digital', icon: 'fa-book-bookmark', roles: ['aluno', 'professor'] },
+            { id: 'gamificacao', label: 'Passaporte & XP', icon: 'fa-trophy', roles: ['aluno', 'professor'] },
+            { id: 'salas', label: 'Salas & Espaços', icon: 'fa-door-open', roles: ['aluno', 'professor'] },
             { id: 'webmail', label: 'Webmail FNET', icon: 'fa-envelope', roles: ['aluno', 'professor'] },
             { id: 'perfil', label: 'Meu Perfil', icon: 'fa-user-gear', roles: ['aluno', 'professor'] }
         ];
 
-        // --- SISTEMA DE AUTENTICAÇÃO & PERSISTÊNCIA ---
+        // --- SISTEMA DE XP E GAMIFICAÇÃO ---
+        function carregarGamificacao() {
+            const saved = localStorage.getItem('fnet_gamification');
+            if (saved) {
+                try { gamificationState = JSON.parse(saved); } catch (e) {}
+            }
+            atualizarDisplaysGamificacao();
+        }
+
+        function salvarGamificacao() {
+            localStorage.setItem('fnet_gamification', JSON.stringify(gamificationState));
+            atualizarDisplaysGamificacao();
+        }
+
+        function adicionarXP(quantidade, motivo) {
+            gamificationState.xp += quantidade;
+            gamificationState.level = Math.floor(gamificationState.xp / 200) + 1;
+            salvarGamificacao();
+            showToast(`+${quantidade} XP! ${motivo}`, 'success');
+        }
+
+        function atualizarDisplaysGamificacao() {
+            const sidebarXp = document.getElementById('sidebar-xp-badge');
+            const topbarXp = document.getElementById('topbar-xp-val');
+            const streakText = document.getElementById('sidebar-streak-text');
+
+            if (sidebarXp) sidebarXp.innerText = `${gamificationState.xp} XP`;
+            if (topbarXp) topbarXp.innerText = `${gamificationState.xp} XP`;
+            if (streakText) streakText.innerText = `${gamificationState.streak} Dias Seguidos`;
+        }
+
+        // --- SISTEMA DE AUTENTICAÇÃO ---
         function setLoginRole(role) {
             loginSelectedRole = role;
             const btnAluno = document.getElementById('tab-aluno');
@@ -560,6 +702,7 @@
                 }
 
                 showToast("Conta criada com sucesso!");
+                adicionarXP(50, "Bônus de Cadastro FNET!");
             } else {
                 let nomeUsuario = loginSelectedRole === 'professor' ? "Prof. Roberto Silva" : "Maria Silva";
                 let emailUsuario = loginSelectedRole === 'professor' ? "roberto.silva@docente.fnet.edu.br" : "maria.silva@aluno.fnet.edu.br";
@@ -619,6 +762,7 @@
             if (elemAvatar) elemAvatar.src = activeUserSession.avatar;
             if (elemBadge) elemBadge.innerText = currentUserRole === 'professor' ? "Modo Docente" : "Modo Aluno";
 
+            carregarGamificacao();
             navigate(currentView);
         }
 
@@ -695,17 +839,35 @@
                 case 'dashboard': renderDashboard(mainView); break;
                 case 'cursos': renderCursos(mainView); break;
                 case 'notas': renderNotas(mainView); break;
-                case 'salas': renderSalas(mainView); break;
                 case 'biblioteca': renderBiblioteca(mainView); break;
+                case 'gamificacao': renderGamificacao(mainView); break;
+                case 'salas': renderSalas(mainView); break;
                 case 'webmail': renderWebmail(mainView); break;
                 case 'perfil': renderPerfil(mainView); break;
                 default: renderDashboard(mainView);
             }
         }
 
+        // --- DASHBOARD ---
         function renderDashboard(container) {
             container.innerHTML = `
                 <div class="space-y-6 max-w-7xl mx-auto">
+                    <!-- Banner de Gamificação Rapido -->
+                    <div class="bg-gradient-to-r from-amber-600 via-orange-600 to-brand-600 rounded-3xl p-6 text-white shadow-xl flex flex-col md:flex-row justify-between items-center gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl font-black shrink-0">
+                                <i class="fa-solid fa-fire text-amber-300"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-black tracking-tight">Trilha de Leitura & XP Estudantil</h3>
+                                <p class="text-xs text-amber-100 mt-0.5">Leia livros da biblioteca, acumule XP e troque por horas complementares!</p>
+                            </div>
+                        </div>
+                        <button onclick="navigate('gamificacao')" class="px-5 py-2.5 bg-white text-brand-600 hover:bg-slate-100 rounded-xl text-xs font-black shadow-lg whitespace-nowrap transition-all">
+                            Ver Resgates & Missões <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+
                     <div class="campus-slider shadow-2xl bg-slate-900 border border-slate-800">
                         <div id="carousel-slides-container"></div>
                         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-6 md:p-8 z-10">
@@ -737,48 +899,18 @@
                             </div>
                         </div>
                         <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-900/30 text-brand-600 flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-clock"></i></div>
+                            <div class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-900/30 text-amber-600 flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-trophy"></i></div>
                             <div>
-                                <p class="text-xs text-slate-500 font-medium">Horas Complementares</p>
-                                <h3 class="text-xl font-black text-black dark:text-white">140 / 180h</h3>
+                                <p class="text-xs text-slate-500 font-medium">Nível Estudantil</p>
+                                <h3 class="text-xl font-black text-amber-600">Nível ${gamificationState.level}</h3>
                             </div>
                         </div>
                         <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-900/30 text-amber-600 flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-file-invoice-dollar"></i></div>
                             <div>
                                 <p class="text-xs text-slate-500 font-medium">Situação Financeira</p>
                                 <h3 class="text-xl font-black text-emerald-600">Quitado</h3>
                             </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-black tracking-tight text-black dark:text-white">Disciplinas em Destaque</h3>
-                            <button onclick="navigate('cursos')" class="text-xs font-bold text-brand-600 hover:underline">Ver todas</button>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            ${mockData.disciplinas.map(d => `
-                                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm flex flex-col justify-between hover:border-brand-600 transition-all">
-                                    <div class="p-5" style="border-top: 4px solid ${d.headerColor}">
-                                        <div class="flex justify-between items-start mb-3">
-                                            <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-brand-600">
-                                                <i class="fa-solid ${d.icone}"></i>
-                                            </div>
-                                            <span class="text-[10px] font-bold px-2.5 py-1 bg-brand-50 dark:bg-brand-900/40 text-brand-600 rounded-full">${d.badge}</span>
-                                        </div>
-                                        <h4 class="font-bold text-sm text-black dark:text-white mb-1">${d.nome}</h4>
-                                        <p class="text-xs text-slate-500 mb-4">${d.prof}</p>
-                                        <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
-                                            <div class="bg-brand-600 h-full rounded-full" style="width: ${d.progresso}%"></div>
-                                        </div>
-                                    </div>
-                                    <div class="px-5 py-3 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-xs">
-                                        <span class="text-slate-500">Progresso</span>
-                                        <span class="font-bold text-black dark:text-white">${d.progresso}%</span>
-                                    </div>
-                                </div>
-                            `).join('')}
                         </div>
                     </div>
                 </div>
@@ -832,75 +964,312 @@
             if (btnElem) btnElem.innerHTML = `${p.btnTxt} <i class="fa-solid fa-arrow-right"></i>`;
         }
 
-        function abrirModalEventoAtivo() {
-            const p = mockData.campusPhotos[currentCarouselIndex];
-            document.getElementById('evento-nome-hidden').value = p.title;
-            document.getElementById('evento-nome-display').value = p.title;
-            document.getElementById('modal-evento').classList.remove('hidden');
-            document.getElementById('modal-evento').classList.add('flex');
+        // --- NOVA BIBLIOTECA DIGITAL INTERATIVA ---
+        function renderBiblioteca(container) {
+            container.innerHTML = `
+                <div class="max-w-7xl mx-auto space-y-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                            <h2 class="text-2xl font-black text-black dark:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-book-bookmark text-brand-600"></i> Biblioteca Digital FNET
+                            </h2>
+                            <p class="text-xs text-slate-500">Livros digitais gratuitos, clássicos e guias técnicos open-access.</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="px-3 py-1.5 bg-amber-500/10 text-amber-600 border border-amber-500/30 rounded-xl text-xs font-extrabold flex items-center gap-1.5">
+                                <i class="fa-solid fa-circle-check"></i> ${gamificationState.readBooks.length} Livros Lidos
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Filtros e Busca de Livros -->
+                    <div class="flex flex-col sm:flex-row justify-between gap-4 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+                        <div class="flex gap-2 overflow-x-auto custom-scrollbar">
+                            <button onclick="filtrarLivros('Todos')" class="px-3.5 py-1.5 bg-brand-600 text-white rounded-xl text-xs font-bold whitespace-nowrap">Todos os Livros</button>
+                            <button onclick="filtrarLivros('Tecnologia')" class="px-3.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-brand-600 hover:text-white text-slate-600 dark:text-slate-300 rounded-xl text-xs font-bold whitespace-nowrap transition-all">Tecnologia</button>
+                            <button onclick="filtrarLivros('Literatura')" class="px-3.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-brand-600 hover:text-white text-slate-600 dark:text-slate-300 rounded-xl text-xs font-bold whitespace-nowrap transition-all">Literatura</button>
+                            <button onclick="filtrarLivros('UX/UI')" class="px-3.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-brand-600 hover:text-white text-slate-600 dark:text-slate-300 rounded-xl text-xs font-bold whitespace-nowrap transition-all">UX/UI Design</button>
+                            <button onclick="filtrarLivros('Negócios')" class="px-3.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-brand-600 hover:text-white text-slate-600 dark:text-slate-300 rounded-xl text-xs font-bold whitespace-nowrap transition-all">Negócios</button>
+                        </div>
+                    </div>
+
+                    <!-- Grid de Livros Interativos -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="grid-livros-container">
+                        ${booksData.map(b => renderCardLivro(b)).join('')}
+                    </div>
+                </div>
+            `;
         }
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.add('hidden');
-            document.getElementById(modalId).classList.remove('flex');
+        function renderCardLivro(livro) {
+            const jaLido = gamificationState.readBooks.includes(livro.id);
+            return `
+                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-lg hover:border-brand-600 transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="relative h-56 overflow-hidden">
+                            <img src="${livro.capa}" alt="${livro.titulo}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <span class="absolute top-3 left-3 px-2.5 py-1 bg-black/70 backdrop-blur-md text-amber-400 font-black text-[10px] rounded-full border border-amber-400/30 flex items-center gap-1">
+                                <i class="fa-solid fa-trophy"></i> +${livro.xpReward} XP
+                            </span>
+                            ${jaLido ? `
+                                <span class="absolute top-3 right-3 px-2.5 py-1 bg-emerald-600 text-white font-bold text-[10px] rounded-full shadow-md">
+                                    <i class="fa-solid fa-check"></i> Lido
+                                </span>
+                            ` : ''}
+                        </div>
+                        <div class="p-5">
+                            <span class="text-[10px] font-bold text-brand-600 uppercase tracking-wider">${livro.categoria}</span>
+                            <h3 class="font-extrabold text-base text-black dark:text-white mt-1 mb-1 line-clamp-1">${livro.titulo}</h3>
+                            <p class="text-xs text-slate-500 mb-3">${livro.autor}</p>
+                            <p class="text-[11px] text-slate-400 flex items-center gap-2">
+                                <span><i class="fa-solid fa-file-pdf"></i> PDF Incluso</span> • 
+                                <span><i class="fa-solid fa-book-open"></i> ${livro.paginas} págs</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="p-5 pt-0 grid grid-cols-2 gap-2">
+                        <button onclick="abrirLeitorLivro(${livro.id})" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-book-open"></i> Ler Agora
+                        </button>
+                        <a href="${livro.pdfUrl}" target="_blank" class="w-full py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-black dark:text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-download"></i> PDF
+                        </a>
+                    </div>
+                </div>
+            `;
         }
 
-        async function confirmarInscricaoEvento(e) {
-            e.preventDefault();
-            const btn = document.getElementById('btn-sub-evento');
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Salvando...`;
-
-            const evento = document.getElementById('evento-nome-hidden').value;
-            const aluno = document.getElementById('evento-aluno').value;
-            const projeto = document.getElementById('evento-projeto').value;
-
-            if (supabaseClient) {
-                const { data, error } = await supabaseClient
-                    .from('inscricoes_eventos')
-                    .insert([{ evento_titulo: evento, aluno_nome: aluno, projeto_nome: projeto }]);
-
-                if (error) showToast("Erro no Supabase: " + error.message, "error");
-                else {
-                    showToast("Inscrição registrada no banco de dados!");
-                    closeModal('modal-evento');
-                }
+        function filtrarLivros(cat) {
+            const container = document.getElementById('grid-livros-container');
+            if (cat === 'Todos') {
+                container.innerHTML = booksData.map(b => renderCardLivro(b)).join('');
             } else {
-                showToast("Modo de teste: Inscrição confirmada!");
-                closeModal('modal-evento');
+                const filtrados = booksData.filter(b => b.categoria === cat);
+                container.innerHTML = filtrados.map(b => renderCardLivro(b)).join('');
             }
-            btn.disabled = false;
-            btn.innerHTML = `<i class="fa-solid fa-check"></i> Enviar Inscrição`;
         }
 
-        async function confirmarReservaSala(e) {
-            e.preventDefault();
-            const btn = document.getElementById('btn-sub-reserva');
-            btn.disabled = true;
+        function abrirLeitorLivro(livroId) {
+            activeBookReading = booksData.find(b => b.id === livroId);
+            if (!activeBookReading) return;
 
-            const sala = document.getElementById('sala-nome-modal').value;
-            const aluno = document.getElementById('reser-aluno-modal').value;
-            const dataReserva = document.getElementById('reser-data-modal').value;
-            const horario = document.getElementById('reser-horario-modal').value;
+            currentBookPage = 1;
+            document.getElementById('reader-title').innerText = activeBookReading.titulo;
+            document.getElementById('reader-author').innerText = activeBookReading.autor;
+            atualizarConteudoLeitor();
 
-            if (supabaseClient) {
-                const { data, error } = await supabaseClient
-                    .from('reservas_salas')
-                    .insert([{ sala_nome: sala, aluno_nome: aluno, data_reserva: dataReserva, horario: horario }]);
+            const modal = document.getElementById('modal-leitor-livro');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
 
-                if (error) showToast("Erro: " + error.message, "error");
-                else {
-                    showToast("Sala reservada no Supabase!");
-                    closeModal('modal-sala');
-                }
+        function fecharLeitorLivro() {
+            const modal = document.getElementById('modal-leitor-livro');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function mudarPaginaLeitor(delta) {
+            if (!activeBookReading) return;
+            const maxPages = activeBookReading.trecho.length;
+            if (currentBookPage + delta >= 1 && currentBookPage + delta <= maxPages) {
+                currentBookPage += delta;
+                atualizarConteudoLeitor();
+            }
+        }
+
+        function atualizarConteudoLeitor() {
+            const content = document.getElementById('reader-content');
+            const pageInd = document.getElementById('reader-page-indicator');
+            const total = activeBookReading.trecho.length;
+
+            pageInd.innerText = `Página ${currentBookPage} de ${total}`;
+            content.innerText = activeBookReading.trecho[currentBookPage - 1] || "Fim da demonstração do livro.";
+        }
+
+        function concluirLeituraLivro() {
+            if (!activeBookReading) return;
+
+            if (!gamificationState.readBooks.includes(activeBookReading.id)) {
+                gamificationState.readBooks.push(activeBookReading.id);
+                adicionarXP(activeBookReading.xpReward, `Leitura de "${activeBookReading.titulo}" concluída!`);
             } else {
-                showToast("Modo de teste: Agendamento realizado!");
-                closeModal('modal-sala');
+                showToast("Você já recebeu o XP por este livro anteriormente!");
             }
-            btn.disabled = false;
+
+            fecharLeitorLivro();
+            if (currentView === 'biblioteca') renderBiblioteca(document.getElementById('main-view'));
         }
 
-        // --- WEBMAIL ---
+        // --- SISTEMA DE GAMIFICAÇÃO & PASSPORT ---
+        function renderGamificacao(container) {
+            container.innerHTML = `
+                <div class="max-w-7xl mx-auto space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-black text-black dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-trophy text-amber-500"></i> Passaporte de Prêmios & Gamificação FNET
+                        </h2>
+                        <p class="text-xs text-slate-500">Conclua atividades, leia livros e troque seus pontos por recompensas reais na faculdade.</p>
+                    </div>
+
+                    <!-- Header com Stats do Estudante -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-3xl p-6 text-white shadow-xl flex items-center justify-between">
+                            <div>
+                                <p class="text-xs text-amber-200 font-bold uppercase">Nível de Estudante</p>
+                                <h3 class="text-3xl font-black">Nível ${gamificationState.level}</h3>
+                                <p class="text-xs text-amber-100 mt-1">Próximo nível a 600 XP</p>
+                            </div>
+                            <div class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-3xl">
+                                <i class="fa-solid fa-crown text-amber-200"></i>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-xs text-slate-500 font-bold uppercase">Ofensiva de Acessos</p>
+                                <h3 class="text-3xl font-black text-black dark:text-white">${gamificationState.streak} Dias</h3>
+                                <p class="text-xs text-emerald-500 font-bold mt-1"><i class="fa-solid fa-fire"></i> Em Chamas!</p>
+                            </div>
+                            <div class="w-16 h-16 rounded-2xl bg-amber-50 dark:bg-amber-900/30 text-amber-500 flex items-center justify-center text-3xl">
+                                <i class="fa-solid fa-fire"></i>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-xs text-slate-500 font-bold uppercase">Saldo Atual de XP</p>
+                                <h3 class="text-3xl font-black text-amber-500">${gamificationState.xp} XP</h3>
+                                <p class="text-xs text-slate-400 mt-1">Disponível para troca</p>
+                            </div>
+                            <div class="w-16 h-16 rounded-2xl bg-brand-50 dark:bg-brand-900/30 text-brand-600 flex items-center justify-center text-3xl">
+                                <i class="fa-solid fa-coins"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Missões Diárias -->
+                    <div>
+                        <h3 class="text-lg font-black tracking-tight text-black dark:text-white mb-4">Missões Acadêmicas Diárias</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-lg"><i class="fa-solid fa-book"></i></div>
+                                    <div>
+                                        <h4 class="font-bold text-xs text-black dark:text-white">Ler 1 Livro na Biblioteca</h4>
+                                        <p class="text-[10px] text-slate-400">+100 XP por conclusão</p>
+                                    </div>
+                                </div>
+                                <button onclick="navigate('biblioteca')" class="px-3 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold">Ir Ler</button>
+                            </div>
+
+                            <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center text-lg"><i class="fa-solid fa-comments"></i></div>
+                                    <div>
+                                        <h4 class="font-bold text-xs text-black dark:text-white">Falar com a IA Gemini</h4>
+                                        <p class="text-[10px] text-slate-400">+30 XP diário</p>
+                                    </div>
+                                </div>
+                                <button onclick="toggleChatIA()" class="px-3 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold">Abrir Chat</button>
+                            </div>
+
+                            <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-lg"><i class="fa-solid fa-door-open"></i></div>
+                                    <div>
+                                        <h4 class="font-bold text-xs text-black dark:text-white">Reservar Sala de Estudos</h4>
+                                        <p class="text-[10px] text-slate-400">+50 XP por reserva</p>
+                                    </div>
+                                </div>
+                                <button onclick="navigate('salas')" class="px-3 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold">Reservar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loja de Resgate de Prêmios FNET -->
+                    <div>
+                        <h3 class="text-lg font-black tracking-tight text-black dark:text-white mb-4">Loja de Recompensas FNET</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            
+                            <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                                <div>
+                                    <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-2xl mb-3">
+                                        <i class="fa-solid fa-graduation-cap"></i>
+                                    </div>
+                                    <h4 class="font-extrabold text-sm text-black dark:text-white">+15 Horas Complementares</h4>
+                                    <p class="text-xs text-slate-500 mt-1">Crédito direto no seu histórico escolar acadêmico.</p>
+                                </div>
+                                <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                                    <span class="font-black text-amber-500 text-sm">500 XP</span>
+                                    <button onclick="resgatarRecompensa('+15 Horas Complementares', 500)" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs shadow-md">Resgatar</button>
+                                </div>
+                            </div>
+
+                            <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                                <div>
+                                    <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-2xl mb-3">
+                                        <i class="fa-solid fa-mug-hot"></i>
+                                    </div>
+                                    <h4 class="font-extrabold text-sm text-black dark:text-white">Vale Café na Cantina FNET</h4>
+                                    <p class="text-xs text-slate-500 mt-1">Voucher para retirar um café espresso e salgado.</p>
+                                </div>
+                                <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                                    <span class="font-black text-amber-500 text-sm">300 XP</span>
+                                    <button onclick="resgatarRecompensa('Vale Café na Cantina FNET', 300)" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs shadow-md">Resgatar</button>
+                                </div>
+                            </div>
+
+                            <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                                <div>
+                                    <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-2xl mb-3">
+                                        <i class="fa-solid fa-shirt"></i>
+                                    </div>
+                                    <h4 class="font-extrabold text-sm text-black dark:text-white">Camisa Oficial FNET Tech</h4>
+                                    <p class="text-xs text-slate-500 mt-1">Camisa exclusiva do curso de TI para retirar na secretaria.</p>
+                                </div>
+                                <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                                    <span class="font-black text-amber-500 text-sm">1200 XP</span>
+                                    <button onclick="resgatarRecompensa('Camisa Oficial FNET Tech', 1200)" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs shadow-md">Resgatar</button>
+                                </div>
+                            </div>
+
+                            <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                                <div>
+                                    <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-2xl mb-3">
+                                        <i class="fa-solid fa-ticket"></i>
+                                    </div>
+                                    <h4 class="font-extrabold text-sm text-black dark:text-white">Isenção Taxa 2ª Chamada</h4>
+                                    <p class="text-xs text-slate-500 mt-1">Isenção total da taxa de requerimento de prova.</p>
+                                </div>
+                                <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                                    <span class="font-black text-amber-500 text-sm">800 XP</span>
+                                    <button onclick="resgatarRecompensa('Isenção Taxa 2ª Chamada', 800)" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs shadow-md">Resgatar</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function resgatarRecompensa(nomeItem, custoXp) {
+            if (gamificationState.xp < custoXp) {
+                showToast(`XP Insuficiente! Você precisa de ${custoXp} XP para resgatar.`, 'error');
+                return;
+            }
+
+            gamificationState.xp -= custoXp;
+            gamificationState.rewardsClaimed.push({ item: nomeItem, data: new Date().toLocaleDateString() });
+            salvarGamificacao();
+
+            showToast(`Parabéns! Você resgatou "${nomeItem}"! Apresente o comprovante no balcão FNET.`, 'success');
+            if (currentView === 'gamificacao') renderGamificacao(document.getElementById('main-view'));
+        }
+
+        // --- OUTRAS ABAS (WEBMAIL, CURSOS, NOTAS, SALAS, PERFIL) ---
         function renderWebmail(container) {
             const emailAtivo = stateEmails.find(e => e.id === activeSelectedEmailId) || stateEmails[0];
 
@@ -1028,6 +1397,7 @@
                 }]);
             }
 
+            adicionarXP(20, "Envio de mensagem via Webmail!");
             showToast("Mensagem enviada com sucesso!");
             closeModal('modal-novo-email');
             btn.disabled = false;
@@ -1035,7 +1405,6 @@
             renderWebmail(document.getElementById('main-view'));
         }
 
-        // --- OUTRAS ABAS ---
         function renderCursos(container) {
             container.innerHTML = `
                 <div class="max-w-7xl mx-auto space-y-6">
@@ -1143,32 +1512,6 @@
             document.getElementById('modal-sala').classList.add('flex');
         }
 
-        function renderBiblioteca(container) {
-            container.innerHTML = `
-                <div class="max-w-7xl mx-auto space-y-6">
-                    <div>
-                        <h2 class="text-2xl font-black text-black dark:text-white">Biblioteca Digital FNET</h2>
-                        <p class="text-xs text-slate-500">Livros técnicos e documentações para download.</p>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        ${mockData.livros.map(l => `
-                            <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
-                                <div>
-                                    <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/40 text-brand-600 flex items-center justify-center text-lg mb-3">
-                                        <i class="fa-solid ${l.icone}"></i>
-                                    </div>
-                                    <span class="text-[10px] font-bold text-brand-600 bg-brand-50 dark:bg-brand-900/30 px-2 py-0.5 rounded-full">${l.cat}</span>
-                                    <h4 class="font-bold text-sm text-black dark:text-white mt-2 mb-1">${l.titulo}</h4>
-                                    <p class="text-xs text-slate-500">Autor: ${l.autor} (${l.ano})</p>
-                                </div>
-                                <button onclick="showToast('Download do livro iniciado!')" class="mt-4 w-full py-2 bg-slate-100 dark:bg-slate-800 hover:bg-brand-600 hover:text-white text-black dark:text-white rounded-xl text-xs font-bold transition-all">Baixar PDF</button>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
         function renderPerfil(container) {
             const nome = activeUserSession ? activeUserSession.nome : "Maria Silva";
             const matricula = activeUserSession ? activeUserSession.matricula : "2026849302";
@@ -1179,7 +1522,7 @@
                 <div class="max-w-4xl mx-auto space-y-6">
                     <div>
                         <h2 class="text-2xl font-black text-black dark:text-white">Meu Perfil FNET</h2>
-                        <p class="text-xs text-slate-500">Dados do cadastro estudantil.</p>
+                        <p class="text-xs text-slate-500">Dados do cadastro estudantil e progresso de XP.</p>
                     </div>
                     <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row gap-6 items-center">
                         <img src="${avatar}" alt="Foto" class="w-28 h-28 rounded-full object-cover border-4 border-brand-600 shadow-xl">
@@ -1187,7 +1530,10 @@
                             <h3 class="text-xl font-bold text-black dark:text-white">${nome}</h3>
                             <p class="text-xs text-slate-500">Matrícula: ${matricula} • Engenharia de Software</p>
                             <p class="text-xs text-slate-500">E-mail: ${email}</p>
-                            <span class="inline-block mt-2 px-3 py-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 rounded-full font-bold text-[10px]">Matrícula Ativa</span>
+                            <div class="flex items-center gap-2 justify-center md:justify-start pt-2">
+                                <span class="px-3 py-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 rounded-full font-bold text-[10px]">Matrícula Ativa</span>
+                                <span class="px-3 py-1 bg-amber-500/10 text-amber-600 border border-amber-500/30 rounded-full font-extrabold text-[10px]"><i class="fa-solid fa-trophy"></i> Nível ${gamificationState.level} (${gamificationState.xp} XP)</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1262,6 +1608,8 @@
             chatMessages.appendChild(typingDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
+            adicionarXP(30, "Interação com Gemini IA!");
+
             if (GEMINI_API_KEY && GEMINI_API_KEY !== "SUA_API_KEY_DO_GEMINI") {
                 try {
                     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
@@ -1294,7 +1642,8 @@
                     const pLower = pergunta.toLowerCase();
                     if (pLower.includes('boleto')) resposta = "💳 Para 2ª via do boleto, acesse o painel financeiro ou vá à secretaria.";
                     else if (pLower.includes('prova')) resposta = "📝 O pedido de 2ª chamada deve ser enviado em até 48 horas após a aplicação da prova.";
-                    else if (pLower.includes('hora')) resposta = "🎓 Certificados de cursos e palestras valem como horas complementares.";
+                    else if (pLower.includes('hora')) resposta = "🎓 Certificados de cursos ou trocas de XP valem como horas complementares.";
+                    else if (pLower.includes('livro')) resposta = "📚 Recomendo a leitura de 'Clean Code: Conceitos Fundamentais' disponível na aba Biblioteca Digital!";
 
                     adicionarMensagemChat(resposta, 'ia');
                 }, 800);
