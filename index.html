@@ -50,7 +50,7 @@
 
         .campus-slider {
             position: relative;
-            height: 320px;
+            height: 340px;
             border-radius: 1.75rem;
             overflow: hidden;
         }
@@ -172,7 +172,6 @@
 
             <!-- Status Bar, Gamification Stats & Profile -->
             <div>
-                <!-- MINICARD GAMIFICAÇÃO SIDEBAR -->
                 <div class="mx-3 mb-2 p-3 bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-2xl flex items-center justify-between cursor-pointer hover:border-amber-500/50 transition-all" onclick="navigate('gamificacao')">
                     <div class="flex items-center gap-2.5">
                         <div class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center font-black text-xs shadow-md shadow-amber-500/30">
@@ -222,7 +221,6 @@
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <!-- XP Topbar -->
                     <button onclick="navigate('gamificacao')" class="flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 rounded-full text-xs font-bold hover:bg-amber-500/20 transition-all">
                         <i class="fa-solid fa-trophy text-amber-500"></i>
                         <span id="topbar-xp-val">450 XP</span>
@@ -338,9 +336,8 @@
         </button>
     </div>
 
-    <!-- MODAL DE LEITURA DE LIVRO (SISTEMA RÍGIDO DE LEITURA & PERGUNTAS ANTI-CHUTE) -->
+    <!-- MODAL DE LEITURA DE LIVRO -->
     <div id="modal-leitor-livro" class="fixed inset-0 bg-black/95 backdrop-blur-md hidden flex-col z-50">
-        <!-- BARRA SUPERIOR DE PROGRESSO DA LEITURA -->
         <div class="h-1.5 w-full bg-slate-800">
             <div id="reader-progress-bar" class="h-full bg-brand-600 transition-all duration-300 w-0"></div>
         </div>
@@ -359,13 +356,11 @@
             </div>
         </div>
 
-        <!-- ÁREA DO CONTEÚDO DO LIVRO OU QUIZ -->
         <div class="flex-1 overflow-y-auto p-6 md:p-12 max-w-4xl mx-auto text-slate-200 leading-relaxed font-serif text-sm md:text-base custom-scrollbar relative" id="reader-container">
             <div id="reader-content" class="space-y-4 whitespace-pre-line">
                 <!-- Texto da página -->
             </div>
 
-            <!-- CONTAINER DE QUIZ / CHECAGEM ANTI-CHUTE -->
             <div id="quiz-container" class="hidden my-8 p-6 bg-slate-900 rounded-3xl border border-brand-600 shadow-2xl space-y-4">
                 <div class="flex items-center gap-2 text-brand-500 text-xs font-bold uppercase tracking-wider">
                     <i class="fa-solid fa-shield-check"></i> Verificação de Leitura Acadêmica (Anti-Chute)
@@ -380,7 +375,6 @@
             </div>
         </div>
 
-        <!-- BARRA INFERIOR DE NAVEGAÇÃO RÍGIDA -->
         <div class="h-16 bg-slate-900 border-t border-slate-800 px-6 flex justify-between items-center">
             <button onclick="mudarPaginaLeitor(-1)" id="btn-prev-page" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold disabled:opacity-50">
                 <i class="fa-solid fa-chevron-left mr-1"></i> Anterior
@@ -399,7 +393,67 @@
         </div>
     </div>
 
-    <!-- MODAIS EXISTENTES (WEBMAIL, EVENTOS, SALAS) -->
+    <!-- MODAL DE DETALHES E INSCRIÇÃO EM EVENTOS (ATUALIZADO PARA RECOMPENSAS & EVENTOS REAIS) -->
+    <div id="modal-evento" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <span id="modal-evento-tag" class="px-3 py-1 bg-brand-600 text-white text-[10px] font-black uppercase rounded-full">Feira Acadêmica</span>
+                    <h3 id="modal-evento-titulo" class="text-xl font-black text-black dark:text-white mt-2">Nome do Evento</h3>
+                </div>
+                <button onclick="closeModal('modal-evento')" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+
+            <!-- Informações detalhadas do Evento -->
+            <div class="space-y-4 mb-6">
+                <p id="modal-evento-desc" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">Descrição completa do evento...</p>
+
+                <!-- Grid de Detalhes -->
+                <div class="grid grid-cols-2 gap-3 p-3 bg-slate-50 dark:bg-slate-800/60 rounded-2xl text-xs border border-slate-200 dark:border-slate-700">
+                    <div>
+                        <span class="text-slate-400 block text-[10px] font-bold uppercase">Data & Horário</span>
+                        <span id="modal-evento-data" class="font-extrabold text-black dark:text-white">25 de Novembro, 09:00</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block text-[10px] font-bold uppercase">Localização</span>
+                        <span id="modal-evento-local" class="font-extrabold text-black dark:text-white">Auditório Bloco A</span>
+                    </div>
+                </div>
+
+                <!-- Recompensas do Evento -->
+                <div class="flex items-center gap-3 p-3.5 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 rounded-2xl">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center text-lg font-black shrink-0">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-black text-amber-600 dark:text-amber-400">Recompensas ao Participar:</h4>
+                        <p class="text-[11px] font-bold text-black dark:text-white mt-0.5">
+                            <span id="modal-evento-horas" class="text-emerald-500">+10h Horas Complementares</span> • 
+                            <span id="modal-evento-xp" class="text-amber-500">+150 XP</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulário de Inscrição -->
+            <form onsubmit="confirmarInscricaoEvento(event)" class="space-y-3 pt-2 border-t border-slate-200 dark:border-slate-800">
+                <input type="hidden" id="evento-nome-hidden">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Nome Completo do Aluno</label>
+                    <input type="text" id="evento-aluno" placeholder="Ex: Maria Silva" required class="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-black dark:text-white focus:outline-none focus:border-brand-600">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Projeto ou Nome da Equipe (Opcional)</label>
+                    <input type="text" id="evento-projeto" placeholder="Ex: App EduConnect / Time Eng. Software" class="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-black dark:text-white focus:outline-none focus:border-brand-600">
+                </div>
+                <button type="submit" id="btn-sub-evento" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-brand-600/30 transition-all flex items-center justify-center gap-2 text-xs">
+                    <i class="fa-solid fa-ticket"></i> Confirmar Inscrição no Evento
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAIS RESTANTES -->
     <div id="modal-novo-email" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800">
             <div class="flex justify-between items-center mb-4">
@@ -423,33 +477,6 @@
                 </div>
                 <button type="submit" id="btn-sub-email" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 rounded-xl shadow-lg shadow-brand-600/30 transition-all flex items-center justify-center gap-2">
                     <i class="fa-solid fa-paper-plane"></i> Enviar Mensagem
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <div id="modal-evento" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800">
-            <div class="flex justify-between items-center mb-4">
-                <h3 id="modal-evento-titulo" class="text-lg font-bold text-black dark:text-white">Inscrição no Evento</h3>
-                <button onclick="closeModal('modal-evento')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <form onsubmit="confirmarInscricaoEvento(event)" class="space-y-4">
-                <input type="hidden" id="evento-nome-hidden">
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">EVENTO SELECIONADO</label>
-                    <input type="text" id="evento-nome-display" readonly class="w-full bg-slate-100 dark:bg-slate-800 font-bold px-3 py-2 rounded-lg text-sm text-black dark:text-white">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">NOME COMPLETO / LÍDER DO GRUPO</label>
-                    <input type="text" id="evento-aluno" placeholder="Ex: Maria Silva" required class="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm text-black dark:text-white">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">TÍTULO DO PROJETO / NOME DO TIME</label>
-                    <input type="text" id="evento-projeto" placeholder="Ex: App EduConnect / Time Engenharia" required class="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm text-black dark:text-white">
-                </div>
-                <button type="submit" id="btn-sub-evento" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 rounded-xl shadow-lg shadow-brand-600/30 transition-all flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-check"></i> Enviar Inscrição para o Supabase
                 </button>
             </form>
         </div>
@@ -513,7 +540,7 @@
         let activeSelectedEmailId = 1;
         let activeUserSession = null;
 
-        // ESTADO DE GAMIFICAÇÃO (LOCALSTORAGE PERSISTENTE)
+        // ESTADO DE GAMIFICAÇÃO
         let gamificationState = {
             xp: 450,
             level: 3,
@@ -522,7 +549,6 @@
             rewardsClaimed: []
         };
 
-        // LIVROS ACADÊMICOS COM MAIS DE 100 PÁGINAS E PERGUNTAS ANTI-CHUTE
         let activeBookReading = null;
         let currentBookPage = 1;
         let selectedQuizOption = null;
@@ -663,10 +689,44 @@
                 { id: 'B205', nome: "Sala Mac / Design Lab", capacidade: "8 pessoas", recurso: "Workstations & Monitor Ultrawide", status: "Livre" },
                 { id: 'C301', nome: "Espaço Silencioso Individual", capacidade: "1 pessoa", recurso: "Tomadas & Isolamento Acústico", status: "Livre" }
             ],
+            // EVENTOS ACADÊMICOS REAIS COM RECOMPENSAS E DATAS
             campusPhotos: [
-                { title: "Campus MIT — Instalações Tecnológicas FNET", tag: "Pesquisa & Robótica", desc: "Laboratórios e auditórios equipados para o desenvolvimento de soluções em tecnologia.", btnTxt: "Inscrever Projeto", img: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1200&q=80" },
-                { title: "Harvard University — Annenberg Hall", tag: "Excelência Acadêmica", desc: "Auditórios de alto padrão e fóruns de debate para estudantes e docentes.", btnTxt: "Garantir Vaga", img: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80" },
-                { title: "Auditório Central de Palestras e Simpósios", tag: "Eventos Acadêmicos", desc: "Participe das conferências presenciais e garanta suas horas complementares.", btnTxt: "Inscrever Equipe", img: "https://images.unsplash.com/photo-1492538368677-f6e0afe31dcc?auto=format&fit=crop&w=1200&q=80" }
+                {
+                    id: 1,
+                    title: "Feira de Ciências & Tecnologia FNET 2026",
+                    tag: "Feira Científica",
+                    data: "25 de Novembro — 09:00 às 17:00",
+                    local: "Pátio Central & Auditório A",
+                    horas: 10,
+                    xp: 150,
+                    desc: "Apresentação dos projetos integradores dos alunos de Engenharia e TI. Estandes interativos, protótipos em robótica e avaliação de bancada com prêmios.",
+                    btnTxt: "Ver Detalhes e Inscrever",
+                    img: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1200&q=80"
+                },
+                {
+                    id: 2,
+                    title: "Semana Acadêmica de Engenharia & IA",
+                    tag: "Congresso Presencial",
+                    data: "10 de Dezembro — 19:00 às 22:00",
+                    local: "Auditório Principal FNET",
+                    horas: 15,
+                    xp: 200,
+                    desc: "Ciclo de palestras com especialistas da indústria sobre Agentes Autônomos de IA, Arquiteturas em Nuvem e o futuro do desenvolvimento de software.",
+                    btnTxt: "Garantir Vaga na Palestra",
+                    img: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80"
+                },
+                {
+                    id: 3,
+                    title: "Hackathon FNET: Maratona de Código",
+                    tag: "Competição de Devs",
+                    data: "18 de Dezembro — 08:00 às 20:00",
+                    local: "Laboratório de Redes & Cloud",
+                    horas: 20,
+                    xp: 300,
+                    desc: "Desenvolva uma solução de impacto social em 12 horas seguidas de programação em equipe. Mentoria de professores e premiação para os 3 melhores projetos.",
+                    btnTxt: "Inscrever Minha Equipe",
+                    img: "https://images.unsplash.com/photo-1492538368677-f6e0afe31dcc?auto=format&fit=crop&w=1200&q=80"
+                }
             ]
         };
 
@@ -681,7 +741,7 @@
             { id: 'perfil', label: 'Meu Perfil', icon: 'fa-user-gear', roles: ['aluno', 'professor'] }
         ];
 
-        // --- GAMIFICAÇÃO & XP ---
+        // GAMIFICAÇÃO
         function carregarGamificacao() {
             const saved = localStorage.getItem('fnet_gamification');
             if (saved) {
@@ -712,356 +772,7 @@
             if (streakText) streakText.innerText = `${gamificationState.streak} Dias Seguidos`;
         }
 
-        // --- SISTEMA DE LEITURA RÍGIDA E ANTI-CHUTE ---
-        function abrirLeitorLivro(livroId) {
-            activeBookReading = booksData.find(b => b.id === livroId);
-            if (!activeBookReading) return;
-
-            currentBookPage = 1;
-            isQuizPassed = false;
-            selectedQuizOption = null;
-
-            document.getElementById('reader-title').innerText = activeBookReading.titulo;
-            document.getElementById('reader-author').innerText = activeBookReading.autor;
-            
-            atualizarConteudoLeitor();
-
-            const modal = document.getElementById('modal-leitor-livro');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function fecharLeitorLivro() {
-            const modal = document.getElementById('modal-leitor-livro');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        function mudarPaginaLeitor(delta) {
-            if (!activeBookReading) return;
-
-            // Bloqueio se houver quiz pendente na página atual
-            if (currentBookPage === activeBookReading.quizPage && !isQuizPassed && delta > 0) {
-                showToast("Responda à pergunta de verificação para continuar!", "error");
-                return;
-            }
-
-            const totalPaginasArray = activeBookReading.trecho.length;
-            if (currentBookPage + delta >= 1 && currentBookPage + delta <= totalPaginasArray) {
-                currentBookPage += delta;
-                atualizarConteudoLeitor();
-            }
-        }
-
-        function atualizarConteudoLeitor() {
-            const content = document.getElementById('reader-content');
-            const quizBox = document.getElementById('quiz-container');
-            const pageInd = document.getElementById('reader-page-indicator');
-            const progressBar = document.getElementById('reader-progress-bar');
-            const btnPrev = document.getElementById('btn-prev-page');
-            const btnNext = document.getElementById('btn-next-page');
-            const btnFinish = document.getElementById('btn-auto-finish');
-            const statusTag = document.getElementById('reader-status-tag');
-
-            const totalArray = activeBookReading.trecho.length;
-            const paginasTotaisReais = activeBookReading.paginas;
-
-            // Cálculo proporcional da página real (ex: Pág 1 de 256, Pág 128 de 256...)
-            const realPageNum = Math.min(Math.round((currentBookPage / totalArray) * paginasTotaisReais), paginasTotaisReais);
-            const percentual = Math.round((currentBookPage / totalArray) * 100);
-
-            progressBar.style.width = `${percentual}%`;
-            pageInd.innerText = `Página ${realPageNum} de ${paginasTotaisReais} (${percentual}%)`;
-
-            btnPrev.disabled = currentBookPage === 1;
-
-            // SE FOR A PÁGINA DO QUIZ E ELE AINDA NÃO FOI APROVADO
-            if (currentBookPage === activeBookReading.quizPage && !isQuizPassed) {
-                content.innerHTML = `<p class="italic text-slate-400 mb-4">${activeBookReading.trecho[currentBookPage - 1]}</p>`;
-                quizBox.classList.remove('hidden');
-                btnNext.classList.add('hidden');
-                
-                // Montar Pergunta
-                document.getElementById('quiz-question').innerText = activeBookReading.quiz.pergunta;
-                const optionsBox = document.getElementById('quiz-options');
-                optionsBox.innerHTML = activeBookReading.quiz.opcoes.map((opt, idx) => `
-                    <label class="flex items-center gap-3 p-3 bg-slate-800 hover:bg-slate-700/60 rounded-xl cursor-pointer border border-slate-700 transition-colors">
-                        <input type="radio" name="quiz_opt" value="${idx}" onchange="selectedQuizOption = ${idx}" class="text-brand-600 focus:ring-brand-600">
-                        <span class="text-slate-200">${opt}</span>
-                    </label>
-                `).join('');
-
-            } else {
-                quizBox.classList.add('hidden');
-                content.innerText = activeBookReading.trecho[currentBookPage - 1];
-                btnNext.classList.remove('hidden');
-            }
-
-            // CONCLUSÃO AUTOMÁTICA SOMENTE NA ÚLTIMA PÁGINA
-            if (currentBookPage === totalArray) {
-                btnNext.classList.add('hidden');
-                btnFinish.classList.remove('hidden');
-                statusTag.classList.add('hidden');
-            } else {
-                btnFinish.classList.add('hidden');
-                statusTag.classList.remove('hidden');
-            }
-        }
-
-        function validarRespostaQuiz() {
-            if (selectedQuizOption === null) {
-                showToast("Selecione uma resposta antes de enviar!", "error");
-                return;
-            }
-
-            if (selectedQuizOption === activeBookReading.quiz.correta) {
-                isQuizPassed = true;
-                showToast("Resposta correta! Leitura validada com sucesso.", "success");
-                atualizarConteudoLeitor();
-            } else {
-                showToast("Resposta incorreta! Leia o capítulo atentamente e tente novamente.", "error");
-            }
-        }
-
-        function concluirLeituraLivro() {
-            if (!activeBookReading) return;
-
-            if (!gamificationState.readBooks.includes(activeBookReading.id)) {
-                gamificationState.readBooks.push(activeBookReading.id);
-                adicionarXP(activeBookReading.xpReward, `Leitura completa e validada de "${activeBookReading.titulo}"!`);
-            } else {
-                showToast("Você já concluiu este livro e garantiu os pontos!");
-            }
-
-            fecharLeitorLivro();
-            if (currentView === 'biblioteca') renderBiblioteca(document.getElementById('main-view'));
-        }
-
-        // --- AUTENTICAÇÃO ---
-        function setLoginRole(role) {
-            loginSelectedRole = role;
-            const btnAluno = document.getElementById('tab-aluno');
-            const btnProf = document.getElementById('tab-professor');
-            const labelId = document.getElementById('label-login-id');
-            const inputUser = document.getElementById('login-user');
-
-            if (role === 'aluno') {
-                btnAluno.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-brand-600 text-white shadow-sm";
-                btnProf.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 transition-all";
-                labelId.innerText = "Matrícula / RA do Aluno";
-                inputUser.placeholder = "Digite sua matrícula";
-                if (authMode === 'login') inputUser.value = "2026849302";
-            } else {
-                btnProf.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-brand-600 text-white shadow-sm";
-                btnAluno.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 transition-all";
-                labelId.innerText = "Registro Docente / SIAPE";
-                inputUser.placeholder = "Digite seu registro docente";
-                if (authMode === 'login') inputUser.value = "DOC-98241";
-            }
-        }
-
-        function toggleAuthMode(mode) {
-            authMode = mode;
-            const btnModeLogin = document.getElementById('btn-mode-login');
-            const btnModeRegister = document.getElementById('btn-mode-register');
-            const fieldNome = document.getElementById('field-nome-completo');
-            const fieldEmail = document.getElementById('field-email-cadastro');
-            const btnSubmit = document.getElementById('btn-login-submit');
-
-            if (mode === 'register') {
-                btnModeRegister.className = "flex-1 pb-2 border-b-2 border-brand-600 text-brand-600 font-bold";
-                btnModeLogin.className = "flex-1 pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-600 font-bold";
-                fieldNome.classList.remove('hidden');
-                fieldEmail.classList.remove('hidden');
-                document.getElementById('auth-nome').required = true;
-                document.getElementById('auth-email').required = true;
-                btnSubmit.innerHTML = `<span>Criar Conta FNET</span> <i class="fa-solid fa-user-plus"></i>`;
-            } else {
-                btnModeLogin.className = "flex-1 pb-2 border-b-2 border-brand-600 text-brand-600 font-bold";
-                btnModeRegister.className = "flex-1 pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-600 font-bold";
-                fieldNome.classList.add('hidden');
-                fieldEmail.classList.add('hidden');
-                document.getElementById('auth-nome').required = false;
-                document.getElementById('auth-email').required = false;
-                btnSubmit.innerHTML = `<span>Entrar no Portal</span> <i class="fa-solid fa-arrow-right"></i>`;
-            }
-        }
-
-        async function handleAuthSubmit(event) {
-            event.preventDefault();
-            const matricula = document.getElementById('login-user').value.trim();
-            const btnSubmit = document.getElementById('btn-login-submit');
-            btnSubmit.disabled = true;
-
-            if (authMode === 'register') {
-                const nome = document.getElementById('auth-nome').value.trim();
-                const email = document.getElementById('auth-email').value.trim();
-
-                activeUserSession = {
-                    nome: nome,
-                    matricula: matricula,
-                    email: email,
-                    role: loginSelectedRole,
-                    avatar: loginSelectedRole === 'professor' ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150" : "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150"
-                };
-
-                if (supabaseClient) {
-                    await supabaseClient.from('usuarios_fnet').insert([{
-                        nome: nome,
-                        matricula: matricula,
-                        email: email,
-                        tipo: loginSelectedRole
-                    }]);
-                }
-
-                showToast("Conta criada com sucesso!");
-                adicionarXP(50, "Bônus de Cadastro FNET!");
-            } else {
-                let nomeUsuario = loginSelectedRole === 'professor' ? "Prof. Roberto Silva" : "Maria Silva";
-                let emailUsuario = loginSelectedRole === 'professor' ? "roberto.silva@docente.fnet.edu.br" : "maria.silva@aluno.fnet.edu.br";
-
-                const savedAccounts = JSON.parse(localStorage.getItem('fnet_accounts_db') || '{}');
-                if (savedAccounts[matricula]) {
-                    nomeUsuario = savedAccounts[matricula].nome;
-                    emailUsuario = savedAccounts[matricula].email;
-                }
-
-                activeUserSession = {
-                    nome: nomeUsuario,
-                    matricula: matricula,
-                    email: emailUsuario,
-                    role: loginSelectedRole,
-                    avatar: loginSelectedRole === 'professor' ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150" : "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150"
-                };
-
-                showToast("Login realizado com sucesso!");
-            }
-
-            localStorage.setItem('fnet_active_session', JSON.stringify(activeUserSession));
-            
-            const currentAccounts = JSON.parse(localStorage.getItem('fnet_accounts_db') || '{}');
-            currentAccounts[activeUserSession.matricula] = activeUserSession;
-            localStorage.setItem('fnet_accounts_db', JSON.stringify(currentAccounts));
-
-            btnSubmit.disabled = false;
-            iniciarSessaoApp();
-        }
-
-        function verificarSessaoExistente() {
-            const savedSession = localStorage.getItem('fnet_active_session');
-            if (savedSession) {
-                try {
-                    activeUserSession = JSON.parse(savedSession);
-                    iniciarSessaoApp();
-                } catch (e) {
-                    localStorage.removeItem('fnet_active_session');
-                }
-            }
-        }
-
-        function iniciarSessaoApp() {
-            if (!activeUserSession) return;
-            
-            currentUserRole = activeUserSession.role;
-            document.getElementById('login-screen').classList.add('hidden');
-
-            const elemNome = document.getElementById('user-name-sidebar');
-            const elemRole = document.getElementById('user-role-sidebar');
-            const elemAvatar = document.getElementById('user-avatar-sidebar');
-            const elemBadge = document.getElementById('role-badge');
-
-            if (elemNome) elemNome.innerText = activeUserSession.nome;
-            if (elemRole) elemRole.innerText = `${currentUserRole === 'professor' ? 'Docente' : 'Aluno'} • Eng. de Software`;
-            if (elemAvatar) elemAvatar.src = activeUserSession.avatar;
-            if (elemBadge) elemBadge.innerText = currentUserRole === 'professor' ? "Modo Docente" : "Modo Aluno";
-
-            carregarGamificacao();
-            navigate(currentView);
-        }
-
-        function logout() {
-            localStorage.removeItem('fnet_active_session');
-            activeUserSession = null;
-            document.getElementById('login-screen').classList.remove('hidden');
-            if (carouselInterval) clearInterval(carouselInterval);
-            showToast("Você saiu do sistema.");
-        }
-
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('-translate-x-full');
-        }
-
-        function toggleDarkMode() {
-            const html = document.documentElement;
-            html.classList.toggle('dark');
-            const icon = document.getElementById('theme-icon');
-            icon.className = html.classList.contains('dark') ? "fa-solid fa-sun" : "fa-solid fa-moon";
-        }
-
-        function toggleNotificationMenu() {
-            document.getElementById('notif-dropdown').classList.toggle('hidden');
-        }
-
-        function toggleChatIA() {
-            const popup = document.getElementById('chat-popup-ia');
-            popup.classList.toggle('hidden');
-            if (!popup.classList.contains('hidden')) {
-                document.getElementById('chat-input-ia').focus();
-            }
-        }
-
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `px-4 py-3 rounded-2xl shadow-xl text-xs font-bold text-white flex items-center gap-3 transition-all ${type === 'success' ? 'bg-slate-900 border border-slate-700' : 'bg-brand-600'}`;
-            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check text-emerald-400' : 'fa-circle-exclamation'} text-base"></i> <span>${message}</span>`;
-            container.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 300);
-            }, 3500);
-        }
-
-        function renderSidebar() {
-            const navMenu = document.getElementById('nav-menu');
-            if (!navMenu) return;
-            navMenu.innerHTML = '';
-            
-            navItems.forEach(item => {
-                if (item.roles.includes(currentUserRole)) {
-                    const active = currentView === item.id;
-                    const btn = document.createElement('button');
-                    btn.onclick = () => navigate(item.id);
-                    btn.className = `w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all ${active ? 'bg-brand-600 text-white shadow-lg shadow-brand-600/30' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`;
-                    btn.innerHTML = `<i class="fa-solid ${item.icon} text-base w-5"></i> ${item.label}`;
-                    navMenu.appendChild(btn);
-                }
-            });
-        }
-
-        function navigate(viewId) {
-            currentView = viewId;
-            renderSidebar();
-            if (carouselInterval) clearInterval(carouselInterval);
-            
-            const mainView = document.getElementById('main-view');
-            if (!mainView) return;
-            mainView.scrollTop = 0;
-
-            switch(viewId) {
-                case 'dashboard': renderDashboard(mainView); break;
-                case 'cursos': renderCursos(mainView); break;
-                case 'notas': renderNotas(mainView); break;
-                case 'biblioteca': renderBiblioteca(mainView); break;
-                case 'gamificacao': renderGamificacao(mainView); break;
-                case 'salas': renderSalas(mainView); break;
-                case 'webmail': renderWebmail(mainView); break;
-                case 'perfil': renderPerfil(mainView); break;
-                default: renderDashboard(mainView);
-            }
-        }
-
-        // --- DASHBOARD ---
+        // --- DASHBOARD & CARROSSEL DE EVENTOS REAIS ---
         function renderDashboard(container) {
             container.innerHTML = `
                 <div class="space-y-6 max-w-7xl mx-auto">
@@ -1080,16 +791,22 @@
                         </button>
                     </div>
 
+                    <!-- CARROSSEL DE EVENTOS REAIS FNET -->
                     <div class="campus-slider shadow-2xl bg-slate-900 border border-slate-800">
                         <div id="carousel-slides-container"></div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-6 md:p-8 z-10">
-                            <span id="campus-tag" class="px-3 py-1 bg-brand-600 text-white text-[10px] font-black uppercase rounded-full w-max mb-2">Pesquisa & Robótica</span>
-                            <h2 id="campus-title" class="text-xl md:text-3xl font-extrabold text-white tracking-tight">Campus MIT — Instalações Tecnológicas FNET</h2>
-                            <p id="campus-desc" class="text-xs md:text-sm text-slate-300 mt-1 max-w-2xl line-clamp-2">Laboratórios e auditórios equipados para o desenvolvimento de soluções em tecnologia.</p>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent flex flex-col justify-end p-6 md:p-8 z-10">
+                            <div class="flex flex-wrap items-center gap-2 mb-2">
+                                <span id="campus-tag" class="px-3 py-1 bg-brand-600 text-white text-[10px] font-black uppercase rounded-full">Feira Científica</span>
+                                <span id="campus-badge-recompensas" class="px-3 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/40 text-[10px] font-extrabold rounded-full flex items-center gap-1">
+                                    <i class="fa-solid fa-award"></i> +10h Complementares • +150 XP
+                                </span>
+                            </div>
+                            <h2 id="campus-title" class="text-xl md:text-3xl font-extrabold text-white tracking-tight">Feira de Ciências & Tecnologia FNET 2026</h2>
+                            <p id="campus-desc" class="text-xs md:text-sm text-slate-300 mt-1 max-w-2xl line-clamp-2">Apresentação dos projetos integradores dos alunos de Engenharia e TI.</p>
                             <div class="mt-4 flex items-center justify-between">
                                 <div class="flex gap-1.5" id="carousel-dots"></div>
                                 <button onclick="abrirModalEventoAtivo()" id="campus-btn" class="px-5 py-2.5 bg-white text-black hover:bg-slate-200 rounded-xl text-xs font-extrabold shadow-lg transition-all flex items-center gap-2">
-                                    Inscrever Projeto <i class="fa-solid fa-arrow-right"></i>
+                                    Ver Detalhes e Inscrever <i class="fa-solid fa-arrow-right"></i>
                                 </button>
                             </div>
                         </div>
@@ -1136,7 +853,7 @@
             if (!container || !dotsContainer) return;
             
             container.innerHTML = mockData.campusPhotos.map((p, i) => `
-                <div class="campus-slide ${i === 0 ? 'active' : ''}" style="background-image: linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('${p.img}')"></div>
+                <div class="campus-slide ${i === 0 ? 'active' : ''}" style="background-image: linear-gradient(to top, rgba(0,0,0,0.9), transparent), url('${p.img}')"></div>
             `).join('');
 
             dotsContainer.innerHTML = mockData.campusPhotos.map((_, i) => `
@@ -1166,14 +883,195 @@
 
             const p = mockData.campusPhotos[currentCarouselIndex];
             const tagElem = document.getElementById('campus-tag');
+            const badgeRec = document.getElementById('campus-badge-recompensas');
             const titleElem = document.getElementById('campus-title');
             const descElem = document.getElementById('campus-desc');
             const btnElem = document.getElementById('campus-btn');
 
             if (tagElem) tagElem.innerText = p.tag;
+            if (badgeRec) badgeRec.innerHTML = `<i class="fa-solid fa-award"></i> +${p.horas}h Complementares • +${p.xp} XP`;
             if (titleElem) titleElem.innerText = p.title;
-            if (descElem) descElem.innerText = p.desc;
+            if (descElem) descElem.innerText = `${p.data} — ${p.desc}`;
             if (btnElem) btnElem.innerHTML = `${p.btnTxt} <i class="fa-solid fa-arrow-right"></i>`;
+        }
+
+        function abrirModalEventoAtivo() {
+            const evento = mockData.campusPhotos[currentCarouselIndex];
+            if (!evento) return;
+
+            document.getElementById('modal-evento-tag').innerText = evento.tag;
+            document.getElementById('modal-evento-titulo').innerText = evento.title;
+            document.getElementById('modal-evento-desc').innerText = evento.desc;
+            document.getElementById('modal-evento-data').innerText = evento.data;
+            document.getElementById('modal-evento-local').innerText = evento.local;
+            document.getElementById('modal-evento-horas').innerText = `+${evento.horas}h Complementares`;
+            document.getElementById('modal-evento-xp').innerText = `+${evento.xp} XP`;
+            document.getElementById('evento-nome-hidden').value = evento.title;
+
+            if (activeUserSession) {
+                document.getElementById('evento-aluno').value = activeUserSession.nome;
+            }
+
+            const modal = document.getElementById('modal-evento');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal(idModal) {
+            const modal = document.getElementById(idModal);
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        async function confirmarInscricaoEvento(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-sub-evento');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Registrando...`;
+
+            const nomeEvento = document.getElementById('evento-nome-hidden').value;
+            const aluno = document.getElementById('evento-aluno').value;
+            const projeto = document.getElementById('evento-projeto').value || 'Participante Individual';
+
+            const eventoObj = mockData.campusPhotos.find(p => p.title === nomeEvento);
+            const xpGanho = eventoObj ? eventoObj.xp : 100;
+
+            if (supabaseClient) {
+                await supabaseClient.from('inscricoes_eventos').insert([{
+                    evento: nomeEvento,
+                    aluno: aluno,
+                    projeto: projeto
+                }]);
+            }
+
+            adicionarXP(xpGanho, `Inscrição no evento "${nomeEvento}"!`);
+            showToast(`Inscrição confirmada para ${aluno}! Comprovante enviado ao Webmail.`);
+            
+            closeModal('modal-evento');
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fa-solid fa-ticket"></i> Confirmar Inscrição no Evento`;
+        }
+
+        // --- SISTEMA DE LEITURA RÍGIDA E ANTI-CHUTE ---
+        function abrirLeitorLivro(livroId) {
+            activeBookReading = booksData.find(b => b.id === livroId);
+            if (!activeBookReading) return;
+
+            currentBookPage = 1;
+            isQuizPassed = false;
+            selectedQuizOption = null;
+
+            document.getElementById('reader-title').innerText = activeBookReading.titulo;
+            document.getElementById('reader-author').innerText = activeBookReading.autor;
+            
+            atualizarConteudoLeitor();
+
+            const modal = document.getElementById('modal-leitor-livro');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function fecharLeitorLivro() {
+            const modal = document.getElementById('modal-leitor-livro');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function mudarPaginaLeitor(delta) {
+            if (!activeBookReading) return;
+
+            if (currentBookPage === activeBookReading.quizPage && !isQuizPassed && delta > 0) {
+                showToast("Responda à pergunta de verificação para continuar!", "error");
+                return;
+            }
+
+            const totalPaginasArray = activeBookReading.trecho.length;
+            if (currentBookPage + delta >= 1 && currentBookPage + delta <= totalPaginasArray) {
+                currentBookPage += delta;
+                atualizarConteudoLeitor();
+            }
+        }
+
+        function atualizarConteudoLeitor() {
+            const content = document.getElementById('reader-content');
+            const quizBox = document.getElementById('quiz-container');
+            const pageInd = document.getElementById('reader-page-indicator');
+            const progressBar = document.getElementById('reader-progress-bar');
+            const btnPrev = document.getElementById('btn-prev-page');
+            const btnNext = document.getElementById('btn-next-page');
+            const btnFinish = document.getElementById('btn-auto-finish');
+            const statusTag = document.getElementById('reader-status-tag');
+
+            const totalArray = activeBookReading.trecho.length;
+            const paginasTotaisReais = activeBookReading.paginas;
+
+            const realPageNum = Math.min(Math.round((currentBookPage / totalArray) * paginasTotaisReais), paginasTotaisReais);
+            const percentual = Math.round((currentBookPage / totalArray) * 100);
+
+            progressBar.style.width = `${percentual}%`;
+            pageInd.innerText = `Página ${realPageNum} de ${paginasTotaisReais} (${percentual}%)`;
+
+            btnPrev.disabled = currentBookPage === 1;
+
+            if (currentBookPage === activeBookReading.quizPage && !isQuizPassed) {
+                content.innerHTML = `<p class="italic text-slate-400 mb-4">${activeBookReading.trecho[currentBookPage - 1]}</p>`;
+                quizBox.classList.remove('hidden');
+                btnNext.classList.add('hidden');
+                
+                document.getElementById('quiz-question').innerText = activeBookReading.quiz.pergunta;
+                const optionsBox = document.getElementById('quiz-options');
+                optionsBox.innerHTML = activeBookReading.quiz.opcoes.map((opt, idx) => `
+                    <label class="flex items-center gap-3 p-3 bg-slate-800 hover:bg-slate-700/60 rounded-xl cursor-pointer border border-slate-700 transition-colors">
+                        <input type="radio" name="quiz_opt" value="${idx}" onchange="selectedQuizOption = ${idx}" class="text-brand-600 focus:ring-brand-600">
+                        <span class="text-slate-200">${opt}</span>
+                    </label>
+                `).join('');
+
+            } else {
+                quizBox.classList.add('hidden');
+                content.innerText = activeBookReading.trecho[currentBookPage - 1];
+                btnNext.classList.remove('hidden');
+            }
+
+            if (currentBookPage === totalArray) {
+                btnNext.classList.add('hidden');
+                btnFinish.classList.remove('hidden');
+                statusTag.classList.add('hidden');
+            } else {
+                btnFinish.classList.add('hidden');
+                statusTag.classList.remove('hidden');
+            }
+        }
+
+        function validarRespostaQuiz() {
+            if (selectedQuizOption === null) {
+                showToast("Selecione uma resposta antes de enviar!", "error");
+                return;
+            }
+
+            if (selectedQuizOption === activeBookReading.quiz.correta) {
+                isQuizPassed = true;
+                showToast("Resposta correta! Leitura validada com sucesso.", "success");
+                atualizarConteudoLeitor();
+            } else {
+                showToast("Resposta incorreta! Leia o capítulo atentamente e tente novamente.", "error");
+            }
+        }
+
+        function concluirLeituraLivro() {
+            if (!activeBookReading) return;
+
+            if (!gamificationState.readBooks.includes(activeBookReading.id)) {
+                gamificationState.readBooks.push(activeBookReading.id);
+                adicionarXP(activeBookReading.xpReward, `Leitura completa e validada de "${activeBookReading.titulo}"!`);
+            } else {
+                showToast("Você já concluiu este livro e garantiu os pontos!");
+            }
+
+            fecharLeitorLivro();
+            if (currentView === 'biblioteca') renderBiblioteca(document.getElementById('main-view'));
         }
 
         // --- BIBLIOTECA DIGITAL ---
@@ -1691,6 +1589,230 @@
                     </div>
                 </div>
             `;
+        }
+
+        // --- AUTENTICAÇÃO E INICIALIZAÇÃO ---
+        function setLoginRole(role) {
+            loginSelectedRole = role;
+            const btnAluno = document.getElementById('tab-aluno');
+            const btnProf = document.getElementById('tab-professor');
+            const labelId = document.getElementById('label-login-id');
+            const inputUser = document.getElementById('login-user');
+
+            if (role === 'aluno') {
+                btnAluno.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-brand-600 text-white shadow-sm";
+                btnProf.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 transition-all";
+                labelId.innerText = "Matrícula / RA do Aluno";
+                inputUser.placeholder = "Digite sua matrícula";
+                if (authMode === 'login') inputUser.value = "2026849302";
+            } else {
+                btnProf.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-brand-600 text-white shadow-sm";
+                btnAluno.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 transition-all";
+                labelId.innerText = "Registro Docente / SIAPE";
+                inputUser.placeholder = "Digite seu registro docente";
+                if (authMode === 'login') inputUser.value = "DOC-98241";
+            }
+        }
+
+        function toggleAuthMode(mode) {
+            authMode = mode;
+            const btnModeLogin = document.getElementById('btn-mode-login');
+            const btnModeRegister = document.getElementById('btn-mode-register');
+            const fieldNome = document.getElementById('field-nome-completo');
+            const fieldEmail = document.getElementById('field-email-cadastro');
+            const btnSubmit = document.getElementById('btn-login-submit');
+
+            if (mode === 'register') {
+                btnModeRegister.className = "flex-1 pb-2 border-b-2 border-brand-600 text-brand-600 font-bold";
+                btnModeLogin.className = "flex-1 pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-600 font-bold";
+                fieldNome.classList.remove('hidden');
+                fieldEmail.classList.remove('hidden');
+                document.getElementById('auth-nome').required = true;
+                document.getElementById('auth-email').required = true;
+                btnSubmit.innerHTML = `<span>Criar Conta FNET</span> <i class="fa-solid fa-user-plus"></i>`;
+            } else {
+                btnModeLogin.className = "flex-1 pb-2 border-b-2 border-brand-600 text-brand-600 font-bold";
+                btnModeRegister.className = "flex-1 pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-600 font-bold";
+                fieldNome.classList.add('hidden');
+                fieldEmail.classList.add('hidden');
+                document.getElementById('auth-nome').required = false;
+                document.getElementById('auth-email').required = false;
+                btnSubmit.innerHTML = `<span>Entrar no Portal</span> <i class="fa-solid fa-arrow-right"></i>`;
+            }
+        }
+
+        async function handleAuthSubmit(event) {
+            event.preventDefault();
+            const matricula = document.getElementById('login-user').value.trim();
+            const btnSubmit = document.getElementById('btn-login-submit');
+            btnSubmit.disabled = true;
+
+            if (authMode === 'register') {
+                const nome = document.getElementById('auth-nome').value.trim();
+                const email = document.getElementById('auth-email').value.trim();
+
+                activeUserSession = {
+                    nome: nome,
+                    matricula: matricula,
+                    email: email,
+                    role: loginSelectedRole,
+                    avatar: loginSelectedRole === 'professor' ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150" : "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150"
+                };
+
+                if (supabaseClient) {
+                    await supabaseClient.from('usuarios_fnet').insert([{
+                        nome: nome,
+                        matricula: matricula,
+                        email: email,
+                        tipo: loginSelectedRole
+                    }]);
+                }
+
+                showToast("Conta criada com sucesso!");
+                adicionarXP(50, "Bônus de Cadastro FNET!");
+            } else {
+                let nomeUsuario = loginSelectedRole === 'professor' ? "Prof. Roberto Silva" : "Maria Silva";
+                let emailUsuario = loginSelectedRole === 'professor' ? "roberto.silva@docente.fnet.edu.br" : "maria.silva@aluno.fnet.edu.br";
+
+                const savedAccounts = JSON.parse(localStorage.getItem('fnet_accounts_db') || '{}');
+                if (savedAccounts[matricula]) {
+                    nomeUsuario = savedAccounts[matricula].nome;
+                    emailUsuario = savedAccounts[matricula].email;
+                }
+
+                activeUserSession = {
+                    nome: nomeUsuario,
+                    matricula: matricula,
+                    email: emailUsuario,
+                    role: loginSelectedRole,
+                    avatar: loginSelectedRole === 'professor' ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150" : "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150"
+                };
+
+                showToast("Login realizado com sucesso!");
+            }
+
+            localStorage.setItem('fnet_active_session', JSON.stringify(activeUserSession));
+            
+            const currentAccounts = JSON.parse(localStorage.getItem('fnet_accounts_db') || '{}');
+            currentAccounts[activeUserSession.matricula] = activeUserSession;
+            localStorage.setItem('fnet_accounts_db', JSON.stringify(currentAccounts));
+
+            btnSubmit.disabled = false;
+            iniciarSessaoApp();
+        }
+
+        function verificarSessaoExistente() {
+            const savedSession = localStorage.getItem('fnet_active_session');
+            if (savedSession) {
+                try {
+                    activeUserSession = JSON.parse(savedSession);
+                    iniciarSessaoApp();
+                } catch (e) {
+                    localStorage.removeItem('fnet_active_session');
+                }
+            }
+        }
+
+        function iniciarSessaoApp() {
+            if (!activeUserSession) return;
+            
+            currentUserRole = activeUserSession.role;
+            document.getElementById('login-screen').classList.add('hidden');
+
+            const elemNome = document.getElementById('user-name-sidebar');
+            const elemRole = document.getElementById('user-role-sidebar');
+            const elemAvatar = document.getElementById('user-avatar-sidebar');
+            const elemBadge = document.getElementById('role-badge');
+
+            if (elemNome) elemNome.innerText = activeUserSession.nome;
+            if (elemRole) elemRole.innerText = `${currentUserRole === 'professor' ? 'Docente' : 'Aluno'} • Eng. de Software`;
+            if (elemAvatar) elemAvatar.src = activeUserSession.avatar;
+            if (elemBadge) elemBadge.innerText = currentUserRole === 'professor' ? "Modo Docente" : "Modo Aluno";
+
+            carregarGamificacao();
+            navigate(currentView);
+        }
+
+        function logout() {
+            localStorage.removeItem('fnet_active_session');
+            activeUserSession = null;
+            document.getElementById('login-screen').classList.remove('hidden');
+            if (carouselInterval) clearInterval(carouselInterval);
+            showToast("Você saiu do sistema.");
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        }
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            const icon = document.getElementById('theme-icon');
+            icon.className = html.classList.contains('dark') ? "fa-solid fa-sun" : "fa-solid fa-moon";
+        }
+
+        function toggleNotificationMenu() {
+            document.getElementById('notif-dropdown').classList.toggle('hidden');
+        }
+
+        function toggleChatIA() {
+            const popup = document.getElementById('chat-popup-ia');
+            popup.classList.toggle('hidden');
+            if (!popup.classList.contains('hidden')) {
+                document.getElementById('chat-input-ia').focus();
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `px-4 py-3 rounded-2xl shadow-xl text-xs font-bold text-white flex items-center gap-3 transition-all ${type === 'success' ? 'bg-slate-900 border border-slate-700' : 'bg-brand-600'}`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check text-emerald-400' : 'fa-circle-exclamation'} text-base"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function renderSidebar() {
+            const navMenu = document.getElementById('nav-menu');
+            if (!navMenu) return;
+            navMenu.innerHTML = '';
+            
+            navItems.forEach(item => {
+                if (item.roles.includes(currentUserRole)) {
+                    const active = currentView === item.id;
+                    const btn = document.createElement('button');
+                    btn.onclick = () => navigate(item.id);
+                    btn.className = `w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all ${active ? 'bg-brand-600 text-white shadow-lg shadow-brand-600/30' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`;
+                    btn.innerHTML = `<i class="fa-solid ${item.icon} text-base w-5"></i> ${item.label}`;
+                    navMenu.appendChild(btn);
+                }
+            });
+        }
+
+        function navigate(viewId) {
+            currentView = viewId;
+            renderSidebar();
+            if (carouselInterval) clearInterval(carouselInterval);
+            
+            const mainView = document.getElementById('main-view');
+            if (!mainView) return;
+            mainView.scrollTop = 0;
+
+            switch(viewId) {
+                case 'dashboard': renderDashboard(mainView); break;
+                case 'cursos': renderCursos(mainView); break;
+                case 'notas': renderNotas(mainView); break;
+                case 'biblioteca': renderBiblioteca(mainView); break;
+                case 'gamificacao': renderGamificacao(mainView); break;
+                case 'salas': renderSalas(mainView); break;
+                case 'webmail': renderWebmail(mainView); break;
+                case 'perfil': renderPerfil(mainView); break;
+                default: renderDashboard(mainView);
+            }
         }
 
         // --- CHAT COM IA (GEMINI) ---
