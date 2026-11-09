@@ -194,7 +194,7 @@
 
                     <button onclick="navigate('webmail')" class="relative p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
                         <i class="fa-solid fa-envelope"></i>
-                        <span class="absolute top-1 right-1 w-2 h-2 bg-brand-600 rounded-full"></span>
+                        <span id="webmail-notif-dot" class="absolute top-1 right-1 w-2 h-2 bg-brand-600 rounded-full"></span>
                     </button>
 
                     <!-- DROPDOWN NOTIFICAÇÕES -->
@@ -243,7 +243,7 @@
         </div>
     </div>
 
-    <!-- AGENTE DE IA FLUTUANTE REAL (GEMINI) -->
+    <!-- AGENTE DE IA FLUTUANTE -->
     <div id="widget-ia-container" class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
         <div id="chat-popup-ia" class="hidden mb-4 w-80 md:w-96 bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col h-[450px] transition-all">
             <div class="p-4 bg-gradient-to-r from-brand-600 to-red-700 text-white flex items-center justify-between">
@@ -294,7 +294,36 @@
         </button>
     </div>
 
-    <!-- MODAIS DE CADASTRO -->
+    <!-- MODAL DE NOVO E-MAIL (WEBMAIL) -->
+    <div id="modal-novo-email" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-black dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-paper-plane text-brand-600"></i> Nova Mensagem
+                </h3>
+                <button onclick="closeModal('modal-novo-email')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="confirmarEnvioEmail(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">DESTINATÁRIO</label>
+                    <input type="email" id="email-para" placeholder="Ex: secretaria@fnet.edu.br" required class="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm text-black dark:text-white focus:outline-none focus:border-brand-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">ASSUNTO</label>
+                    <input type="text" id="email-assunto" placeholder="Assunto do e-mail" required class="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm text-black dark:text-white focus:outline-none focus:border-brand-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">MENSAGEM</label>
+                    <textarea id="email-mensagem" rows="4" placeholder="Escreva sua mensagem aqui..." required class="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm text-black dark:text-white focus:outline-none focus:border-brand-600 custom-scrollbar"></textarea>
+                </div>
+                <button type="submit" id="btn-sub-email" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 rounded-xl shadow-lg shadow-brand-600/30 transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> Enviar Mensagem
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAIS EXISTENTES (EVENTOS & SALAS) -->
     <div id="modal-evento" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800">
             <div class="flex justify-between items-center mb-4">
@@ -361,12 +390,11 @@
     <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
 
     <script>
-        // CONFIGURAÇÃO DAS CHAVES (INSIRA SUAS CHAVES AQUI)
+        // CONFIGURAÇÃO DAS CHAVES
         const SUPABASE_URL = "SUA_URL_DO_SUPABASE";
         const SUPABASE_ANON_KEY = "SUA_CHAVE_ANON_DO_SUPABASE";
         const GEMINI_API_KEY = "SUA_API_KEY_DO_GEMINI";
 
-        // Inicialização do Supabase Client (só ativa se as chaves forem informadas)
         let supabaseClient = null;
         if (SUPABASE_URL !== "SUA_URL_DO_SUPABASE" && typeof supabase !== 'undefined') {
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -377,6 +405,14 @@
         let currentView = 'dashboard';
         let currentCarouselIndex = 0;
         let carouselInterval = null;
+        let activeSelectedEmailId = 1;
+
+        // ESTADO DINÂMICO DOS E-MAILS DO WEBMAIL
+        let stateEmails = [
+            { id: 1, de: "Secretaria FNET", emailDe: "secretaria@fnet.edu.br", assunto: "Confirmação de Matrícula 2026.2", data: "Hoje, 14:30", desc: "Sua rematrícula foi processada com sucesso no sistema FNET.", conteudo: "Prezado(a) aluno(a),\n\nInformamos que sua rematrícula para o semestre 2026.2 foi processada e confirmada com sucesso em nosso sistema acadêmico.\n\nCaso necessite do comprovante ou da grade de horários atualizada, acesse a aba 'Meu Perfil' ou solicite diretamente no balcão da secretaria.\n\nAtenciosamente,\nEquipe de Secretaria FNET." },
+            { id: 2, de: "Profa. Ana Paula", emailDe: "ana.souza@fnet.edu.br", assunto: "Lembrete: Entrega do Projeto de FrontEnd", data: "Ontem, 09:15", desc: "Envie o link do seu repositório diretamente na aba 'Notas & Atividades'.", conteudo: "Olá pessoal,\n\nLembrando que o prazo final para envio do projeto de Single Page Application (SPA) encerra nesta sexta-feira às 23:59.\n\nCertifiquem-se de que o repositório no GitHub está público e com o README documentado.\n\nBons estudos!" },
+            { id: 3, de: "Biblioteca Central", emailDe: "biblioteca@fnet.edu.br", assunto: "Reserva de Sala de Estudos Aprovada", data: "24 Out", desc: "Sua reserva de sala de estudos foi registrada no banco de dados da FNET.", conteudo: "Olá Maria,\n\nSua reserva de sala de estudos em grupo foi confirmada.\n\nPor favor, apresente o RA na recepção da biblioteca ao retirar a chave no horário agendado.\n\nTenha um ótimo estudo!" }
+        ];
 
         const mockData = {
             disciplinas: [
@@ -407,11 +443,6 @@
                 { titulo: "Arquitetura de SPA com React & Vite", autor: "Ana Paula Souza", ano: "2025", cat: "FrontEnd", icone: "fa-code" },
                 { titulo: "Modelagem NoSQL e Alta Performance", autor: "Marina R. Lima", ano: "2023", cat: "Banco de Dados", icone: "fa-database" },
                 { titulo: "Engenharia de Software Moderna", autor: "Roberto Silva", ano: "2026", cat: "Engenharia", icone: "fa-gears" }
-            ],
-            emails: [
-                { de: "Secretaria FNET", assunto: "Confirmação de Matrícula 2026.2", data: "Hoje, 14:30", desc: "Sua rematrícula foi processada com sucesso no sistema FNET." },
-                { de: "Profa. Ana Paula", assunto: "Lembrete: Entrega do Projeto de FrontEnd", data: "Ontem, 09:15", desc: "Envie o link do seu repositório diretamente na aba 'Notas & Atividades'." },
-                { de: "Biblioteca Central", assunto: "Reserva de Sala de Estudos Aprovada", data: "24 Out", desc: "Sua reserva de sala de estudos foi registrada no banco de dados da FNET." }
             ]
         };
 
@@ -545,7 +576,6 @@
             }
         }
 
-        // --- DASHBOARD & SLIDER ---
         function renderDashboard(container) {
             container.innerHTML = `
                 <div class="space-y-6 max-w-7xl mx-auto">
@@ -682,12 +712,11 @@
             document.getElementById(modalId).classList.remove('flex');
         }
 
-        // --- INTEGRAÇÃO COM BANCO DE DADOS (SUPABASE) ---
         async function confirmarInscricaoEvento(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-sub-evento');
             btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Salvando no Supabase...`;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Salvando...`;
 
             const evento = document.getElementById('evento-nome-hidden').value;
             const aluno = document.getElementById('evento-aluno').value;
@@ -698,14 +727,12 @@
                     .from('inscricoes_eventos')
                     .insert([{ evento_titulo: evento, aluno_nome: aluno, projeto_nome: projeto }]);
 
-                if (error) {
-                    showToast("Erro ao conectar com o Supabase: " + error.message, "error");
-                } else {
-                    showToast("Inscrição salva com sucesso no Banco de Dados!");
+                if (error) showToast("Erro no Supabase: " + error.message, "error");
+                else {
+                    showToast("Inscrição registrada no banco de dados!");
                     closeModal('modal-evento');
                 }
             } else {
-                // Fallback para teste sem backend configurado
                 showToast("Modo de teste: Inscrição confirmada!");
                 closeModal('modal-evento');
             }
@@ -717,7 +744,6 @@
             e.preventDefault();
             const btn = document.getElementById('btn-sub-reserva');
             btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Registrando reserva...`;
 
             const sala = document.getElementById('sala-nome-modal').value;
             const aluno = document.getElementById('reser-aluno-modal').value;
@@ -729,21 +755,158 @@
                     .from('reservas_salas')
                     .insert([{ sala_nome: sala, aluno_nome: aluno, data_reserva: dataReserva, horario: horario }]);
 
-                if (error) {
-                    showToast("Erro ao salvar reserva: " + error.message, "error");
-                } else {
-                    showToast("Sala reservada com sucesso no Supabase!");
+                if (error) showToast("Erro: " + error.message, "error");
+                else {
+                    showToast("Sala reservada no Supabase!");
                     closeModal('modal-sala');
                 }
             } else {
-                showToast("Modo de teste: Agendamento de sala realizado!");
+                showToast("Modo de teste: Agendamento realizado!");
                 closeModal('modal-sala');
             }
             btn.disabled = false;
-            btn.innerHTML = "Confirmar Agendamento";
         }
 
-        // --- OUTRAS ABAS ---
+        // --- FUNCIONALIDADE EXCLUSIVA DO WEBMAIL ---
+        function renderWebmail(container) {
+            const emailAtivo = stateEmails.find(e => e.id === activeSelectedEmailId) || stateEmails[0];
+
+            container.innerHTML = `
+                <div class="max-w-7xl mx-auto space-y-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                            <h2 class="text-2xl font-black text-black dark:text-white">Webmail FNET</h2>
+                            <p class="text-xs text-slate-500">Caixa de entrada acadêmica oficial.</p>
+                        </div>
+                        <button onclick="abrirModalNovoEmail()" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold shadow-lg shadow-brand-600/30 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-plus"></i> Novo E-mail
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[600px]">
+                        <!-- LISTA DE E-MAILS (ESQUERDA) -->
+                        <div class="lg:col-span-5 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm flex flex-col h-full">
+                            <div class="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 flex justify-between items-center">
+                                <span class="text-xs font-bold text-slate-600 dark:text-slate-300">Caixa de Entrada</span>
+                                <span class="text-[10px] bg-brand-100 text-brand-600 dark:bg-brand-900/40 dark:text-brand-400 px-2 py-0.5 rounded-full font-bold">${stateEmails.length} mensagens</span>
+                            </div>
+                            <div class="divide-y divide-slate-100 dark:divide-slate-800 overflow-y-auto custom-scrollbar flex-1">
+                                ${stateEmails.map(e => `
+                                    <div onclick="selecionarEmail(${e.id})" class="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors cursor-pointer ${e.id === activeSelectedEmailId ? 'bg-brand-50/50 dark:bg-brand-950/20 border-l-4 border-brand-600' : ''}">
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="text-xs font-extrabold text-black dark:text-white truncate">${e.de}</span>
+                                            <span class="text-[10px] text-slate-400 shrink-0">${e.data}</span>
+                                        </div>
+                                        <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">${e.assunto}</h4>
+                                        <p class="text-[11px] text-slate-500 mt-0.5 line-clamp-1">${e.desc}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- VISUALIZADOR DE E-MAIL (DIREITA) -->
+                        <div class="lg:col-span-7 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col h-full overflow-hidden">
+                            ${emailAtivo ? `
+                                <div class="p-6 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <h3 class="text-lg font-bold text-black dark:text-white">${emailAtivo.assunto}</h3>
+                                        <span class="text-xs text-slate-400">${emailAtivo.data}</span>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
+                                            ${emailAtivo.de.substring(0,2).toUpperCase()}
+                                        </div>
+                                        <div>
+                                            <p class="text-xs font-bold text-black dark:text-white">${emailAtivo.de}</p>
+                                            <p class="text-[11px] text-slate-400">&lt;${emailAtivo.emailDe || 'remetente@fnet.edu.br'}&gt;</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-6 flex-1 overflow-y-auto custom-scrollbar text-xs text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+                                    ${emailAtivo.conteudo || emailAtivo.desc}
+                                </div>
+                                <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 flex justify-end gap-2">
+                                    <button onclick="responderEmailAtual('${emailAtivo.emailDe}', '${emailAtivo.assunto}')" class="px-4 py-2 bg-slate-200 dark:bg-slate-800 hover:bg-brand-600 hover:text-white text-black dark:text-white rounded-xl text-xs font-bold transition-all flex items-center gap-2">
+                                        <i class="fa-solid fa-reply"></i> Responder
+                                    </button>
+                                </div>
+                            ` : `
+                                <div class="flex-1 flex flex-col items-center justify-center text-slate-400 p-8">
+                                    <i class="fa-solid fa-envelope-open text-4xl mb-2"></i>
+                                    <p class="text-xs">Selecione uma mensagem para ler.</p>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selecionarEmail(id) {
+            activeSelectedEmailId = id;
+            renderWebmail(document.getElementById('main-view'));
+        }
+
+        function abrirModalNovoEmail() {
+            document.getElementById('email-para').value = '';
+            document.getElementById('email-assunto').value = '';
+            document.getElementById('email-mensagem').value = '';
+            document.getElementById('modal-novo-email').classList.remove('hidden');
+            document.getElementById('modal-novo-email').classList.add('flex');
+        }
+
+        function responderEmailAtual(paraEmail, assuntoOriginal) {
+            document.getElementById('email-para').value = paraEmail || 'secretaria@fnet.edu.br';
+            document.getElementById('email-assunto').value = `Re: ${assuntoOriginal}`;
+            document.getElementById('email-mensagem').value = '';
+            document.getElementById('modal-novo-email').classList.remove('hidden');
+            document.getElementById('modal-novo-email').classList.add('flex');
+        }
+
+        async function confirmarEnvioEmail(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-sub-email');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Enviando...`;
+
+            const para = document.getElementById('email-para').value;
+            const assunto = document.getElementById('email-assunto').value;
+            const mensagem = document.getElementById('email-mensagem').value;
+            const deNome = currentUserRole === 'professor' ? "Prof. Roberto Silva" : "Maria Silva";
+            const deEmail = currentUserRole === 'professor' ? "roberto.silva@docente.fnet.edu.br" : "maria.silva@aluno.fnet.edu.br";
+
+            const novoEmail = {
+                id: Date.now(),
+                de: `Para: ${para}`,
+                emailDe: deEmail,
+                assunto: assunto,
+                data: "Agora",
+                desc: mensagem.substring(0, 50) + "...",
+                conteudo: `De: ${deNome} <${deEmail}>\nPara: ${para}\n\n${mensagem}`
+            };
+
+            // Adiciona localmente na lista
+            stateEmails.unshift(novoEmail);
+            activeSelectedEmailId = novoEmail.id;
+
+            // Salva no Supabase se configurado
+            if (supabaseClient) {
+                await supabaseClient.from('webmail_fnet').insert([{
+                    de: deEmail,
+                    para: para,
+                    assunto: assunto,
+                    mensagem: mensagem
+                }]);
+            }
+
+            showToast("Mensagem enviada com sucesso!");
+            closeModal('modal-novo-email');
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Enviar Mensagem`;
+            renderWebmail(document.getElementById('main-view'));
+        }
+
+        // --- DEMAIS ABAS ---
         function renderCursos(container) {
             container.innerHTML = `
                 <div class="max-w-7xl mx-auto space-y-6">
@@ -877,34 +1040,6 @@
             `;
         }
 
-        function renderWebmail(container) {
-            container.innerHTML = `
-                <div class="max-w-7xl mx-auto space-y-6">
-                    <div>
-                        <h2 class="text-2xl font-black text-black dark:text-white">Webmail FNET</h2>
-                        <p class="text-xs text-slate-500">Comunicação acadêmica oficial.</p>
-                    </div>
-                    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm divide-y divide-slate-100 dark:divide-slate-800">
-                        ${mockData.emails.map(e => `
-                            <div class="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors flex items-center justify-between cursor-pointer" onclick="showToast('Abrindo e-mail de ${e.de}...')">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-10 h-10 rounded-full bg-brand-50 dark:bg-brand-900/40 text-brand-600 flex items-center justify-center font-bold text-xs shrink-0">
-                                        ${e.de.substring(0,2).toUpperCase()}
-                                    </div>
-                                    <div>
-                                        <p class="text-xs font-extrabold text-black dark:text-white">${e.de} <span class="font-normal text-slate-400 ml-2">${e.data}</span></p>
-                                        <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">${e.assunto}</h4>
-                                        <p class="text-[11px] text-slate-500 mt-0.5">${e.desc}</p>
-                                    </div>
-                                </div>
-                                <i class="fa-solid fa-chevron-right text-slate-400 text-xs"></i>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
         function renderPerfil(container) {
             container.innerHTML = `
                 <div class="max-w-4xl mx-auto space-y-6">
@@ -925,7 +1060,7 @@
             `;
         }
 
-        // --- CHAT COM GOOGLE GEMINI API ---
+        // --- CHAT COM IA (GEMINI) ---
         function responderChatManual() {
             setTimeout(() => {
                 const input = document.getElementById('chat-input-ia');
@@ -1016,10 +1151,9 @@
                     }
                 } catch (err) {
                     document.getElementById(typingId).remove();
-                    adicionarMensagemChat("Erro ao comunicar com a IA do Gemini. Verifique a chave de API.", 'ia');
+                    adicionarMensagemChat("Erro ao comunicar com a IA do Gemini.", 'ia');
                 }
             } else {
-                // Fallback de respostas padrão para teste local
                 setTimeout(() => {
                     document.getElementById(typingId).remove();
                     let resposta = "Entendi sua pergunta! (Defina sua GEMINI_API_KEY no script para ativá-la com respostas inteligentes em tempo real).";
