@@ -13,7 +13,7 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- GSAP Animation Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <!-- Supabase JS Client CDN -->
@@ -44,15 +44,16 @@
         }
     </script>
     <style>
+        /* ETAPA 1: DESIGN SYSTEM TOKENS & CSS VARIABLES */
         :root {
             --apple-ease: cubic-bezier(0.16, 1, 0.3, 1);
-            --apple-glass-bg: rgba(255, 255, 255, 0.72);
+            --apple-glass-bg: rgba(255, 255, 255, 0.75);
             --apple-glass-border: rgba(0, 0, 0, 0.08);
             --apple-card-bg: rgba(255, 255, 255, 0.85);
         }
 
         .dark {
-            --apple-glass-bg: rgba(18, 18, 22, 0.72);
+            --apple-glass-bg: rgba(18, 18, 22, 0.75);
             --apple-glass-border: rgba(255, 255, 255, 0.08);
             --apple-card-bg: rgba(24, 24, 28, 0.75);
         }
@@ -67,7 +68,7 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 99px; }
 
-        /* DESIGN SYSTEM TOKENS - APPLE & 21ST.DEV GLASS */
+        /* COMPONENTES DE DESIGN SYSTEM APPLE & 21ST.DEV GLASS */
         .apple-glass {
             background: var(--apple-glass-bg);
             backdrop-filter: blur(32px) saturate(190%);
@@ -116,7 +117,7 @@
             z-index: 1;
         }
 
-        /* 3D TUNNEL HERO STYLES (21ST.DEV COMPONENT) */
+        /* ETAPA 8: 3D PERSPECTIVE TUNNEL (21ST.DEV COMPONENT) */
         .perspective-stage {
             perspective: 1000px;
             transform-style: preserve-3d;
@@ -130,6 +131,7 @@
             transition: ring 0.3s ease;
         }
 
+        /* ETAPA 7 & 12: PREFERS REDUCED MOTION SUPPORT */
         @media (prefers-reduced-motion: reduce) {
             *, ::before, ::after {
                 animation-duration: 0.01ms !important;
@@ -387,7 +389,7 @@
         </button>
     </div>
 
-    <!-- MODAL LEITOR DE LIVROS -->
+    <!-- MODAL LEITOR DE LIVROS POR CAPÍTULOS COM QUIZ E RECOMPENSA XP -->
     <div id="modal-leitor-livro" class="fixed inset-0 bg-black/95 backdrop-blur-2xl hidden flex-col z-50">
         <div class="h-1 w-full bg-white/10">
             <div id="reader-progress-bar" class="h-full bg-brand-600 transition-all duration-300 w-0"></div>
@@ -430,7 +432,7 @@
             <div class="flex items-center gap-2">
                 <span id="reader-status-tag" class="text-[10px] text-slate-400 hidden md:inline"><i class="fa-solid fa-lock text-brand-500 mr-1"></i> Conclusão na última página</span>
                 <button id="btn-auto-finish" onclick="concluirLeituraLivro()" class="hidden apple-btn px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow-lg">
-                    Concluir & Resgatar +100 XP
+                    Concluir & Resgatar XP
                 </button>
             </div>
 
@@ -496,7 +498,7 @@
         </div>
     </div>
 
-    <!-- MODAIS RESTANTES -->
+    <!-- MODAL DE NOVO EMAIL & RESERVA DE SALAS -->
     <div id="modal-novo-email" class="fixed inset-0 bg-black/80 backdrop-blur-xl hidden items-center justify-center z-50 p-4">
         <div class="apple-glass rounded-[28px] max-w-lg w-full p-6 shadow-2xl">
             <div class="flex justify-between items-center mb-4">
@@ -553,10 +555,9 @@
     <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
 
     <script>
-        // CONFIGURAÇÃO DAS CHAVES
+        // CONFIGURAÇÃO DAS CHAVES & CONEXÕES INTEGRADAS
         const SUPABASE_URL = "SUA_URL_DO_SUPABASE";
         const SUPABASE_ANON_KEY = "SUA_CHAVE_ANON_DO_SUPABASE";
-        const GEMINI_API_KEY = "SUA_API_KEY_DO_GEMINI";
 
         let supabaseClient = null;
         if (SUPABASE_URL !== "SUA_URL_DO_SUPABASE" && typeof supabase !== 'undefined') {
@@ -753,7 +754,7 @@
             { id: 'perfil', label: 'Meu Perfil', icon: 'fa-user-gear', roles: ['aluno', 'professor'] }
         ];
 
-        // GAMIFICAÇÃO
+        // GAMIFICAÇÃO & PERSISTÊNCIA
         function carregarGamificacao() {
             const saved = localStorage.getItem('fnet_gamification');
             if (saved) {
@@ -784,7 +785,7 @@
             if (streakText) streakText.innerText = `${gamificationState.streak} Dias Seguidos`;
         }
 
-        // --- ABA DE NOTAS & BOLETIM APPLE STYLE ---
+        // --- ABA DE NOTAS & BOLETIM ANALÍTICO ---
         function renderNotas(container) {
             container.innerHTML = `
                 <div class="max-w-7xl mx-auto space-y-6">
@@ -806,7 +807,7 @@
                         </div>
                     </div>
 
-                    <!-- WIDGETS APPLE KPI -->
+                    <!-- WIDGETS APPLE KPI (ETAPA 5: CARDS) -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div class="apple-card p-5 rounded-[24px]">
                             <div class="flex items-center justify-between mb-2">
@@ -845,7 +846,7 @@
                         </div>
                     </div>
 
-                    <!-- ANALYTICS INTERATIVO -->
+                    <!-- ANALYTICS INTERATIVO COM CHART.JS -->
                     <div class="apple-card p-6 rounded-[28px]">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-4 border-b border-black/5 dark:border-white/5">
                             <div>
@@ -1051,7 +1052,7 @@
             renderizarGraficos();
         }
 
-        // --- DASHBOARD PRINCIPAL (ETAPAS 3 E 4: HERO E BENTO GRID) ---
+        // --- DASHBOARD PRINCIPAL (ETAPAS 3 E 4: HERO & BENTO GRID) ---
         function renderDashboard(container) {
             container.innerHTML = `
                 <div class="space-y-6 max-w-7xl mx-auto">
@@ -1092,7 +1093,7 @@
                         </div>
                     </div>
 
-                    <!-- BENTO GRID (ETAPA 4) -->
+                    <!-- BENTO GRID ASYMMETRIC (ETAPA 4) -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div class="apple-card p-5 rounded-[24px] flex items-center gap-4">
                             <div class="w-10 h-10 rounded-xl bg-brand-500/10 text-brand-600 flex items-center justify-center text-base"><i class="fa-solid fa-book-bookmark"></i></div>
@@ -1405,7 +1406,7 @@
             updateTunnelPositions();
         }
 
-        // --- SISTEMA DE LEITURA ---
+        // --- LEITOR DE CAPÍTULOS & QUIZ DE VALIDAÇÃO ---
         function abrirLeitorLivro(livroId) {
             activeBookReading = booksData.find(b => b.id === livroId);
             if (!activeBookReading) return;
@@ -1978,7 +1979,7 @@
             }
         }
 
-        // --- CHAT GEMINI IA ---
+        // --- CHAT IA ---
         function responderChatManual() {
             setTimeout(() => {
                 const input = document.getElementById('chat-input-ia');
