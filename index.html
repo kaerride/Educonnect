@@ -44,9 +44,22 @@
         }
     </script>
     <style>
+        :root {
+            --apple-ease: cubic-bezier(0.16, 1, 0.3, 1);
+            --apple-glass-bg: rgba(255, 255, 255, 0.72);
+            --apple-glass-border: rgba(0, 0, 0, 0.08);
+            --apple-card-bg: rgba(255, 255, 255, 0.85);
+        }
+
+        .dark {
+            --apple-glass-bg: rgba(18, 18, 22, 0.72);
+            --apple-glass-border: rgba(255, 255, 255, 0.08);
+            --apple-card-bg: rgba(24, 24, 28, 0.75);
+        }
+
         body { 
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.022em;
             -webkit-font-smoothing: antialiased;
         }
 
@@ -54,29 +67,34 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 99px; }
 
-        /* APPLE FROSTED GLASS MATERIAL */
+        /* DESIGN SYSTEM TOKENS - APPLE & 21ST.DEV GLASS */
         .apple-glass {
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(25px) saturate(180%);
-            -webkit-backdrop-filter: blur(25px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-        }
-        .dark .apple-glass {
-            background: rgba(18, 18, 20, 0.65);
-            backdrop-filter: blur(25px) saturate(180%);
-            -webkit-backdrop-filter: blur(25px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: var(--apple-glass-bg);
+            backdrop-filter: blur(32px) saturate(190%);
+            -webkit-backdrop-filter: blur(32px) saturate(190%);
+            border: 1px solid var(--apple-glass-border);
         }
 
         .apple-card {
-            background: rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(0, 0, 0, 0.04);
-            box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.04);
+            background: var(--apple-card-bg);
+            border: 1px solid var(--apple-glass-border);
+            box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.04);
+            transition: transform 0.3s var(--apple-ease), box-shadow 0.3s var(--apple-ease), border-color 0.3s var(--apple-ease);
         }
+
         .dark .apple-card {
-            background: rgba(26, 26, 30, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.06);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .apple-card:hover {
+            border-color: rgba(220, 38, 38, 0.3);
+        }
+
+        .apple-btn {
+            transition: all 0.25s var(--apple-ease);
+        }
+        .apple-btn:active {
+            transform: scale(0.96);
         }
 
         .campus-slider {
@@ -89,7 +107,7 @@
             position: absolute;
             inset: 0;
             opacity: 0;
-            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 1s var(--apple-ease);
             background-size: cover;
             background-position: center;
         }
@@ -98,14 +116,7 @@
             z-index: 1;
         }
 
-        .apple-btn {
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .apple-btn:active {
-            transform: scale(0.96);
-        }
-
-        /* 3D TUNNEL HERO STYLES */
+        /* 3D TUNNEL HERO STYLES (21ST.DEV COMPONENT) */
         .perspective-stage {
             perspective: 1000px;
             transform-style: preserve-3d;
@@ -117,6 +128,14 @@
             transform-style: preserve-3d;
             will-change: transform, opacity;
             transition: ring 0.3s ease;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
@@ -185,7 +204,7 @@
     <!-- MAIN APP CONTAINER -->
     <div id="app" class="flex h-screen overflow-hidden">
 
-        <!-- SIDEBAR MACOS STYLE -->
+        <!-- SIDEBAR MACOS STYLE (ETAPA 2) -->
         <aside id="sidebar" class="w-64 apple-glass border-r border-black/5 dark:border-white/5 flex flex-col justify-between transition-all duration-300 z-30 fixed md:relative h-full -translate-x-full md:translate-x-0">
             <div>
                 <!-- Brand Header -->
@@ -1032,10 +1051,11 @@
             renderizarGraficos();
         }
 
-        // --- DASHBOARD PRINCIPAL ---
+        // --- DASHBOARD PRINCIPAL (ETAPAS 3 E 4: HERO E BENTO GRID) ---
         function renderDashboard(container) {
             container.innerHTML = `
                 <div class="space-y-6 max-w-7xl mx-auto">
+                    <!-- HERO SECTION (ETAPA 3) -->
                     <div class="bg-gradient-to-r from-amber-600 via-orange-600 to-brand-600 rounded-[28px] p-6 text-white shadow-xl flex flex-col md:flex-row justify-between items-center gap-4">
                         <div class="flex items-center gap-4">
                             <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-2xl font-bold shrink-0">
@@ -1051,6 +1071,7 @@
                         </button>
                     </div>
 
+                    <!-- SLIDER DE EVENTOS DO CAMPUS -->
                     <div class="campus-slider shadow-2xl bg-black border border-white/10">
                         <div id="carousel-slides-container"></div>
                         <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent flex flex-col justify-end p-6 md:p-8 z-10">
@@ -1071,6 +1092,7 @@
                         </div>
                     </div>
 
+                    <!-- BENTO GRID (ETAPA 4) -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div class="apple-card p-5 rounded-[24px] flex items-center gap-4">
                             <div class="w-10 h-10 rounded-xl bg-brand-500/10 text-brand-600 flex items-center justify-center text-base"><i class="fa-solid fa-book-bookmark"></i></div>
@@ -1213,11 +1235,11 @@
             btn.innerHTML = `Confirmar Inscrição`;
         }
 
-        // --- BIBLIOTECA DIGITAL (COM PERSPECTIVE TUNNEL HERO) ---
+        // --- BIBLIOTECA DIGITAL (COM PERSPECTIVE TUNNEL HERO - ETAPA 8) ---
         function renderBiblioteca(container) {
             container.innerHTML = `
                 <div class="max-w-7xl mx-auto space-y-8">
-                    <!-- PERSPECTIVE TUNNEL HERO 3D BANNER -->
+                    <!-- PERSPECTIVE TUNNEL HERO 3D BANNER (21ST.DEV) -->
                     <div id="tunnel-container" class="perspective-stage relative h-[380px] w-full overflow-hidden apple-card rounded-[32px] bg-neutral-950 flex items-center justify-center border border-white/10 select-none">
                         <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_70%_at_50%_50%,rgba(220,38,38,0.15),transparent_100%)]"></div>
 
@@ -1311,7 +1333,6 @@
             }
         }
 
-        // LÓGICA DO PERSPECTIVE TUNNEL HERO (3D SPACE IN VANILLA JS)
         function initPerspectiveTunnel() {
             const container = document.getElementById('tunnel-container');
             const plane = document.getElementById('tunnel-plane');
