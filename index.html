@@ -79,6 +79,25 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
+        .campus-slider {
+            position: relative;
+            height: 360px;
+            border-radius: 28px;
+            overflow: hidden;
+        }
+        .campus-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1);
+            background-size: cover;
+            background-position: center;
+        }
+        .campus-slide.active {
+            opacity: 1;
+            z-index: 1;
+        }
+
         .apple-btn {
             transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -103,7 +122,7 @@
 </head>
 <body class="bg-[#f5f5f7] text-[#1d1d1f] dark:bg-[#000000] dark:text-[#f5f5f7] min-h-screen transition-colors duration-300 antialiased selection:bg-brand-600 selection:text-white">
 
-    <!-- TELA DE LOGIN / CADASTRO -->
+    <!-- TELA DE LOGIN / CADASTRO ESTILO APPLE ID -->
     <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-3xl" style="background-image: radial-gradient(circle at 50% 50%, rgba(220, 38, 38, 0.15), transparent 70%);">
         <div class="w-full max-w-md p-8 apple-glass rounded-[32px] shadow-2xl">
             <div class="text-center mb-8">
@@ -169,6 +188,7 @@
         <!-- SIDEBAR MACOS STYLE -->
         <aside id="sidebar" class="w-64 apple-glass border-r border-black/5 dark:border-white/5 flex flex-col justify-between transition-all duration-300 z-30 fixed md:relative h-full -translate-x-full md:translate-x-0">
             <div>
+                <!-- Brand Header -->
                 <div class="h-16 flex items-center justify-between px-6 border-b border-black/5 dark:border-white/5">
                     <div class="flex items-center gap-3">
                         <div class="w-7 h-7 rounded-lg bg-brand-600 flex items-center justify-center text-white shadow-md shadow-brand-600/30">
@@ -181,10 +201,13 @@
                     </button>
                 </div>
 
+                <!-- Navigation Links -->
                 <nav class="p-3 space-y-1 custom-scrollbar overflow-y-auto max-h-[calc(100vh-220px)]" id="nav-menu">
+                    <!-- Dynamic Nav Items via JS -->
                 </nav>
             </div>
 
+            <!-- Status Bar & Profile -->
             <div>
                 <div class="mx-3 mb-3 p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 flex items-center justify-between cursor-pointer hover:border-amber-500/40 transition-all" onclick="navigate('gamificacao')">
                     <div class="flex items-center gap-2.5">
@@ -274,6 +297,15 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="p-3.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer" onclick="navigate('salas')">
+                                    <div class="flex gap-3">
+                                        <div class="w-7 h-7 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0 text-xs"><i class="fa-solid fa-check"></i></div>
+                                        <div>
+                                            <p class="text-xs font-semibold text-slate-900 dark:text-white">Reserva Confirmada</p>
+                                            <p class="text-[11px] text-slate-400 mt-0.5">Sua reserva foi vinculada ao Supabase.</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -287,7 +319,7 @@
         </div>
     </div>
 
-    <!-- AGENTE DE IA FLUTUANTE -->
+    <!-- AGENTE DE IA FLUTUANTE APPLE SIRI STYLE -->
     <div id="widget-ia-container" class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
         <div id="chat-popup-ia" class="hidden mb-4 w-80 md:w-96 apple-glass rounded-[28px] shadow-2xl border border-black/5 dark:border-white/10 overflow-hidden flex flex-col h-[460px] transition-all">
             <div class="p-4 bg-gradient-to-r from-brand-600 to-red-700 text-white flex items-center justify-between">
@@ -316,6 +348,11 @@
                         Olá! Sou a IA oficial da FNET alimentada pelo Gemini. Como posso ajudar com seus estudos ou recomendação de livros hoje?
                     </div>
                 </div>
+            </div>
+
+            <div class="p-2 border-t border-black/5 dark:border-white/5 flex gap-1.5 overflow-x-auto custom-scrollbar">
+                <button onclick="document.getElementById('chat-input-ia').value='Como tiro 2a via do boleto?'; responderChatManual();" class="apple-btn px-2.5 py-1 bg-black/5 dark:bg-white/5 text-[10px] font-medium text-slate-400 rounded-full whitespace-nowrap hover:bg-brand-600 hover:text-white transition-colors">💳 2ª Via Boleto</button>
+                <button onclick="document.getElementById('chat-input-ia').value='Me recomende um livro de Engenharia de Software'; responderChatManual();" class="apple-btn px-2.5 py-1 bg-black/5 dark:bg-white/5 text-[10px] font-medium text-slate-400 rounded-full whitespace-nowrap hover:bg-brand-600 hover:text-white transition-colors">📚 Livro Recomendado</button>
             </div>
 
             <form onsubmit="enviarMensagemChatIA(event)" class="p-3 border-t border-black/5 dark:border-white/5 flex gap-2">
@@ -371,9 +408,12 @@
                 <i class="fa-solid fa-chevron-left mr-1"></i> Anterior
             </button>
             
-            <button id="btn-auto-finish" onclick="concluirLeituraLivro()" class="hidden apple-btn px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow-lg">
-                Concluir & Resgatar +100 XP
-            </button>
+            <div class="flex items-center gap-2">
+                <span id="reader-status-tag" class="text-[10px] text-slate-400 hidden md:inline"><i class="fa-solid fa-lock text-brand-500 mr-1"></i> Conclusão na última página</span>
+                <button id="btn-auto-finish" onclick="concluirLeituraLivro()" class="hidden apple-btn px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow-lg">
+                    Concluir & Resgatar +100 XP
+                </button>
+            </div>
 
             <button onclick="mudarPaginaLeitor(1)" id="btn-next-page" class="apple-btn px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-medium">
                 Próxima <i class="fa-solid fa-chevron-right ml-1"></i>
@@ -381,12 +421,123 @@
         </div>
     </div>
 
+    <!-- MODAL DE EVENTOS -->
+    <div id="modal-evento" class="fixed inset-0 bg-black/80 backdrop-blur-xl hidden items-center justify-center z-50 p-4">
+        <div class="apple-glass rounded-[28px] max-w-lg w-full p-6 md:p-8 shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <span id="modal-evento-tag" class="px-3 py-1 bg-brand-600 text-white text-[9px] font-semibold uppercase tracking-wider rounded-full">Feira Acadêmica</span>
+                    <h3 id="modal-evento-titulo" class="text-base font-bold text-slate-900 dark:text-white mt-2">Nome do Evento</h3>
+                </div>
+                <button onclick="closeModal('modal-evento')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div class="space-y-4 mb-6">
+                <p id="modal-evento-desc" class="text-xs text-slate-400 leading-relaxed">Descrição...</p>
+
+                <div class="grid grid-cols-2 gap-3 p-3 bg-black/5 dark:bg-white/5 rounded-2xl text-xs border border-black/5 dark:border-white/5">
+                    <div>
+                        <span class="text-slate-400 block text-[9px] uppercase tracking-wider">Data & Horário</span>
+                        <span id="modal-evento-data" class="font-semibold text-slate-900 dark:text-white">25 Nov, 09:00</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block text-[9px] uppercase tracking-wider">Local</span>
+                        <span id="modal-evento-local" class="font-semibold text-slate-900 dark:text-white">Auditório Bloco A</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 p-3 bg-amber-500/10 border border-amber-500/20 rounded-2xl">
+                    <div class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center text-sm font-bold shrink-0">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-semibold text-amber-500">Recompensas:</h4>
+                        <p class="text-[11px] font-medium text-slate-300 mt-0.5">
+                            <span id="modal-evento-horas" class="text-emerald-500">+10h ACC</span> • 
+                            <span id="modal-evento-xp" class="text-amber-500">+150 XP</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <form onsubmit="confirmarInscricaoEvento(event)" class="space-y-3 pt-3 border-t border-black/5 dark:border-white/5">
+                <input type="hidden" id="evento-nome-hidden">
+                <div>
+                    <label class="block text-[9px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Nome Completo</label>
+                    <input type="text" id="evento-aluno" placeholder="Maria Silva" required class="w-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand-600">
+                </div>
+                <div>
+                    <label class="block text-[9px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Projeto / Equipe</label>
+                    <input type="text" id="evento-projeto" placeholder="App EduConnect" class="w-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand-600">
+                </div>
+                <button type="submit" id="btn-sub-evento" class="apple-btn w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-brand-600/30 text-xs">
+                    Confirmar Inscrição
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAIS RESTANTES -->
+    <div id="modal-novo-email" class="fixed inset-0 bg-black/80 backdrop-blur-xl hidden items-center justify-center z-50 p-4">
+        <div class="apple-glass rounded-[28px] max-w-lg w-full p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-paper-plane text-brand-600"></i> Nova Mensagem
+                </h3>
+                <button onclick="closeModal('modal-novo-email')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="confirmarEnvioEmail(event)" class="space-y-3">
+                <div>
+                    <input type="email" id="email-para" placeholder="Destinatário (secretaria@fnet.edu.br)" required class="w-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand-600">
+                </div>
+                <div>
+                    <input type="text" id="email-assunto" placeholder="Assunto" required class="w-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand-600">
+                </div>
+                <div>
+                    <textarea id="email-mensagem" rows="4" placeholder="Mensagem..." required class="w-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand-600 custom-scrollbar"></textarea>
+                </div>
+                <button type="submit" id="btn-sub-email" class="apple-btn w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-xl shadow-lg shadow-brand-600/30 text-xs">
+                    Enviar Mensagem
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-sala" class="fixed inset-0 bg-black/80 backdrop-blur-xl hidden items-center justify-center z-50 p-4">
+        <div class="apple-glass rounded-[28px] max-w-md w-full p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-sm font-semibold text-slate-900 dark:text-white">Reservar Sala</h3>
+                <button onclick="closeModal('modal-sala')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="confirmarReservaSala(event)" class="space-y-3">
+                <div>
+                    <input type="text" id="sala-nome-modal" readonly class="w-full bg-black/5 dark:bg-white/5 font-semibold px-3 py-2 rounded-xl text-xs text-slate-900 dark:text-white">
+                </div>
+                <div>
+                    <input type="text" id="reser-aluno-modal" placeholder="Nome do Aluno / Grupo" required class="w-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="date" id="reser-data-modal" required class="w-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white">
+                    <select id="reser-horario-modal" required class="w-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white">
+                        <option value="08:00 - 10:00">08:00 - 10:00</option>
+                        <option value="10:00 - 12:00">10:00 - 12:00</option>
+                        <option value="14:00 - 16:00">14:00 - 16:00</option>
+                        <option value="19:00 - 21:00">19:00 - 21:00</option>
+                    </select>
+                </div>
+                <button type="submit" id="btn-sub-reserva" class="apple-btn w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-xl shadow-lg shadow-brand-600/30 text-xs">Confirmar Agendamento</button>
+            </form>
+        </div>
+    </div>
+
     <!-- TOAST CONTAINER -->
     <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
 
     <script>
+        // CONFIGURAÇÃO DAS CHAVES
         const SUPABASE_URL = "SUA_URL_DO_SUPABASE";
         const SUPABASE_ANON_KEY = "SUA_CHAVE_ANON_DO_SUPABASE";
+        const GEMINI_API_KEY = "SUA_API_KEY_DO_GEMINI";
 
         let supabaseClient = null;
         if (SUPABASE_URL !== "SUA_URL_DO_SUPABASE" && typeof supabase !== 'undefined') {
@@ -397,7 +548,16 @@
         let loginSelectedRole = 'aluno';
         let authMode = 'login';
         let currentView = 'dashboard';
+        let currentCarouselIndex = 0;
+        let carouselInterval = null;
+        let activeSelectedEmailId = 1;
         let activeUserSession = null;
+
+        let chartNotasInstance = null;
+        let chartFreqInstance = null;
+        let currentChartType = 'bar';
+        let currentSemesterFilter = '2026.2';
+        let tunnelProgress = 0;
 
         let gamificationState = {
             xp: 450,
@@ -411,7 +571,6 @@
         let currentBookPage = 1;
         let selectedQuizOption = null;
         let isQuizPassed = false;
-        let tunnelProgress = 0;
 
         const booksData = [
             {
@@ -422,35 +581,51 @@
                 capa: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80",
                 paginas: 256,
                 xpReward: 100,
+                pdfUrl: "https://www.dominiopublico.gov.br/download/texto/bv000164.pdf",
                 quizPage: 3,
                 quiz: {
                     pergunta: "Segundo o texto do Capítulo III, qual expressão famosa o narrador Bento usa para definir o olhar de Capitu?",
-                    opcoes: ["Olhos de tempestade", "Olhos de ressaca", "Olhos de mistério", "Olhos de noite estrelada"],
+                    opcoes: [
+                        "Olhos de tempestade",
+                        "Olhos de ressaca",
+                        "Olhos de mistério",
+                        "Olhos de noite estrelada"
+                    ],
                     correta: 1
                 },
                 trecho: [
-                    "Capítulo I — Do Título\n\nUma noite destas, vindo da cidade para o Engenho Novo, encontrei no trem da Central um rapaz...",
-                    "Capítulo II — Do Princípio\n\nAgora que expliquei o título, passo a escrever a história...",
-                    "Capítulo III — Capitu e os Olhos de Ressaca\n\nCapitu era Capitu, isto é, uma criatura muito particular..."
+                    "Capítulo I — Do Título\n\nUma noite destas, vindo da cidade para o Engenho Novo, encontrei no trem da Central um rapaz aqui do bairro...",
+                    "Capítulo II — Do Princípio\n\nAgora que expliquei o título, passo a escrever a história. Primeiro a infância...",
+                    "Capítulo III — Capitu e os Olhos de Ressaca\n\nCapitu era Capitu, isto é, uma criatura muito particular, mais mulher do que eu era homem. Olhos de ressaca? Dá-me uma comparação exata...",
+                    "Capítulo IV — O Seminário de São José\n\nMinha mãe fizera uma promessa ao Senhor para que eu fosse padre. Aos quatorze anos, o destino parecia traçado...",
+                    "Capítulo V — Conclusão da Obra\n\nAnos passados, o tempo levou os amigos, as certezas e as ilusões da mocidade."
                 ]
             },
             {
                 id: 2,
-                titulo: "Clean Code: Conceitos",
-                autor: "Robert C. Martin",
+                titulo: "Clean Code: Conceitos Fundamentais",
+                autor: "Robert C. Martin (Open Ref)",
                 categoria: "Tecnologia",
                 capa: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=600&q=80",
                 paginas: 320,
                 xpReward: 150,
+                pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
                 quizPage: 2,
                 quiz: {
-                    pergunta: "De acordo com o Capítulo 2 sobre a escrita de funções, qual é a regra de ouro?",
-                    opcoes: ["Devem ter 100 linhas", "Devem ser pequenas e fazer apenas uma coisa", "Múltiplos parâmetros", "Variáveis globais"],
+                    pergunta: "De acordo com o Capítulo 2 sobre a escrita de funções, qual é a regra de ouro das funções?",
+                    opcoes: [
+                        "Devem ter pelo menos 100 linhas",
+                        "Devem ser pequenas e fazer apenas uma coisa",
+                        "Devem ter múltiplos parâmetros",
+                        "Devem usar variáveis globais"
+                    ],
                     correta: 1
                 },
                 trecho: [
-                    "Capítulo 1 — Nomes Significativos\n\nEscolher bons nomes leva tempo...",
-                    "Capítulo 2 — Funções Pequenas\n\nA primeira regra das funções é que elas devem ser pequenas..."
+                    "Capítulo 1 — Nomes Significativos\n\nEscolher bons nomes leva tempo, mas economiza mais tempo...",
+                    "Capítulo 2 — Funções Pequenas e Únicas\n\nA primeira regra das funções é que elas devem ser pequenas. A segunda regra é que devem ser ainda menores!...",
+                    "Capítulo 3 — Tratamento de Erros\n\nO tratamento de erros é importante, mas se ele obscurecer a lógica principal está errado...",
+                    "Capítulo 4 — Conclusão do Guia Clean Code\n\nCódigo limpo não é apenas um conjunto de regras, é atitude profissional."
                 ]
             },
             {
@@ -461,34 +636,48 @@
                 capa: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=80",
                 paginas: 180,
                 xpReward: 120,
+                pdfUrl: "https://www.dominiopublico.gov.br/download/texto/eb00008a.pdf",
                 quizPage: 2,
                 quiz: {
-                    pergunta: "Em 'O Príncipe', qual é a recomendação sobre a manutenção do poder?",
-                    opcoes: ["Ignorar as leis", "Manter costumes da população", "Transferir população", "Aumentar impostos"],
+                    pergunta: "Em 'O Príncipe', qual é a recomendação sobre a manutenção do poder em principados novos?",
+                    opcoes: [
+                        "Ignorar as leis antigas",
+                        "Manter costumes e respeitar a estrutura da população conquistada",
+                        "Transferir toda a população",
+                        "Aumentar impostos no primeiro dia"
+                    ],
                     correta: 1
                 },
                 trecho: [
-                    "Capítulo I — Dos Tipos de Principados\n\nTodos os estados...",
-                    "Capítulo II — Dos Principados Hereditários\n\nNos principados hereditários..."
+                    "Capítulo I — Dos Tipos de Principados\n\nTodos os estados que exerceram e exercem poder sobre os homens foram repúblicas...",
+                    "Capítulo II — Dos Principados Hereditários\n\nNos principados hereditários a dificuldade de os manter é muito menor...",
+                    "Capítulo III — Conclusão Estratégica\n\nUm governante prudente deve fundar a sua base naquilo que é seu."
                 ]
             },
             {
                 id: 4,
-                titulo: "Guia Completo de UX",
+                titulo: "Guia Completo de UX & Interfaces",
                 autor: "FNET Open Education",
                 categoria: "UX/UI",
                 capa: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?auto=format&fit=crop&w=600&q=80",
                 paginas: 140,
                 xpReward: 80,
+                pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
                 quizPage: 2,
                 quiz: {
-                    pergunta: "O que são Design Tokens?",
-                    opcoes: ["Moedas virtuais", "Unidades atômicas de estilo reutilizáveis", "Imagens", "Banco de dados"],
+                    pergunta: "O que são Design Tokens em um Design System?",
+                    opcoes: [
+                        "Moedas virtuais",
+                        "Unidades atômicas de estilo reutilizáveis (cores, fontes, espaçamentos)",
+                        "Imagens de alta resolução",
+                        "Linhas de banco de dados"
+                    ],
                     correta: 1
                 },
                 trecho: [
-                    "Capítulo 1 — Hierarquia Visual\n\nA hierarquia visual guia o olho...",
-                    "Capítulo 2 — Design Systems\n\nDesign Tokens são as menores unidades..."
+                    "Capítulo 1 — Hierarquia Visual\n\nA hierarquia visual guia o olho do usuário pela interface...",
+                    "Capítulo 2 — Design Systems e Tokens\n\nDesign Tokens são as menores unidades atômicas de um design system...",
+                    "Capítulo 3 — Acessibilidade\n\nInterfaces modernas devem cumprir as diretrizes da WCAG 2.2."
                 ]
             }
         ];
@@ -502,37 +691,546 @@
             { src: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80", title: "CLOUD DEV" }
         ];
 
-        const navItems = [
-            { id: 'dashboard', label: 'Início', icon: 'fa-house', roles: ['aluno', 'professor'] },
-            { id: 'biblioteca', label: 'Biblioteca 3D', icon: 'fa-book-bookmark', roles: ['aluno', 'professor'] },
-            { id: 'notas', label: 'Notas & Boletim', icon: 'fa-chart-pie', roles: ['aluno', 'professor'] },
-            { id: 'gamificacao', label: 'Passaporte & XP', icon: 'fa-trophy', roles: ['aluno', 'professor'] },
-            { id: 'salas', label: 'Salas & Espaços', icon: 'fa-door-open', roles: ['aluno', 'professor'] },
-            { id: 'webmail', label: 'Webmail', icon: 'fa-envelope', roles: ['aluno', 'professor'] },
-            { id: 'perfil', label: 'Perfil', icon: 'fa-user-gear', roles: ['aluno', 'professor'] }
+        let stateEmails = [
+            { id: 1, de: "Secretaria FNET", emailDe: "secretaria@fnet.edu.br", assunto: "Confirmação de Matrícula 2026.2", data: "Hoje, 14:30", desc: "Sua rematrícula foi processada com sucesso no sistema FNET.", conteudo: "Prezado(a) aluno(a),\n\nInformamos que sua rematrícula para o semestre 2026.2 foi processada e confirmada com sucesso em nosso sistema acadêmico.\n\nAtenciosamente,\nEquipe de Secretaria FNET." },
+            { id: 2, de: "Profa. Ana Paula", emailDe: "ana.souza@fnet.edu.br", assunto: "Lembrete: Entrega do Projeto de FrontEnd", data: "Ontem, 09:15", desc: "Envie o link do seu repositório na aba 'Notas & Atividades'.", conteudo: "Olá pessoal,\n\nLembrando que o prazo final para envio do projeto de Single Page Application (SPA) encerra nesta sexta-feira às 23:59." },
+            { id: 3, de: "Biblioteca Central", emailDe: "biblioteca@fnet.edu.br", assunto: "Reserva de Sala Aprovada", data: "24 Out", desc: "Sua reserva de sala foi registrada no Supabase.", conteudo: "Olá,\n\nSua reserva de sala de estudos em grupo foi confirmada." }
         ];
 
-        // --- ABA BIBLIOTECA DIGITAL + PERSPECTIVE TUNNEL HERO ---
+        const mockData = {
+            disciplinas: [
+                { id: 1, nome: "Programação FrontEnd SPA", prof: "Profa. Ana", progresso: 88, icone: "fa-laptop-code", badge: "Avançado", desc: "React, Vite, Single Page Application e Tailwind CSS." },
+                { id: 2, nome: "UX/UI Design System", prof: "Prof. Carlos", progresso: 64, icone: "fa-wand-magic-sparkles", badge: "Design", desc: "Figma, Design Tokens e acessibilidade de interfaces." },
+                { id: 3, nome: "Banco de Dados NoSQL & Cloud", prof: "Profa. Marina", progresso: 92, icone: "fa-server", badge: "Backend", desc: "MongoDB, Firebase e Arquitetura Serverless em Nuvem." },
+                { id: 4, nome: "Engenharia de Software & IA", prof: "Prof. Roberto", progresso: 95, icone: "fa-brain", badge: "IA & Dev", desc: "Metodologias Ágeis, CI/CD e Agentes Autônomos de IA." }
+            ],
+            notas: [
+                { id: 1, disciplina: "Programação FrontEnd SPA", sigla: "FE-SPA", prof: "Profa. Ana Souza", p1: 9.2, p2: 8.8, trabalho: 10.0, media: 9.3, frequencia: 96, faltas: 2, status: "Aprovado", semestre: "2026.2" },
+                { id: 2, disciplina: "UX/UI Design System", sigla: "UX-DS", prof: "Prof. Carlos Lima", p1: 8.5, p2: 8.0, trabalho: 9.5, media: 8.7, frequencia: 92, faltas: 4, status: "Aprovado", semestre: "2026.2" },
+                { id: 3, disciplina: "Banco de Dados NoSQL & Cloud", sigla: "BD-NOSQL", prof: "Profa. Marina Rocha", p1: 7.8, p2: 8.2, trabalho: 8.5, media: 8.1, frequencia: 98, faltas: 1, status: "Aprovado", semestre: "2026.2" },
+                { id: 4, disciplina: "Engenharia de Software & IA", sigla: "ENG-IA", prof: "Prof. Roberto Silva", p1: 9.5, p2: 9.0, trabalho: 9.8, media: 9.4, frequencia: 95, faltas: 3, status: "Aprovado", semestre: "2026.2" }
+            ],
+            salasEstudo: [
+                { id: 'A101', nome: "Sala de Estudos - Bloco A #101", capacidade: "4 pessoas", recurso: "Lousa Digital & TV", status: "Livre" },
+                { id: 'A102', nome: "Sala de Estudos - Bloco A #102", capacidade: "6 pessoas", recurso: "Projetor & Ar Condicionado", status: "Ocupada" },
+                { id: 'B205', nome: "Sala Mac / Design Lab", capacidade: "8 pessoas", recurso: "Workstations & Monitor Ultrawide", status: "Livre" },
+                { id: 'C301', nome: "Espaço Silencioso Individual", capacidade: "1 pessoa", recurso: "Tomadas & Isolamento Acústico", status: "Livre" }
+            ],
+            campusPhotos: [
+                { id: 1, title: "Feira de Ciências & Tecnologia FNET 2026", tag: "Feira Científica", data: "25 de Novembro — 09:00 às 17:00", local: "Pátio Central & Auditório A", horas: 10, xp: 150, desc: "Apresentação dos projetos integradores dos alunos de Engenharia e TI.", btnTxt: "Ver Detalhes e Inscrever", img: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1200&q=80" },
+                { id: 2, title: "Semana Acadêmica de Engenharia & IA", tag: "Congresso Presencial", data: "10 de Dezembro — 19:00 às 22:00", local: "Auditório Principal FNET", horas: 15, xp: 200, desc: "Ciclo de palestras com especialistas da indústria sobre Agentes Autônomos de IA.", btnTxt: "Garantir Vaga na Palestra", img: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80" },
+                { id: 3, title: "Hackathon FNET: Maratona de Código", tag: "Competição de Devs", data: "18 de Dezembro — 08:00 às 20:00", local: "Laboratório de Redes & Cloud", horas: 20, xp: 300, desc: "Desenvolva uma solução de impacto social em 12 horas seguidas de programação em equipe.", btnTxt: "Inscrever Minha Equipe", img: "https://images.unsplash.com/photo-1492538368677-f6e0afe31dcc?auto=format&fit=crop&w=1200&q=80" }
+            ]
+        };
+
+        const navItems = [
+            { id: 'dashboard', label: 'Início', icon: 'fa-house', roles: ['aluno', 'professor'] },
+            { id: 'cursos', label: 'Disciplinas', icon: 'fa-book-open', roles: ['aluno', 'professor'] },
+            { id: 'notas', label: 'Notas & Atividades', icon: 'fa-chart-pie', roles: ['aluno', 'professor'] },
+            { id: 'biblioteca', label: 'Biblioteca Digital', icon: 'fa-book-bookmark', roles: ['aluno', 'professor'] },
+            { id: 'gamificacao', label: 'Passaporte & XP', icon: 'fa-trophy', roles: ['aluno', 'professor'] },
+            { id: 'salas', label: 'Salas & Espaços', icon: 'fa-door-open', roles: ['aluno', 'professor'] },
+            { id: 'webmail', label: 'Webmail FNET', icon: 'fa-envelope', roles: ['aluno', 'professor'] },
+            { id: 'perfil', label: 'Meu Perfil', icon: 'fa-user-gear', roles: ['aluno', 'professor'] }
+        ];
+
+        // GAMIFICAÇÃO
+        function carregarGamificacao() {
+            const saved = localStorage.getItem('fnet_gamification');
+            if (saved) {
+                try { gamificationState = JSON.parse(saved); } catch (e) {}
+            }
+            atualizarDisplaysGamificacao();
+        }
+
+        function salvarGamificacao() {
+            localStorage.setItem('fnet_gamification', JSON.stringify(gamificationState));
+            atualizarDisplaysGamificacao();
+        }
+
+        function adicionarXP(quantidade, motivo) {
+            gamificationState.xp += quantidade;
+            gamificationState.level = Math.floor(gamificationState.xp / 200) + 1;
+            salvarGamificacao();
+            showToast(`+${quantidade} XP! ${motivo}`, 'success');
+        }
+
+        function atualizarDisplaysGamificacao() {
+            const sidebarXp = document.getElementById('sidebar-xp-badge');
+            const topbarXp = document.getElementById('topbar-xp-val');
+            const streakText = document.getElementById('sidebar-streak-text');
+
+            if (sidebarXp) sidebarXp.innerText = `${gamificationState.xp} XP`;
+            if (topbarXp) topbarXp.innerText = `${gamificationState.xp} XP`;
+            if (streakText) streakText.innerText = `${gamificationState.streak} Dias Seguidos`;
+        }
+
+        // --- ABA DE NOTAS & BOLETIM APPLE STYLE ---
+        function renderNotas(container) {
+            container.innerHTML = `
+                <div class="max-w-7xl mx-auto space-y-6">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-chart-line text-brand-600"></i> Boletim & Desempenho
+                            </h2>
+                            <p class="text-xs text-slate-400 mt-0.5">Visão analítica de notas, horas ACC e presença.</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <select id="select-semestre" onchange="alterarSemestreNotas(this.value)" class="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-slate-900 dark:text-white rounded-xl px-3.5 py-2 text-xs font-semibold focus:outline-none">
+                                <option value="2026.2">Semestre Vigente (2026.2)</option>
+                                <option value="2026.1">Semestre Anterior (2026.1)</option>
+                            </select>
+                            <button onclick="showToast('Exportando Boletim em PDF...')" class="apple-btn px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-medium shadow-md shadow-brand-600/20 flex items-center gap-2">
+                                <i class="fa-solid fa-file-pdf"></i> Exportar
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- WIDGETS APPLE KPI -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="apple-card p-5 rounded-[24px]">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Coeficiente (CR)</span>
+                                <div class="w-7 h-7 rounded-lg bg-brand-500/10 text-brand-600 flex items-center justify-center text-xs"><i class="fa-solid fa-star"></i></div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-slate-900 dark:text-white">8.95 <span class="text-xs font-semibold text-emerald-500 ml-1">+0.4</span></h3>
+                            <p class="text-[10px] text-slate-400 mt-1">Desempenho acima da média</p>
+                        </div>
+
+                        <div class="apple-card p-5 rounded-[24px]">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Frequência Semestral</span>
+                                <div class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-xs"><i class="fa-solid fa-user-check"></i></div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-emerald-500">95.2%</h3>
+                            <p class="text-[10px] text-slate-400 mt-1">10 faltas acumuladas</p>
+                        </div>
+
+                        <div class="apple-card p-5 rounded-[24px]">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Horas ACC</span>
+                                <div class="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center text-xs"><i class="fa-solid fa-clock"></i></div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-slate-900 dark:text-white">120h <span class="text-xs text-slate-400">/ 180h</span></h3>
+                            <p class="text-[10px] text-slate-400 mt-1">66% concluídas</p>
+                        </div>
+
+                        <div class="apple-card p-5 rounded-[24px]">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Situação</span>
+                                <div class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-xs"><i class="fa-solid fa-shield-check"></i></div>
+                            </div>
+                            <h3 class="text-lg font-bold text-emerald-500">Regular</h3>
+                            <p class="text-[10px] text-slate-400 mt-1">Sem pendências</p>
+                        </div>
+                    </div>
+
+                    <!-- ANALYTICS INTERATIVO -->
+                    <div class="apple-card p-6 rounded-[28px]">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-4 border-b border-black/5 dark:border-white/5">
+                            <div>
+                                <h3 class="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-2">
+                                    <i class="fa-solid fa-chart-pie text-brand-600"></i> Visualização de Desempenho
+                                </h3>
+                                <p class="text-[11px] text-slate-400">Gráficos dinâmicos de notas e presenças.</p>
+                            </div>
+                            
+                            <div class="flex bg-black/5 dark:bg-white/5 p-1 rounded-xl text-xs font-medium border border-black/5 dark:border-white/5">
+                                <button onclick="trocarTipoGrafico('bar')" id="btn-chart-bar" class="px-3 py-1 rounded-lg transition-all bg-brand-600 text-white">
+                                    Barras
+                                </button>
+                                <button onclick="trocarTipoGrafico('line')" id="btn-chart-line" class="px-3 py-1 rounded-lg transition-all text-slate-400 hover:text-white">
+                                    Linhas
+                                </button>
+                                <button onclick="trocarTipoGrafico('doughnut')" id="btn-chart-doughnut" class="px-3 py-1 rounded-lg transition-all text-slate-400 hover:text-white">
+                                    Rosca
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div class="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5">
+                                <h4 class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-4">
+                                    Média por Disciplina
+                                </h4>
+                                <div class="relative h-60 w-full">
+                                    <canvas id="chart-notas-canvas"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5">
+                                <h4 class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-4">
+                                    Frequência por Disciplina (%)
+                                </h4>
+                                <div class="relative h-60 w-full">
+                                    <canvas id="chart-frequencia-canvas"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARDS DE DISCIPLINAS WIDGET APPLE -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-address-card text-brand-600"></i> Detalhamento por Disciplina
+                            </h3>
+                            <span class="text-xs text-slate-400">Semestre 2026.2</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            ${mockData.notas.map(n => `
+                                <div class="apple-card rounded-[24px] p-5 flex flex-col justify-between hover:border-brand-600/40 transition-all">
+                                    <div>
+                                        <div class="flex justify-between items-start mb-3">
+                                            <span class="px-2.5 py-0.5 bg-black/5 dark:bg-white/10 text-slate-700 dark:text-slate-300 rounded-md text-[10px] font-bold uppercase tracking-wider">
+                                                ${n.sigla}
+                                            </span>
+                                            <span class="px-2.5 py-0.5 bg-emerald-500/10 text-emerald-500 rounded-full font-semibold text-[10px] border border-emerald-500/20">
+                                                <i class="fa-solid fa-check mr-1"></i>${n.status}
+                                            </span>
+                                        </div>
+
+                                        <h4 class="text-sm font-bold text-slate-900 dark:text-white truncate mb-0.5">${n.disciplina}</h4>
+                                        <p class="text-xs text-slate-400 mb-4">${n.prof}</p>
+
+                                        <div class="grid grid-cols-4 gap-2 mb-4 p-3 bg-black/5 dark:bg-white/5 rounded-xl text-center border border-black/5 dark:border-white/5">
+                                            <div>
+                                                <span class="text-[9px] font-semibold text-slate-400 block uppercase">P1</span>
+                                                <span class="text-xs font-semibold text-slate-900 dark:text-white">${n.p1}</span>
+                                            </div>
+                                            <div>
+                                                <span class="text-[9px] font-semibold text-slate-400 block uppercase">P2</span>
+                                                <span class="text-xs font-semibold text-slate-900 dark:text-white">${n.p2}</span>
+                                            </div>
+                                            <div>
+                                                <span class="text-[9px] font-semibold text-slate-400 block uppercase">Trabalho</span>
+                                                <span class="text-xs font-semibold text-slate-900 dark:text-white">${n.trabalho}</span>
+                                            </div>
+                                            <div class="border-l border-black/10 dark:border-white/10 pl-1">
+                                                <span class="text-[9px] font-semibold text-brand-600 block uppercase">Média</span>
+                                                <span class="text-xs font-bold text-brand-600">${n.media}</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="space-y-1">
+                                            <div class="flex justify-between items-center text-[11px]">
+                                                <span class="text-slate-400">Frequência</span>
+                                                <span class="font-semibold text-slate-700 dark:text-slate-200">${n.frequencia}% (${n.faltas} faltas)</span>
+                                            </div>
+                                            <div class="h-1.5 w-full bg-black/5 dark:bg-white/10 rounded-full overflow-hidden">
+                                                <div class="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full" style="width: ${n.frequencia}%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/5 flex justify-end gap-2">
+                                        <button onclick="showToast('Histórico: ${n.faltas} faltas.')" class="apple-btn px-3 py-1.5 bg-black/5 dark:bg-white/10 hover:bg-black/10 text-slate-900 dark:text-slate-200 rounded-xl text-xs font-medium">
+                                            Faltas
+                                        </button>
+                                        <button onclick="showToast('Enviado ao Webmail!')" class="apple-btn px-3 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-medium shadow-sm">
+                                            Detalhes
+                                        </button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            setTimeout(() => {
+                renderizarGraficos();
+            }, 100);
+        }
+
+        function renderizarGraficos() {
+            const ctxNotas = document.getElementById('chart-notas-canvas');
+            const ctxFreq = document.getElementById('chart-frequencia-canvas');
+            if (!ctxNotas || !ctxFreq) return;
+
+            if (chartNotasInstance) chartNotasInstance.destroy();
+            if (chartFreqInstance) chartFreqInstance.destroy();
+
+            const isDark = document.documentElement.classList.contains('dark');
+            const textColor = isDark ? '#a1a1aa' : '#71717a';
+            const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+
+            const labels = mockData.notas.map(n => n.sigla);
+            const dataNotas = mockData.notas.map(n => n.media);
+            const dataFreq = mockData.notas.map(n => n.frequencia);
+
+            chartNotasInstance = new Chart(ctxNotas, {
+                type: currentChartType,
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Média Final',
+                        data: dataNotas,
+                        backgroundColor: currentChartType === 'doughnut' ? ['#dc2626', '#ef4444', '#f97316', '#b91c1c'] : '#dc2626',
+                        borderColor: '#dc2626',
+                        borderWidth: 1.5,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: currentChartType === 'doughnut', labels: { color: textColor } } },
+                    scales: currentChartType !== 'doughnut' ? {
+                        y: { min: 0, max: 10, ticks: { color: textColor }, grid: { color: gridColor } },
+                        x: { ticks: { color: textColor }, grid: { display: false } }
+                    } : {}
+                }
+            });
+
+            chartFreqInstance = new Chart(ctxFreq, {
+                type: currentChartType,
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Frequência (%)',
+                        data: dataFreq,
+                        backgroundColor: currentChartType === 'doughnut' ? ['#10b981', '#059669', '#34d399', '#047857'] : '#10b981',
+                        borderColor: '#10b981',
+                        borderWidth: 1.5,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: currentChartType === 'doughnut', labels: { color: textColor } } },
+                    scales: currentChartType !== 'doughnut' ? {
+                        y: { min: 50, max: 100, ticks: { color: textColor }, grid: { color: gridColor } },
+                        x: { ticks: { color: textColor }, grid: { display: false } }
+                    } : {}
+                }
+            });
+        }
+
+        function trocarTipoGrafico(tipo) {
+            currentChartType = tipo;
+            const btnBar = document.getElementById('btn-chart-bar');
+            const btnLine = document.getElementById('btn-chart-line');
+            const btnDoughnut = document.getElementById('btn-chart-doughnut');
+
+            const activeClass = "px-3 py-1 rounded-lg transition-all bg-brand-600 text-white";
+            const inactiveClass = "px-3 py-1 rounded-lg transition-all text-slate-400 hover:text-white";
+
+            if (btnBar) btnBar.className = tipo === 'bar' ? activeClass : inactiveClass;
+            if (btnLine) btnLine.className = tipo === 'line' ? activeClass : inactiveClass;
+            if (btnDoughnut) btnDoughnut.className = tipo === 'doughnut' ? activeClass : inactiveClass;
+
+            renderizarGraficos();
+        }
+
+        function alterarSemestreNotas(val) {
+            currentSemesterFilter = val;
+            showToast(`Filtro atualizado para o semestre ${val}`);
+            renderizarGraficos();
+        }
+
+        // --- DASHBOARD PRINCIPAL ---
+        function renderDashboard(container) {
+            container.innerHTML = `
+                <div class="space-y-6 max-w-7xl mx-auto">
+                    <div class="bg-gradient-to-r from-amber-600 via-orange-600 to-brand-600 rounded-[28px] p-6 text-white shadow-xl flex flex-col md:flex-row justify-between items-center gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-2xl font-bold shrink-0">
+                                <i class="fa-solid fa-fire text-amber-300"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-bold">Trilha de Leitura & XP Estudantil</h3>
+                                <p class="text-xs text-amber-100 mt-0.5">Leia livros da biblioteca 3D, acumule XP e troque por horas ACC!</p>
+                            </div>
+                        </div>
+                        <button onclick="navigate('gamificacao')" class="apple-btn px-5 py-2.5 bg-white text-brand-600 hover:bg-slate-100 rounded-xl text-xs font-bold shadow-md whitespace-nowrap">
+                            Ver Resgates & Missões <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+
+                    <div class="campus-slider shadow-2xl bg-black border border-white/10">
+                        <div id="carousel-slides-container"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent flex flex-col justify-end p-6 md:p-8 z-10">
+                            <div class="flex flex-wrap items-center gap-2 mb-2">
+                                <span id="campus-tag" class="px-3 py-1 bg-brand-600 text-white text-[9px] font-semibold uppercase tracking-wider rounded-full">Feira Científica</span>
+                                <span id="campus-badge-recompensas" class="px-3 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[9px] font-semibold rounded-full flex items-center gap-1">
+                                    <i class="fa-solid fa-award"></i> +10h ACC • +150 XP
+                                </span>
+                            </div>
+                            <h2 id="campus-title" class="text-xl md:text-2xl font-bold text-white tracking-tight">Feira de Ciências & Tecnologia FNET 2026</h2>
+                            <p id="campus-desc" class="text-xs md:text-sm text-slate-300 mt-1 max-w-2xl line-clamp-2">Apresentação dos projetos integradores dos alunos de Engenharia e TI.</p>
+                            <div class="mt-4 flex items-center justify-between">
+                                <div class="flex gap-1.5" id="carousel-dots"></div>
+                                <button onclick="abrirModalEventoAtivo()" id="campus-btn" class="apple-btn px-5 py-2.5 bg-white text-black hover:bg-slate-200 rounded-xl text-xs font-semibold shadow-lg flex items-center gap-2">
+                                    Ver Detalhes <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="apple-card p-5 rounded-[24px] flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-brand-500/10 text-brand-600 flex items-center justify-center text-base"><i class="fa-solid fa-book-bookmark"></i></div>
+                            <div>
+                                <p class="text-xs text-slate-400 font-medium">Disciplinas Ativas</p>
+                                <h3 class="text-base font-bold text-slate-900 dark:text-white">4 Matérias</h3>
+                            </div>
+                        </div>
+                        <div class="apple-card p-5 rounded-[24px] flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-base"><i class="fa-solid fa-chart-line"></i></div>
+                            <div>
+                                <p class="text-xs text-slate-400 font-medium">Média Geral</p>
+                                <h3 class="text-base font-bold text-slate-900 dark:text-white">8.9 / 10</h3>
+                            </div>
+                        </div>
+                        <div class="apple-card p-5 rounded-[24px] flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-base"><i class="fa-solid fa-trophy"></i></div>
+                            <div>
+                                <p class="text-xs text-slate-400 font-medium">Nível Estudantil</p>
+                                <h3 class="text-base font-bold text-amber-500">Nível ${gamificationState.level}</h3>
+                            </div>
+                        </div>
+                        <div class="apple-card p-5 rounded-[24px] flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-base"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                            <div>
+                                <p class="text-xs text-slate-400 font-medium">Financeiro</p>
+                                <h3 class="text-base font-bold text-emerald-500">Quitado</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            initCarousel();
+        }
+
+        function initCarousel() {
+            const container = document.getElementById('carousel-slides-container');
+            const dotsContainer = document.getElementById('carousel-dots');
+            if (!container || !dotsContainer) return;
+            
+            container.innerHTML = mockData.campusPhotos.map((p, i) => `
+                <div class="campus-slide ${i === 0 ? 'active' : ''}" style="background-image: linear-gradient(to top, rgba(0,0,0,0.9), transparent), url('${p.img}')"></div>
+            `).join('');
+
+            dotsContainer.innerHTML = mockData.campusPhotos.map((_, i) => `
+                <button onclick="setSlide(${i})" id="dot-${i}" class="w-2 h-2 rounded-full transition-all ${i === 0 ? 'bg-brand-600 w-5' : 'bg-white/40'}"></button>
+            `).join('');
+
+            if (carouselInterval) clearInterval(carouselInterval);
+            carouselInterval = setInterval(() => {
+                currentCarouselIndex = (currentCarouselIndex + 1) % mockData.campusPhotos.length;
+                updateCarouselView();
+            }, 5000);
+        }
+
+        function setSlide(index) {
+            currentCarouselIndex = index;
+            updateCarouselView();
+        }
+
+        function updateCarouselView() {
+            const slides = document.querySelectorAll('.campus-slide');
+            slides.forEach((slide, i) => slide.classList.toggle('active', i === currentCarouselIndex));
+
+            const dots = document.querySelectorAll('[id^="dot-"]');
+            dots.forEach((dot, i) => {
+                dot.className = i === currentCarouselIndex ? "w-5 h-2 rounded-full transition-all bg-brand-600" : "w-2 h-2 rounded-full transition-all bg-white/40";
+            });
+
+            const p = mockData.campusPhotos[currentCarouselIndex];
+            const tagElem = document.getElementById('campus-tag');
+            const badgeRec = document.getElementById('campus-badge-recompensas');
+            const titleElem = document.getElementById('campus-title');
+            const descElem = document.getElementById('campus-desc');
+            const btnElem = document.getElementById('campus-btn');
+
+            if (tagElem) tagElem.innerText = p.tag;
+            if (badgeRec) badgeRec.innerHTML = `<i class="fa-solid fa-award"></i> +${p.horas}h ACC • +${p.xp} XP`;
+            if (titleElem) titleElem.innerText = p.title;
+            if (descElem) descElem.innerText = `${p.data} — ${p.desc}`;
+            if (btnElem) btnElem.innerHTML = `${p.btnTxt} <i class="fa-solid fa-arrow-right"></i>`;
+        }
+
+        function abrirModalEventoAtivo() {
+            const evento = mockData.campusPhotos[currentCarouselIndex];
+            if (!evento) return;
+
+            document.getElementById('modal-evento-tag').innerText = evento.tag;
+            document.getElementById('modal-evento-titulo').innerText = evento.title;
+            document.getElementById('modal-evento-desc').innerText = evento.desc;
+            document.getElementById('modal-evento-data').innerText = evento.data;
+            document.getElementById('modal-evento-local').innerText = evento.local;
+            document.getElementById('modal-evento-horas').innerText = `+${evento.horas}h ACC`;
+            document.getElementById('modal-evento-xp').innerText = `+${evento.xp} XP`;
+            document.getElementById('evento-nome-hidden').value = evento.title;
+
+            if (activeUserSession) {
+                document.getElementById('evento-aluno').value = activeUserSession.nome;
+            }
+
+            const modal = document.getElementById('modal-evento');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal(idModal) {
+            const modal = document.getElementById(idModal);
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        async function confirmarInscricaoEvento(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-sub-evento');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Registrando...`;
+
+            const nomeEvento = document.getElementById('evento-nome-hidden').value;
+            const aluno = document.getElementById('evento-aluno').value;
+            const projeto = document.getElementById('evento-projeto').value || 'Participante Individual';
+
+            const eventoObj = mockData.campusPhotos.find(p => p.title === nomeEvento);
+            const xpGanho = eventoObj ? eventoObj.xp : 100;
+
+            if (supabaseClient) {
+                await supabaseClient.from('inscricoes_eventos').insert([{
+                    evento: nomeEvento,
+                    aluno: aluno,
+                    projeto: projeto
+                }]);
+            }
+
+            adicionarXP(xpGanho, `Inscrição no evento "${nomeEvento}"!`);
+            showToast(`Inscrição confirmada para ${aluno}! Comprovante enviado ao Webmail.`);
+            
+            closeModal('modal-evento');
+            btn.disabled = false;
+            btn.innerHTML = `Confirmar Inscrição`;
+        }
+
+        // --- BIBLIOTECA DIGITAL (COM PERSPECTIVE TUNNEL HERO) ---
         function renderBiblioteca(container) {
             container.innerHTML = `
                 <div class="max-w-7xl mx-auto space-y-8">
-                    <!-- HERO PERSPECTIVE TUNNEL 3D BANNER -->
+                    <!-- PERSPECTIVE TUNNEL HERO 3D BANNER -->
                     <div id="tunnel-container" class="perspective-stage relative h-[380px] w-full overflow-hidden apple-card rounded-[32px] bg-neutral-950 flex items-center justify-center border border-white/10 select-none">
-                        
                         <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_70%_at_50%_50%,rgba(220,38,38,0.15),transparent_100%)]"></div>
 
-                        <!-- Central Typography -->
                         <div class="pointer-events-none z-10 text-center px-4">
-                            <p class="text-[10px] font-mono uppercase tracking-[0.4em] text-brand-500 mb-2">Immersive Spatial Library</p>
+                            <p class="text-[10px] font-mono uppercase tracking-[0.4em] text-brand-500 mb-2">Warp Drive Spatial Library</p>
                             <h1 class="text-3xl md:text-5xl font-extrabold tracking-tighter text-white">INTO THE ETHER</h1>
-                            <p class="mt-2 text-xs text-slate-400 max-w-md mx-auto">Role a roda do mouse sobre o banner para navegar pelo túnel 3D de obras em destaque.</p>
+                            <p class="mt-2 text-xs text-slate-400 max-w-md mx-auto">Use a roda do mouse sobre este banner para navegar no espaço 3D dos livros em destaque.</p>
                         </div>
 
-                        <!-- Tunnel Plane Container -->
                         <div id="tunnel-plane" class="absolute inset-0 pointer-events-none"></div>
 
                         <div class="absolute bottom-4 z-20 text-[10px] font-mono text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                            <span>Scroll para navegar</span>
+                            <span>Scroll para explorar</span>
                             <div class="h-3 w-px bg-brand-600"></div>
                         </div>
                     </div>
@@ -540,43 +1238,80 @@
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                         <div>
                             <h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                                <i class="fa-solid fa-book-bookmark text-brand-600"></i> Acervo de Leitura
+                                <i class="fa-solid fa-book-bookmark text-brand-600"></i> Biblioteca Digital FNET
                             </h2>
-                            <p class="text-xs text-slate-400">Selecione uma obra para iniciar a leitura monitorada.</p>
+                            <p class="text-xs text-slate-400">Leitura monitorada com validação e atribuição de XP.</p>
                         </div>
+                        <span class="px-3 py-1 bg-amber-500/10 text-amber-500 border border-amber-500/20 rounded-full text-xs font-semibold">
+                            <i class="fa-solid fa-circle-check mr-1"></i> ${gamificationState.readBooks.length} Livros Concluídos
+                        </span>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        ${booksData.map(b => `
-                            <div class="apple-card rounded-[24px] overflow-hidden flex flex-col justify-between">
-                                <div>
-                                    <div class="relative h-48 overflow-hidden">
-                                        <img src="${b.capa}" alt="${b.titulo}" class="w-full h-full object-cover">
-                                        <span class="absolute top-3 left-3 px-2.5 py-1 bg-black/80 backdrop-blur-md text-amber-400 font-semibold text-[10px] rounded-full border border-amber-400/20">
-                                            +${b.xpReward} XP
-                                        </span>
-                                    </div>
-                                    <div class="p-4">
-                                        <span class="text-[9px] font-semibold text-brand-600 uppercase tracking-wider">${b.categoria}</span>
-                                        <h3 class="font-bold text-xs text-slate-900 dark:text-white mt-1 mb-1 line-clamp-1">${b.titulo}</h3>
-                                        <p class="text-[11px] text-slate-400 mb-2">${b.autor}</p>
-                                    </div>
-                                </div>
-                                <div class="p-4 pt-0">
-                                    <button onclick="abrirLeitorLivro(${b.id})" class="apple-btn w-full py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-medium flex items-center justify-center gap-1">
-                                        <i class="fa-solid fa-book-open"></i> Abrir Leitor
-                                    </button>
-                                </div>
-                            </div>
-                        `).join('')}
+                    <div class="flex gap-2 overflow-x-auto custom-scrollbar p-1.5 apple-card rounded-2xl">
+                        <button onclick="filtrarLivros('Todos')" class="px-3.5 py-1.5 bg-brand-600 text-white rounded-xl text-xs font-medium">Todos</button>
+                        <button onclick="filtrarLivros('Tecnologia')" class="px-3.5 py-1.5 bg-black/5 dark:bg-white/5 text-slate-400 hover:text-white rounded-xl text-xs font-medium transition-all">Tecnologia</button>
+                        <button onclick="filtrarLivros('Literatura')" class="px-3.5 py-1.5 bg-black/5 dark:bg-white/5 text-slate-400 hover:text-white rounded-xl text-xs font-medium transition-all">Literatura</button>
+                        <button onclick="filtrarLivros('UX/UI')" class="px-3.5 py-1.5 bg-black/5 dark:bg-white/5 text-slate-400 hover:text-white rounded-xl text-xs font-medium transition-all">UX/UI</button>
+                        <button onclick="filtrarLivros('Negócios')" class="px-3.5 py-1.5 bg-black/5 dark:bg-white/5 text-slate-400 hover:text-white rounded-xl text-xs font-medium transition-all">Negócios</button>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="grid-livros-container">
+                        ${booksData.map(b => renderCardLivro(b)).join('')}
                     </div>
                 </div>
             `;
-
             initPerspectiveTunnel();
         }
 
-        // LÓGICA DO PERSPECTIVE TUNNEL HERO 3D (VANILLA JS + GSAP)
+        function renderCardLivro(livro) {
+            const jaLido = gamificationState.readBooks.includes(livro.id);
+            return `
+                <div class="apple-card rounded-[24px] overflow-hidden flex flex-col justify-between group">
+                    <div>
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="${livro.capa}" alt="${livro.titulo}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <span class="absolute top-3 left-3 px-2.5 py-1 bg-black/80 backdrop-blur-md text-amber-400 font-semibold text-[10px] rounded-full border border-amber-400/20">
+                                +${livro.xpReward} XP
+                            </span>
+                            ${jaLido ? `
+                                <span class="absolute top-3 right-3 px-2.5 py-1 bg-emerald-600 text-white font-semibold text-[10px] rounded-full">
+                                    Concluído
+                                </span>
+                            ` : ''}
+                        </div>
+                        <div class="p-4">
+                            <span class="text-[9px] font-semibold text-brand-600 uppercase tracking-wider">${livro.categoria}</span>
+                            <h3 class="font-bold text-xs text-slate-900 dark:text-white mt-1 mb-1 line-clamp-1">${livro.titulo}</h3>
+                            <p class="text-[11px] text-slate-400 mb-2">${livro.autor}</p>
+                            <p class="text-[10px] text-slate-400">
+                                <i class="fa-solid fa-book-open mr-1"></i> ${livro.paginas} páginas
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="p-4 pt-0 grid grid-cols-2 gap-2">
+                        <button onclick="abrirLeitorLivro(${livro.id})" class="apple-btn w-full py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-medium flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-book-open"></i> Ler
+                        </button>
+                        <a href="${livro.pdfUrl}" target="_blank" class="apple-btn w-full py-2 bg-black/5 dark:bg-white/10 hover:bg-white/20 text-slate-900 dark:text-slate-200 rounded-xl text-xs font-medium flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-download"></i> PDF
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        function filtrarLivros(cat) {
+            const container = document.getElementById('grid-livros-container');
+            if (cat === 'Todos') {
+                container.innerHTML = booksData.map(b => renderCardLivro(b)).join('');
+            } else {
+                const filtrados = booksData.filter(b => b.categoria === cat);
+                container.innerHTML = filtrados.map(b => renderCardLivro(b)).join('');
+            }
+        }
+
+        // LÓGICA DO PERSPECTIVE TUNNEL HERO (3D SPACE IN VANILLA JS)
         function initPerspectiveTunnel() {
             const container = document.getElementById('tunnel-container');
             const plane = document.getElementById('tunnel-plane');
@@ -649,73 +1384,535 @@
             updateTunnelPositions();
         }
 
-        // --- DEMAIS ABAS E FLUXO DA APLICAÇÃO ---
-        function renderDashboard(container) {
+        // --- SISTEMA DE LEITURA ---
+        function abrirLeitorLivro(livroId) {
+            activeBookReading = booksData.find(b => b.id === livroId);
+            if (!activeBookReading) return;
+
+            currentBookPage = 1;
+            isQuizPassed = false;
+            selectedQuizOption = null;
+
+            document.getElementById('reader-title').innerText = activeBookReading.titulo;
+            document.getElementById('reader-author').innerText = activeBookReading.autor;
+            
+            atualizarConteudoLeitor();
+
+            const modal = document.getElementById('modal-leitor-livro');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function fecharLeitorLivro() {
+            const modal = document.getElementById('modal-leitor-livro');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function mudarPaginaLeitor(delta) {
+            if (!activeBookReading) return;
+
+            if (currentBookPage === activeBookReading.quizPage && !isQuizPassed && delta > 0) {
+                showToast("Responda à pergunta para continuar!", "error");
+                return;
+            }
+
+            const totalPaginasArray = activeBookReading.trecho.length;
+            if (currentBookPage + delta >= 1 && currentBookPage + delta <= totalPaginasArray) {
+                currentBookPage += delta;
+                atualizarConteudoLeitor();
+            }
+        }
+
+        function atualizarConteudoLeitor() {
+            const content = document.getElementById('reader-content');
+            const quizBox = document.getElementById('quiz-container');
+            const pageInd = document.getElementById('reader-page-indicator');
+            const progressBar = document.getElementById('reader-progress-bar');
+            const btnPrev = document.getElementById('btn-prev-page');
+            const btnNext = document.getElementById('btn-next-page');
+            const btnFinish = document.getElementById('btn-auto-finish');
+            const statusTag = document.getElementById('reader-status-tag');
+
+            const totalArray = activeBookReading.trecho.length;
+            const paginasTotaisReais = activeBookReading.paginas;
+
+            const realPageNum = Math.min(Math.round((currentBookPage / totalArray) * paginasTotaisReais), paginasTotaisReais);
+            const percentual = Math.round((currentBookPage / totalArray) * 100);
+
+            progressBar.style.width = `${percentual}%`;
+            pageInd.innerText = `Página ${realPageNum} de ${paginasTotaisReais}`;
+
+            btnPrev.disabled = currentBookPage === 1;
+
+            if (currentBookPage === activeBookReading.quizPage && !isQuizPassed) {
+                content.innerHTML = `<p class="italic text-slate-400 mb-4">${activeBookReading.trecho[currentBookPage - 1]}</p>`;
+                quizBox.classList.remove('hidden');
+                btnNext.classList.add('hidden');
+                
+                document.getElementById('quiz-question').innerText = activeBookReading.quiz.pergunta;
+                const optionsBox = document.getElementById('quiz-options');
+                optionsBox.innerHTML = activeBookReading.quiz.opcoes.map((opt, idx) => `
+                    <label class="flex items-center gap-3 p-3 bg-black/5 dark:bg-white/5 hover:bg-white/10 rounded-xl cursor-pointer border border-white/5 transition-colors">
+                        <input type="radio" name="quiz_opt" value="${idx}" onchange="selectedQuizOption = ${idx}" class="text-brand-600 focus:ring-brand-600">
+                        <span class="text-slate-200">${opt}</span>
+                    </label>
+                `).join('');
+
+            } else {
+                quizBox.classList.add('hidden');
+                content.innerText = activeBookReading.trecho[currentBookPage - 1];
+                btnNext.classList.remove('hidden');
+            }
+
+            if (currentBookPage === totalArray) {
+                btnNext.classList.add('hidden');
+                btnFinish.classList.remove('hidden');
+                statusTag.classList.add('hidden');
+            } else {
+                btnFinish.classList.add('hidden');
+                statusTag.classList.remove('hidden');
+            }
+        }
+
+        function validarRespostaQuiz() {
+            if (selectedQuizOption === null) {
+                showToast("Selecione uma resposta!", "error");
+                return;
+            }
+
+            if (selectedQuizOption === activeBookReading.quiz.correta) {
+                isQuizPassed = true;
+                showToast("Resposta correta!", "success");
+                atualizarConteudoLeitor();
+            } else {
+                showToast("Resposta incorreta! Tente novamente.", "error");
+            }
+        }
+
+        function concluirLeituraLivro() {
+            if (!activeBookReading) return;
+
+            if (!gamificationState.readBooks.includes(activeBookReading.id)) {
+                gamificationState.readBooks.push(activeBookReading.id);
+                adicionarXP(activeBookReading.xpReward, `Leitura concluída!`);
+            } else {
+                showToast("Você já concluiu este livro!");
+            }
+
+            fecharLeitorLivro();
+            if (currentView === 'biblioteca') renderBiblioteca(document.getElementById('main-view'));
+        }
+
+        // --- PASSPORT & GAMIFICAÇÃO ---
+        function renderGamificacao(container) {
             container.innerHTML = `
-                <div class="space-y-6 max-w-7xl mx-auto">
-                    <div class="bg-gradient-to-r from-brand-600 to-red-700 rounded-[28px] p-6 text-white shadow-xl flex justify-between items-center">
-                        <div>
-                            <h3 class="text-base font-bold">Portal Acadêmico FNET</h3>
-                            <p class="text-xs text-slate-200 mt-0.5">Bem-vindo(a) ao semestre 2026.2</p>
+                <div class="max-w-7xl mx-auto space-y-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-trophy text-amber-500"></i> Passaporte de Prêmios FNET
+                        </h2>
+                        <p class="text-xs text-slate-400">Troque seus pontos por benefícios.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-[28px] p-6 text-white shadow-xl flex items-center justify-between">
+                            <div>
+                                <p class="text-[9px] uppercase tracking-wider text-amber-100 font-semibold">Nível</p>
+                                <h3 class="text-2xl font-bold">Nível ${gamificationState.level}</h3>
+                                <p class="text-[11px] text-amber-100 mt-1">Próximo nível a 600 XP</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl">
+                                <i class="fa-solid fa-crown text-amber-200"></i>
+                            </div>
                         </div>
-                        <button onclick="navigate('biblioteca')" class="apple-btn px-4 py-2 bg-white text-brand-600 rounded-xl text-xs font-bold">
-                            Biblioteca 3D <i class="fa-solid fa-arrow-right ml-1"></i>
-                        </button>
+
+                        <div class="apple-card rounded-[28px] p-6 flex items-center justify-between">
+                            <div>
+                                <p class="text-[9px] uppercase tracking-wider text-slate-400 font-semibold">Ofensiva</p>
+                                <h3 class="text-2xl font-bold text-slate-900 dark:text-white">${gamificationState.streak} Dias</h3>
+                                <p class="text-xs text-emerald-500 font-semibold mt-1">Em Chamas!</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-fire"></i>
+                            </div>
+                        </div>
+
+                        <div class="apple-card rounded-[28px] p-6 flex items-center justify-between">
+                            <div>
+                                <p class="text-[9px] uppercase tracking-wider text-slate-400 font-semibold">Saldo XP</p>
+                                <h3 class="text-2xl font-bold text-amber-500">${gamificationState.xp} XP</h3>
+                                <p class="text-xs text-slate-400 mt-1">Disponível para troca</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-2xl bg-brand-500/10 text-brand-600 flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-coins"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Loja de Recompensas</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div class="apple-card p-5 rounded-[24px] flex flex-col justify-between">
+                                <div>
+                                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-lg mb-3">
+                                        <i class="fa-solid fa-graduation-cap"></i>
+                                    </div>
+                                    <h4 class="font-bold text-xs text-slate-900 dark:text-white">+15 Horas ACC</h4>
+                                    <p class="text-[11px] text-slate-400 mt-1">Crédito direto no histórico.</p>
+                                </div>
+                                <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/5 flex justify-between items-center">
+                                    <span class="font-bold text-amber-500 text-xs">500 XP</span>
+                                    <button onclick="resgatarRecompensa('+15 Horas ACC', 500)" class="apple-btn px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl text-xs">Resgatar</button>
+                                </div>
+                            </div>
+
+                            <div class="apple-card p-5 rounded-[24px] flex flex-col justify-between">
+                                <div>
+                                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-lg mb-3">
+                                        <i class="fa-solid fa-mug-hot"></i>
+                                    </div>
+                                    <h4 class="font-bold text-xs text-slate-900 dark:text-white">Vale Café Cantina</h4>
+                                    <p class="text-[11px] text-slate-400 mt-1">Café e salgado grátis.</p>
+                                </div>
+                                <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/5 flex justify-between items-center">
+                                    <span class="font-bold text-amber-500 text-xs">300 XP</span>
+                                    <button onclick="resgatarRecompensa('Vale Café Cantina', 300)" class="apple-btn px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl text-xs">Resgatar</button>
+                                </div>
+                            </div>
+
+                            <div class="apple-card p-5 rounded-[24px] flex flex-col justify-between">
+                                <div>
+                                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-lg mb-3">
+                                        <i class="fa-solid fa-shirt"></i>
+                                    </div>
+                                    <h4 class="font-bold text-xs text-slate-900 dark:text-white">Camisa FNET Tech</h4>
+                                    <p class="text-[11px] text-slate-400 mt-1">Camisa oficial do curso.</p>
+                                </div>
+                                <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/5 flex justify-between items-center">
+                                    <span class="font-bold text-amber-500 text-xs">1200 XP</span>
+                                    <button onclick="resgatarRecompensa('Camisa FNET Tech', 1200)" class="apple-btn px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl text-xs">Resgatar</button>
+                                </div>
+                            </div>
+
+                            <div class="apple-card p-5 rounded-[24px] flex flex-col justify-between">
+                                <div>
+                                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-lg mb-3">
+                                        <i class="fa-solid fa-ticket"></i>
+                                    </div>
+                                    <h4 class="font-bold text-xs text-slate-900 dark:text-white">Isenção 2ª Prova</h4>
+                                    <p class="text-[11px] text-slate-400 mt-1">Isenção de taxa de requerimento.</p>
+                                </div>
+                                <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/5 flex justify-between items-center">
+                                    <span class="font-bold text-amber-500 text-xs">800 XP</span>
+                                    <button onclick="resgatarRecompensa('Isenção 2ª Prova', 800)" class="apple-btn px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl text-xs">Resgatar</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
         }
 
-        function renderNotas(container) {
-            container.innerHTML = `<div class="max-w-7xl mx-auto space-y-4"><h2 class="text-xl font-bold text-slate-900 dark:text-white">Boletim & Desempenho</h2><p class="text-xs text-slate-400">CR Atual: 8.95 (Regular)</p></div>`;
+        function resgatarRecompensa(nomeItem, custoXp) {
+            if (gamificationState.xp < custoXp) {
+                showToast(`XP Insuficiente!`, 'error');
+                return;
+            }
+
+            gamificationState.xp -= custoXp;
+            gamificationState.rewardsClaimed.push({ item: nomeItem, data: new Date().toLocaleDateString() });
+            salvarGamificacao();
+
+            showToast(`Resgatado com sucesso!`, 'success');
+            if (currentView === 'gamificacao') renderGamificacao(document.getElementById('main-view'));
         }
 
-        function renderGamificacao(container) {
-            container.innerHTML = `<div class="max-w-7xl mx-auto space-y-4"><h2 class="text-xl font-bold text-amber-500">Passaporte FNET</h2><p class="text-xs text-slate-400">Saldo: ${gamificationState.xp} XP</p></div>`;
-        }
-
-        function renderSalas(container) {
-            container.innerHTML = `<div class="max-w-7xl mx-auto space-y-4"><h2 class="text-xl font-bold text-slate-900 dark:text-white">Reserva de Salas</h2><p class="text-xs text-slate-400">Espaços disponíveis para estudo individual ou grupo.</p></div>`;
-        }
-
+        // --- WEBMAIL ---
         function renderWebmail(container) {
-            container.innerHTML = `<div class="max-w-7xl mx-auto space-y-4"><h2 class="text-xl font-bold text-slate-900 dark:text-white">Webmail Acadêmico</h2><p class="text-xs text-slate-400">Caixa de entrada sincronizada.</p></div>`;
+            const emailAtivo = stateEmails.find(e => e.id === activeSelectedEmailId) || stateEmails[0];
+
+            container.innerHTML = `
+                <div class="max-w-7xl mx-auto space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-xl font-bold text-slate-900 dark:text-white">Webmail</h2>
+                        <button onclick="abrirModalNovoEmail()" class="apple-btn px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-semibold shadow-md flex items-center gap-2">
+                            <i class="fa-solid fa-plus"></i> Novo E-mail
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 h-[550px]">
+                        <div class="lg:col-span-5 apple-card rounded-[24px] overflow-hidden flex flex-col h-full">
+                            <div class="p-3 border-b border-black/5 dark:border-white/5 bg-black/5 dark:bg-white/5 flex justify-between items-center">
+                                <span class="text-xs font-semibold text-slate-400">Caixa de Entrada</span>
+                                <span class="text-[10px] bg-brand-500/10 text-brand-600 px-2 py-0.5 rounded-full font-bold">${stateEmails.length}</span>
+                            </div>
+                            <div class="divide-y divide-black/5 dark:divide-white/5 overflow-y-auto custom-scrollbar flex-1">
+                                ${stateEmails.map(e => `
+                                    <div onclick="selecionarEmail(${e.id})" class="p-3.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer ${e.id === activeSelectedEmailId ? 'bg-brand-500/10 border-l-2 border-brand-600' : ''}">
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="text-xs font-semibold text-slate-900 dark:text-white truncate">${e.de}</span>
+                                            <span class="text-[10px] text-slate-400">${e.data}</span>
+                                        </div>
+                                        <h4 class="text-xs text-slate-400 truncate">${e.assunto}</h4>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-7 apple-card rounded-[24px] flex flex-col h-full overflow-hidden">
+                            ${emailAtivo ? `
+                                <div class="p-5 border-b border-black/5 dark:border-white/5 bg-black/5 dark:bg-white/5">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <h3 class="text-sm font-bold text-slate-900 dark:text-white">${emailAtivo.assunto}</h3>
+                                        <span class="text-xs text-slate-400">${emailAtivo.data}</span>
+                                    </div>
+                                    <p class="text-xs font-medium text-slate-400">${emailAtivo.de} &lt;${emailAtivo.emailDe}&gt;</p>
+                                </div>
+                                <div class="p-5 flex-1 overflow-y-auto custom-scrollbar text-xs text-slate-300 leading-relaxed whitespace-pre-line">
+                                    ${emailAtivo.conteudo || emailAtivo.desc}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
+        function selecionarEmail(id) {
+            activeSelectedEmailId = id;
+            renderWebmail(document.getElementById('main-view'));
+        }
+
+        function abrirModalNovoEmail() {
+            document.getElementById('email-para').value = '';
+            document.getElementById('email-assunto').value = '';
+            document.getElementById('email-mensagem').value = '';
+            document.getElementById('modal-novo-email').classList.remove('hidden');
+            document.getElementById('modal-novo-email').classList.add('flex');
+        }
+
+        async function confirmarEnvioEmail(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-sub-email');
+            btn.disabled = true;
+
+            const para = document.getElementById('email-para').value;
+            const assunto = document.getElementById('email-assunto').value;
+            const mensagem = document.getElementById('email-mensagem').value;
+            const deEmail = activeUserSession ? activeUserSession.email : "usuario@fnet.edu.br";
+
+            const novoEmail = {
+                id: Date.now(),
+                de: `Para: ${para}`,
+                emailDe: deEmail,
+                assunto: assunto,
+                data: "Agora",
+                desc: mensagem.substring(0, 50) + "...",
+                conteudo: mensagem
+            };
+
+            stateEmails.unshift(novoEmail);
+            activeSelectedEmailId = novoEmail.id;
+
+            if (supabaseClient) {
+                await supabaseClient.from('webmail_fnet').insert([{ de: deEmail, para: para, assunto: assunto, mensagem: mensagem }]);
+            }
+
+            adicionarXP(20, "Mensagem enviada!");
+            showToast("E-mail enviado!");
+            closeModal('modal-novo-email');
+            btn.disabled = false;
+            renderWebmail(document.getElementById('main-view'));
+        }
+
+        // --- DISCIPLINAS ---
+        function renderCursos(container) {
+            container.innerHTML = `
+                <div class="max-w-7xl mx-auto space-y-6">
+                    <h2 class="text-xl font-bold text-slate-900 dark:text-white">Disciplinas</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        ${mockData.disciplinas.map(d => `
+                            <div class="apple-card rounded-[24px] p-5 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex justify-between items-center mb-3">
+                                        <div class="w-10 h-10 rounded-xl bg-brand-500/10 text-brand-600 flex items-center justify-center text-base">
+                                            <i class="fa-solid ${d.icone}"></i>
+                                        </div>
+                                        <span class="text-xs font-semibold px-2.5 py-0.5 bg-brand-500/10 text-brand-600 rounded-full">${d.badge}</span>
+                                    </div>
+                                    <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-1">${d.nome}</h3>
+                                    <p class="text-xs text-slate-400 mb-3">${d.desc}</p>
+                                </div>
+                                <button onclick="showToast('Abrindo aula...')" class="apple-btn w-full py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-medium">Acessar Aulas</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- SALAS DE ESTUDO ---
+        function renderSalas(container) {
+            container.innerHTML = `
+                <div class="max-w-7xl mx-auto space-y-6">
+                    <h2 class="text-xl font-bold text-slate-900 dark:text-white">Reserva de Espaços</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        ${mockData.salasEstudo.map(s => `
+                            <div class="apple-card rounded-[24px] p-5 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex justify-between items-start mb-2">
+                                        <span class="text-xs text-slate-400 font-semibold">${s.id}</span>
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold ${s.status === 'Livre' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500'}">${s.status}</span>
+                                    </div>
+                                    <h3 class="font-bold text-sm text-slate-900 dark:text-white mb-1">${s.nome}</h3>
+                                    <p class="text-xs text-slate-400 mb-3"><i class="fa-solid fa-users mr-1"></i> ${s.capacidade}</p>
+                                </div>
+                                <button ${s.status === 'Ocupada' ? 'disabled' : ''} onclick="abrirModalSala('${s.nome}')" class="apple-btn w-full py-2 bg-brand-600 hover:bg-brand-700 disabled:opacity-40 text-white rounded-xl text-xs font-medium">
+                                    ${s.status === 'Livre' ? 'Reservar' : 'Ocupada'}
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function abrirModalSala(nomeSala) {
+            document.getElementById('sala-nome-modal').value = nomeSala;
+            document.getElementById('reser-data-modal').value = new Date().toISOString().split('T')[0];
+            document.getElementById('modal-sala').classList.remove('hidden');
+            document.getElementById('modal-sala').classList.add('flex');
+        }
+
+        async function confirmarReservaSala(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-sub-reserva');
+            btn.disabled = true;
+
+            const sala = document.getElementById('sala-nome-modal').value;
+            const aluno = document.getElementById('reser-aluno-modal').value;
+            const data = document.getElementById('reser-data-modal').value;
+            const horario = document.getElementById('reser-horario-modal').value;
+
+            if (supabaseClient) {
+                await supabaseClient.from('reservas_salas').insert([{ sala: sala, aluno: aluno, data: data, horario: horario }]);
+            }
+
+            adicionarXP(30, "Reserva de sala confirmada!");
+            showToast(`Sala reservada para ${aluno} em ${data}!`);
+            closeModal('modal-sala');
+            btn.disabled = false;
+        }
+
+        // --- PERFIL ---
         function renderPerfil(container) {
-            container.innerHTML = `<div class="max-w-7xl mx-auto space-y-4"><h2 class="text-xl font-bold text-slate-900 dark:text-white">Perfil do Usuário</h2><p class="text-xs text-slate-400">Maria Silva (2026849302)</p></div>`;
+            const nome = activeUserSession ? activeUserSession.nome : "Maria Silva";
+            const matricula = activeUserSession ? activeUserSession.matricula : "2026849302";
+            const email = activeUserSession ? activeUserSession.email : "maria.silva@aluno.fnet.edu.br";
+
+            container.innerHTML = `
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <h2 class="text-xl font-bold text-slate-900 dark:text-white">Meu Perfil</h2>
+                    <div class="apple-card rounded-[28px] p-6 flex flex-col md:flex-row gap-6 items-center">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300" alt="Foto" class="w-20 h-20 rounded-full object-cover border border-white/20">
+                        <div class="space-y-1 text-center md:text-left">
+                            <h3 class="text-base font-bold text-slate-900 dark:text-white">${nome}</h3>
+                            <p class="text-xs text-slate-400">Matrícula: ${matricula} • Engenharia de Software</p>
+                            <p class="text-xs text-slate-400">E-mail: ${email}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
-        function carregarGamificacao() {
-            const saved = localStorage.getItem('fnet_gamification');
-            if (saved) { try { gamificationState = JSON.parse(saved); } catch (e) {} }
-            atualizarDisplaysGamificacao();
+        // --- AUTENTICAÇÃO ---
+        function setLoginRole(role) {
+            loginSelectedRole = role;
+            const btnAluno = document.getElementById('tab-aluno');
+            const btnProf = document.getElementById('tab-professor');
+
+            if (role === 'aluno') {
+                btnAluno.className = "flex-1 py-2 text-xs font-medium rounded-xl transition-all bg-brand-600 text-white shadow-sm";
+                btnProf.className = "flex-1 py-2 text-xs font-medium rounded-xl text-slate-500 dark:text-slate-400 transition-all";
+            } else {
+                btnProf.className = "flex-1 py-2 text-xs font-medium rounded-xl transition-all bg-brand-600 text-white shadow-sm";
+                btnAluno.className = "flex-1 py-2 text-xs font-medium rounded-xl text-slate-500 dark:text-slate-400 transition-all";
+            }
         }
 
-        function atualizarDisplaysGamificacao() {
-            const sidebarXp = document.getElementById('sidebar-xp-badge');
-            const topbarXp = document.getElementById('topbar-xp-val');
-            if (sidebarXp) sidebarXp.innerText = `${gamificationState.xp} XP`;
-            if (topbarXp) topbarXp.innerText = `${gamificationState.xp} XP`;
+        function toggleAuthMode(mode) {
+            authMode = mode;
+            const fieldNome = document.getElementById('field-nome-completo');
+            const fieldEmail = document.getElementById('field-email-cadastro');
+
+            if (mode === 'register') {
+                fieldNome.classList.remove('hidden');
+                fieldEmail.classList.remove('hidden');
+            } else {
+                fieldNome.classList.add('hidden');
+                fieldEmail.classList.add('hidden');
+            }
         }
 
-        function abrirLeitorLivro(id) {
-            activeBookReading = booksData.find(b => b.id === id);
-            if (!activeBookReading) return;
-            currentBookPage = 1;
-            document.getElementById('reader-title').innerText = activeBookReading.titulo;
-            document.getElementById('reader-author').innerText = activeBookReading.autor;
-            document.getElementById('reader-content').innerText = activeBookReading.trecho[0];
-            document.getElementById('modal-leitor-livro').classList.remove('hidden');
-            document.getElementById('modal-leitor-livro').classList.add('flex');
+        async function handleAuthSubmit(event) {
+            event.preventDefault();
+            const matricula = document.getElementById('login-user').value.trim();
+
+            activeUserSession = {
+                nome: loginSelectedRole === 'professor' ? "Prof. Roberto Silva" : "Maria Silva",
+                matricula: matricula,
+                email: loginSelectedRole === 'professor' ? "roberto.silva@docente.fnet.edu.br" : "maria.silva@aluno.fnet.edu.br",
+                role: loginSelectedRole,
+                avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150"
+            };
+
+            localStorage.setItem('fnet_active_session', JSON.stringify(activeUserSession));
+            iniciarSessaoApp();
         }
 
-        function fecharLeitorLivro() {
-            document.getElementById('modal-leitor-livro').classList.add('hidden');
-            document.getElementById('modal-leitor-livro').classList.remove('flex');
+        function verificarSessaoExistente() {
+            const savedSession = localStorage.getItem('fnet_active_session');
+            if (savedSession) {
+                try {
+                    activeUserSession = JSON.parse(savedSession);
+                    iniciarSessaoApp();
+                } catch (e) {}
+            }
         }
 
-        function showToast(message) {
+        function iniciarSessaoApp() {
+            if (!activeUserSession) return;
+            currentUserRole = activeUserSession.role;
+            document.getElementById('login-screen').classList.add('hidden');
+            carregarGamificacao();
+            navigate(currentView);
+        }
+
+        function logout() {
+            localStorage.removeItem('fnet_active_session');
+            activeUserSession = null;
+            document.getElementById('login-screen').classList.remove('hidden');
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        }
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            if (currentView === 'notas') renderizarGraficos();
+        }
+
+        function toggleNotificationMenu() {
+            document.getElementById('notif-dropdown').classList.toggle('hidden');
+        }
+
+        function toggleChatIA() {
+            document.getElementById('chat-popup-ia').classList.toggle('hidden');
+        }
+
+        function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = `px-4 py-3 rounded-2xl apple-glass text-xs font-semibold text-white flex items-center gap-2 shadow-2xl`;
@@ -724,37 +1921,20 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); }
-        function toggleDarkMode() { document.documentElement.classList.toggle('dark'); }
-        function toggleNotificationMenu() { document.getElementById('notif-dropdown').classList.toggle('hidden'); }
-        function toggleChatIA() { document.getElementById('chat-popup-ia').classList.toggle('hidden'); }
-
-        function setLoginRole(role) { loginSelectedRole = role; }
-        function toggleAuthMode(mode) { authMode = mode; }
-        function handleAuthSubmit(e) {
-            e.preventDefault();
-            activeUserSession = { nome: "Maria Silva", matricula: "2026849302", role: loginSelectedRole };
-            document.getElementById('login-screen').classList.add('hidden');
-            carregarGamificacao();
-            navigate('biblioteca');
-        }
-
-        function logout() {
-            activeUserSession = null;
-            document.getElementById('login-screen').classList.remove('hidden');
-        }
-
         function renderSidebar() {
             const navMenu = document.getElementById('nav-menu');
             if (!navMenu) return;
             navMenu.innerHTML = '';
+            
             navItems.forEach(item => {
-                const active = currentView === item.id;
-                const btn = document.createElement('button');
-                btn.onclick = () => navigate(item.id);
-                btn.className = `w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${active ? 'bg-brand-600 text-white shadow-md shadow-brand-600/30' : 'text-slate-400 hover:bg-black/5 dark:hover:bg-white/5'}`;
-                btn.innerHTML = `<i class="fa-solid ${item.icon} text-xs w-4"></i> ${item.label}`;
-                navMenu.appendChild(btn);
+                if (item.roles.includes(currentUserRole)) {
+                    const active = currentView === item.id;
+                    const btn = document.createElement('button');
+                    btn.onclick = () => navigate(item.id);
+                    btn.className = `w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${active ? 'bg-brand-600 text-white shadow-md shadow-brand-600/30' : 'text-slate-400 hover:bg-black/5 dark:hover:bg-white/5'}`;
+                    btn.innerHTML = `<i class="fa-solid ${item.icon} text-xs w-4"></i> ${item.label}`;
+                    navMenu.appendChild(btn);
+                }
             });
         }
 
@@ -766,8 +1946,9 @@
 
             switch(viewId) {
                 case 'dashboard': renderDashboard(mainView); break;
-                case 'biblioteca': renderBiblioteca(mainView); break;
+                case 'cursos': renderCursos(mainView); break;
                 case 'notas': renderNotas(mainView); break;
+                case 'biblioteca': renderBiblioteca(mainView); break;
                 case 'gamificacao': renderGamificacao(mainView); break;
                 case 'salas': renderSalas(mainView); break;
                 case 'webmail': renderWebmail(mainView); break;
@@ -776,8 +1957,49 @@
             }
         }
 
+        // --- CHAT GEMINI IA ---
+        function responderChatManual() {
+            setTimeout(() => {
+                const input = document.getElementById('chat-input-ia');
+                if (input.value) {
+                    adicionarMensagemChat(input.value, 'user');
+                    processarRespostaIA(input.value);
+                    input.value = '';
+                }
+            }, 100);
+        }
+
+        function enviarMensagemChatIA(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input-ia');
+            if (!input.value.trim()) return;
+            adicionarMensagemChat(input.value, 'user');
+            processarRespostaIA(input.value);
+            input.value = '';
+        }
+
+        function adicionarMensagemChat(texto, remetente) {
+            const chatMessages = document.getElementById('chat-messages-ia');
+            const div = document.createElement('div');
+            div.className = `flex items-start ${remetente === 'user' ? 'justify-end' : ''} gap-2`;
+            div.innerHTML = `
+                <div class="${remetente === 'user' ? 'bg-brand-600 text-white' : 'apple-card text-slate-900 dark:text-white'} p-3 rounded-2xl text-xs leading-relaxed max-w-[80%]">
+                    ${texto}
+                </div>
+            `;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        async function processarRespostaIA(pergunta) {
+            setTimeout(() => {
+                adicionarMensagemChat("Entendi perfeitamente sua dúvida! Suas informações de notas e prazos estão sincronizadas.", 'ia');
+            }, 600);
+        }
+
         window.onload = function() {
-            carregarGamificacao();
+            verificarSessaoExistente();
+            if (!activeUserSession) setLoginRole('aluno');
         };
     </script>
 </body>
