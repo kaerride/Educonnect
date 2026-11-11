@@ -463,6 +463,18 @@
     
         /* V8 */
         #fx-particles { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    
+        /* V11: 7 itens na nav do topo cabem em 1024-1199px */
+        @media (min-width: 1024px) and (max-width: 1199px) { #topnav nav button { padding: .45rem .5rem; font-size: 12.5px; } .tn-out { display: none; } }
+    
+        /* V12: menu Campus, busca só em telas largas, tom da Cantina */
+        .tn-grp { position: relative; } .tn-gb i { font-size: 9px; margin-left: 4px; opacity: .7; }
+        .tn-menu { display: none; position: absolute; top: calc(100% + 14px); left: 0; min-width: 220px; padding: 6px; border-radius: 16px; box-shadow: 0 20px 40px -12px rgba(0,0,0,.5); z-index: 60; flex-direction: column; }
+        .tn-grp.open .tn-menu { display: flex; }
+        #topnav nav .tn-menu button { display: flex; align-items: center; gap: 10px; width: 100%; padding: .55rem .7rem; border-radius: 10px; font-size: 13px; text-align: left; }
+        .tn-menu i { width: 16px; color: #dc2626; }
+        @media (min-width: 1280px) and (max-width: 1439px) { .fx-search { display: none !important; } header button[aria-label="Buscar"] { display: inline-flex !important; } }
+        body[data-view="cantina"] { --tc: 245 158 11; --tc2: 220 38 38; }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
@@ -678,9 +690,9 @@
                         <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="13" width="4" height="6" rx="1.5"/><rect x="17" y="13" width="4" height="6" rx="1.5"/><path d="M20 19c0 1.7-1.8 2.5-5 2.5h-2"/><path d="M12 6.8l.8 1.8 1.8.8-1.8.8-.8 1.8-.8-1.8-1.8-.8 1.8-.8z" fill="currentColor" stroke="none"/></svg>
                     </div>
                     <div>
-                        <h3 class="font-semibold text-xs">FNET Gemini IA</h3>
+                        <h3 class="font-semibold text-xs">Assistente FNET</h3>
                         <p class="text-[11px] text-emerald-300 font-medium flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Online (Google AI)
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Responde com base no portal
                         </p>
                     </div>
                 </div>
@@ -695,7 +707,7 @@
                         <i class="fa-solid fa-robot"></i>
                     </div>
                     <div class="apple-card p-3 rounded-2xl rounded-tl-none text-xs leading-relaxed">
-                        Olá! Sou a IA oficial da FNET alimentada pelo Gemini. Como posso ajudar com seus estudos ou recomendação de livros hoje?
+                        Olá! Sou o assistente da FNET. Pergunte sobre notas, Webmail, salas, carteirinha, cantina e aluguel de livros.
                     </div>
                 </div>
             </div>
@@ -1088,6 +1100,10 @@
             { id: 'biblioteca', label: 'Biblioteca Digital', icon: 'fa-book-bookmark', roles: ['aluno', 'professor'] },
             { id: 'gamificacao', label: 'Prêmios', icon: 'fa-trophy', roles: ['aluno', 'professor'] },
             { id: 'salas', label: 'Salas & Espaços', icon: 'fa-door-open', roles: ['aluno', 'professor'] },
+            { id: 'campus', label: 'Carteirinha & Parceiros', icon: 'fa-id-card', roles: ['aluno'] },
+            { id: 'aluguel', label: 'Aluguel de Livros', icon: 'fa-book-bookmark', roles: ['aluno'] },
+            { id: 'cantina', label: 'Cantina & Trailers', icon: 'fa-utensils', roles: ['aluno', 'professor'] },
+            { id: 'guia', label: 'Guia do Aluno', icon: 'fa-circle-question', roles: ['aluno', 'professor'] },
             { id: 'webmail', label: 'Webmail FNET', icon: 'fa-envelope', roles: ['aluno', 'professor'] },
             { id: 'perfil', label: 'Meu Perfil', icon: 'fa-user-gear', roles: ['aluno', 'professor'] }
         ];
@@ -2521,6 +2537,10 @@
                 case 'biblioteca': renderBiblioteca(mainView); break;
                 case 'gamificacao': renderGamificacao(mainView); break;
                 case 'salas': renderSalas(mainView); break;
+                case 'campus': renderCampus(mainView); break;
+                case 'cantina': renderCantina(mainView); break;
+                case 'aluguel': renderAluguel(mainView); break;
+                case 'guia': renderGuia(mainView); break;
                 case 'webmail': renderWebmail(mainView); break;
                 case 'perfil': renderPerfil(mainView); break;
                 default: renderDashboard(mainView);
@@ -3791,7 +3811,7 @@ document.addEventListener('keydown', function (ev) {
     var $ = function (id) { return document.getElementById(id); };
     var header = document.querySelector('header'); if (!header) return;
     var left = header.firstElementChild, right = header.lastElementChild;
-    var SHORT = { dashboard: 'Início', cursos: 'Disciplinas', notas: 'Notas', biblioteca: 'Biblioteca', gamificacao: 'Prêmios', salas: 'Salas' };
+    var SHORT = { dashboard: 'Início', cursos: 'Disciplinas', notas: 'Notas', biblioteca: 'Biblioteca', gamificacao: 'Prêmios', salas: 'Salas', campus: 'Carteirinha' };
 
     var q = header.querySelector('input[type="text"]'); if (q && q.parentElement) q.parentElement.classList.add('fx-search');
 
@@ -3814,12 +3834,21 @@ document.addEventListener('keydown', function (ev) {
         try {
             document.body.dataset.view = currentView;
             var nav = top.querySelector('nav'), html = '';
+            var GRP = ['campus', 'aluguel', 'cantina', 'guia'], g = [];
             navItems.forEach(function (n) {
-                if (!SHORT[n.id] || n.roles.indexOf(currentUserRole) < 0) return;
+                if (n.roles.indexOf(currentUserRole) < 0) return;
+                if (GRP.indexOf(n.id) >= 0) { g.push(n); return; }
+                if (!SHORT[n.id]) return;
                 html += '<button type="button" data-id="' + n.id + '"' + (n.id === currentView ? ' class="on" aria-current="page"' : '') + '>' + SHORT[n.id] + '</button>';
             });
+            if (g.length) {
+                var on = g.some(function (n) { return n.id === currentView; });
+                html += '<div class="tn-grp"><button type="button" class="tn-gb' + (on ? ' on' : '') + '" aria-haspopup="true" aria-expanded="false">Campus <i class="fa-solid fa-chevron-down"></i></button><div class="tn-menu apple-glass" role="menu">' +
+                    g.map(function (n) { return '<button type="button" role="menuitem" data-id="' + n.id + '"><i class="fa-solid ' + n.icon + '"></i>' + n.label + '</button>'; }).join('') + '</div></div>';
+            }
             nav.innerHTML = html;
-            nav.querySelectorAll('button').forEach(function (b) { b.onclick = function () { navigate(b.dataset.id); }; });
+            nav.querySelectorAll('button[data-id]').forEach(function (b) { b.onclick = function () { nav.querySelectorAll('.tn-grp').forEach(function (x) { x.classList.remove('open'); }); navigate(b.dataset.id); }; });
+            var gb = nav.querySelector('.tn-gb'); if (gb) gb.onclick = function (e) { e.stopPropagation(); var o = gb.parentNode.classList.toggle('open'); gb.setAttribute('aria-expanded', o); };
             var st = $('sidebar-streak-text'), n = st ? (st.textContent.match(/\d+/) || [''])[0] : '';
             streak.innerHTML = '<i class="fa-solid fa-fire"></i><span>' + n + '</span>';
             var src = $('user-avatar-sidebar'); if (src) av.firstChild.src = src.src;
@@ -4059,6 +4088,628 @@ document.addEventListener('keydown', function (ev) {
         };
         $('det-mail').focus();
     };
+})();
+
+</script>
+<script>
+/* V11: Carteirinha & Parceiros (Porto Esperança, cidade fictícia) */
+(function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var CAMPUS = { x: 300, y: 210 };
+    var CATS = ['Todos', 'Alimentação', 'Livros & Papelaria', 'Saúde & Bem-estar', 'Lazer', 'Serviços'];
+    var P = [
+        { n: 'Café Aurora', c: 'Alimentação', off: 15, r: 'Em qualquer bebida ou salgado, todos os dias.', e: 'Rua das Acácias, 120', h: 'Seg a Sáb, 7h às 19h', x: 200, y: 140 },
+        { n: 'Forno Vivo Pizzaria', c: 'Alimentação', off: 20, r: 'Rodízio e pizzas grandes, de segunda a quinta.', e: 'Av. dos Pinhais, 455', h: 'Seg a Dom, 18h às 23h30', x: 400, y: 280 },
+        { n: 'Livraria Folha Viva', c: 'Livros & Papelaria', off: 10, r: '10% em livros e 5% extra em papelaria.', e: 'Rua do Mercado, 78', h: 'Seg a Sáb, 9h às 20h', x: 300, y: 140 },
+        { n: 'Academia PulsoFit', c: 'Saúde & Bem-estar', off: 25, r: 'Na mensalidade do plano trimestral.', e: 'Av. Beira-Rio, 900', h: 'Seg a Sex, 5h às 23h', x: 500, y: 280 },
+        { n: 'Farmácia Vida Plena', c: 'Saúde & Bem-estar', off: 12, r: 'Em medicamentos sem receita e higiene.', e: 'Rua da Matriz, 33', h: 'Todos os dias, 7h às 22h', x: 100, y: 210 },
+        { n: 'Cine Orla', c: 'Lazer', off: 50, r: 'Meia-entrada em qualquer sessão, mais 10% no combo.', e: 'Av. Beira-Rio, 210', h: 'Todos os dias, 14h às 23h', x: 500, y: 70 },
+        { n: 'Papelaria Traço & Cor', c: 'Livros & Papelaria', off: 10, r: 'Material escolar, impressão e encadernação.', e: 'Rua das Acácias, 260', h: 'Seg a Sex, 8h às 18h', x: 200, y: 210 },
+        { n: 'Barbearia Navalha Fina', c: 'Serviços', off: 15, r: 'Corte e barba, de terça a quinta.', e: 'Rua do Mercado, 140', h: 'Ter a Sáb, 9h às 19h', x: 400, y: 140 },
+        { n: 'Tech Conserta', c: 'Serviços', off: 20, r: 'Na mão de obra de reparo de celulares e notebooks.', e: 'Rua da Matriz, 190', h: 'Seg a Sex, 9h às 18h', x: 300, y: 280 },
+        { n: 'Gelato Sul', c: 'Alimentação', off: 10, r: 'Em sorvetes, açaís e milkshakes.', e: 'Av. dos Pinhais, 210', h: 'Todos os dias, 12h às 22h', x: 400, y: 210 }
+    ];
+    P.forEach(function (p, i) { p.i = i + 1; p.m = Math.ceil((Math.abs(p.x - CAMPUS.x) + Math.abs(p.y - CAMPUS.y)) * 2.5 / 80); });
+    var ICON = { 'Alimentação': 'fa-utensils', 'Livros & Papelaria': 'fa-book', 'Saúde & Bem-estar': 'fa-heart-pulse', 'Lazer': 'fa-film', 'Serviços': 'fa-screwdriver-wrench' };
+    var STEPS = [['fa-id-card', 'Abra sua carteirinha', 'Aqui no portal. O código muda a cada 30 segundos, então print não funciona.'],
+        ['fa-qrcode', 'Mostre no caixa', 'O parceiro confere o código e o seu nome antes de aplicar.'],
+        ['fa-percent', 'Receba o desconto', 'Na hora, direto na conta. Não acumula com outras promoções.']];
+    var FAQ = [['Quem tem direito?', 'Todo aluno com matrícula ativa. A carteirinha fica "ATIVA" no cartão enquanto sua matrícula estiver em dia.'],
+        ['Preciso imprimir?', 'Não. A carteirinha digital vale em todos os parceiros. Se o celular estiver sem bateria, leve um documento com foto e informe seu RA.'],
+        ['Perdi meu celular. E agora?', 'Entre no portal por outro aparelho. O código muda a cada 30s, então ninguém consegue reaproveitar um print. Qualquer dúvida, fale com o SAC.'],
+        ['Como um estabelecimento vira parceiro?', 'Pelo SAC, na opção "Parcerias". A equipe avalia e combina o desconto e as regras de uso.']];
+    var SEED = 'fnet', T = 0, cur = -1, sel = 0, cat = 'Todos', hideT = 0;
+
+    function reduz() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('a11y-motion'); }
+    function hash(s) { var h = 2166136261; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+    function rnd(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+    function fin(x, y) {
+        var ox = x < 8 ? 0 : (x > 12 ? 14 : -1), oy = y < 8 ? 0 : (y > 12 ? 14 : -1);
+        if (!((ox === 0 && oy === 0) || (ox === 14 && oy === 0) || (ox === 0 && oy === 14))) return null;
+        var lx = x - ox, ly = y - oy; if (lx < 0 || lx > 6 || ly < 0 || ly > 6) return false;
+        return lx === 0 || lx === 6 || ly === 0 || ly === 6 || (lx >= 2 && lx <= 4 && ly >= 2 && ly <= 4);
+    }
+    function codigo(seed) {                                           /* visual de QR dinâmico: muda a cada janela de 30s */
+        var r = rnd(hash(seed)), d = '', x, y, f;
+        for (y = 0; y < 21; y++) for (x = 0; x < 21; x++) { f = fin(x, y); if (f === null) f = r() > .5; if (f) d += 'M' + x + ' ' + y + 'h1v1h-1z'; }
+        return '<svg viewBox="-1 -1 23 23" width="100%" height="100%" shape-rendering="crispEdges" role="img" aria-label="Código dinâmico da carteirinha"><path d="' + d + '" fill="#111"/></svg>';
+    }
+    function dados() {
+        var u = (typeof activeUserSession !== 'undefined' && activeUserSession) || {}, av = $('user-avatar-sidebar');
+        return { nome: u.nome || 'Maria Silva', curso: u.curso || 'Engenharia de Software', ra: String(u.matricula || '2026849302'), nasc: u.nascimento || '14/03/2004', foto: u.avatar || (av && av.src) || '' };
+    }
+    function pins() {
+        return P.map(function (p) {
+            return '<g class="cc-pin" data-pin="' + p.i + '" tabindex="0" role="button" aria-label="' + p.n + ', ' + p.off + '% de desconto" transform="translate(' + p.x + ' ' + p.y + ')"><circle class="ring" r="15"/><g class="p"><circle class="b" r="13"/><text>' + p.i + '</text></g><title>' + p.n + '</title></g>';
+        }).join('');
+    }
+    function mapa() {
+        var st = '', k;
+        for (k = 1; k <= 5; k++) st += '<path d="M' + (k * 100) + ' 0V420M0 ' + (k * 70) + 'H600"/>';
+        return '<svg id="cc-svg" viewBox="0 0 600 420" class="w-full h-auto block" role="group" aria-label="Mapa de Porto Esperança com os parceiros">' +
+            '<rect width="600" height="420" fill="var(--bg)"/><path d="M-10 385C150 335 250 405 420 352S580 305 620 315" stroke="var(--wa)" stroke-width="30" fill="none"/>' +
+            '<rect x="30" y="16" width="130" height="60" rx="18" fill="var(--pk)"/><text x="95" y="50" class="cc-lb">Parque Central</text>' +
+            '<g stroke="var(--st)" stroke-width="10" stroke-linecap="round" fill="none">' + st + '</g>' +
+            '<text x="580" y="408" text-anchor="end" class="cc-lb" opacity=".6">PORTO ESPERANÇA</text>' +
+            '<path id="cc-route" d="" fill="none" stroke="#dc2626" stroke-width="3" stroke-dasharray="7 6" stroke-linecap="round"/>' +
+            '<g transform="translate(300 210)"><rect x="-30" y="-21" width="60" height="42" rx="12" fill="#dc2626"/><text class="cc-campus" y="1">FNET</text></g>' + pins() + '</svg>';
+    }
+    function lista() {
+        return P.map(function (p) {
+            return '<button type="button" data-p="' + p.i + '" data-cat="' + p.c + '" class="cc-item"><span class="cc-num">' + p.i + '</span><span class="min-w-0 flex-1"><b class="block text-[13px] text-slate-900 dark:text-white truncate">' + p.n +
+                '</b><small class="block text-[12px] text-slate-500 dark:text-slate-400"><i class="fa-solid ' + ICON[p.c] + ' mr-1"></i>' + p.c + ' · ' + p.m + ' min a pé</small></span><span class="cc-off">' + (p.off === 50 ? 'meia' : '-' + p.off + '%') + '</span></button>';
+        }).join('');
+    }
+    function selecionar(i) {
+        sel = i; var p = P[i - 1];
+        document.querySelectorAll('[data-p]').forEach(function (b) { b.classList.toggle('on', +b.dataset.p === i); });
+        document.querySelectorAll('.cc-pin').forEach(function (g) { g.classList.toggle('on', +g.dataset.pin === i); });
+        var g = document.querySelector('.cc-pin[data-pin="' + i + '"]'); if (g && g.parentNode) g.parentNode.appendChild(g);
+        var rt = $('cc-route'); if (rt) rt.setAttribute('d', 'M' + CAMPUS.x + ' ' + CAMPUS.y + 'H' + p.x + 'V' + p.y);
+        var d = $('cc-det'); if (!d) return;
+        d.innerHTML = '<div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[12px] uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400">' + p.c + '</p><h4 class="text-sm font-bold text-slate-900 dark:text-white">' + p.n + '</h4></div>' +
+            '<span class="cc-off text-[13px]">' + (p.off === 50 ? 'meia-entrada' : p.off + '% off') + '</span></div><p class="text-xs text-slate-600 dark:text-slate-300 mt-2">' + p.r + '</p>' +
+            '<p class="text-xs text-slate-500 dark:text-slate-400 mt-2"><i class="fa-solid fa-location-dot mr-1.5 text-brand-600"></i>' + p.e + ' · ' + p.m + ' min a pé da FNET</p>' +
+            '<p class="text-xs text-slate-500 dark:text-slate-400 mt-1"><i class="fa-regular fa-clock mr-1.5 text-brand-600"></i>' + p.h + '</p>' +
+            '<button type="button" id="cc-copy" class="apple-btn mt-3 px-3 py-1.5 bg-black/5 dark:bg-white/10 text-slate-900 dark:text-slate-100 rounded-xl text-xs font-medium"><i class="fa-regular fa-copy mr-1.5"></i>Copiar endereço</button>';
+        $('cc-copy').onclick = function () { try { navigator.clipboard.writeText(p.n + ' - ' + p.e + ', Porto Esperança'); } catch (e) {} showToast('Endereço copiado!'); };
+    }
+    function filtrar(c) {
+        cat = c;
+        document.querySelectorAll('[data-p]').forEach(function (b) { b.style.display = (c === 'Todos' || b.dataset.cat === c) ? '' : 'none'; });
+        document.querySelectorAll('.cc-pin').forEach(function (g) { g.classList.toggle('dim', !(c === 'Todos' || P[g.dataset.pin - 1].c === c)); });
+        document.querySelectorAll('.cc-chip').forEach(function (b) { b.classList.toggle('on', b.dataset.c === c); b.setAttribute('aria-pressed', b.dataset.c === c); });
+        if (c !== 'Todos' && P[sel - 1].c !== c) { var f = P.filter(function (p) { return p.c === c; })[0]; if (f) selecionar(f.i); }
+    }
+    function tick() {
+        var q = $('cc-qr'); if (!q) { clearInterval(T); T = 0; return; }
+        var now = Date.now(), w = Math.floor(now / 30000), left = 30 - Math.floor((now % 30000) / 1000);
+        if (w !== cur) { cur = w; q.innerHTML = codigo(SEED + ':' + w); }
+        if ($('cc-left')) $('cc-left').textContent = left + 's';
+        if ($('cc-ring')) $('cc-ring').style.strokeDashoffset = (113.1 * (1 - left / 30)).toFixed(1);
+    }
+    function privacidade(mostrar) {
+        document.querySelectorAll('[data-sec]').forEach(function (e) { e.textContent = mostrar ? e.dataset.sec : '••••••••'; });
+        var b = $('cc-reveal'); if (b) b.innerHTML = mostrar ? '<i class="fa-regular fa-eye-slash mr-1.5"></i>Ocultar dados' : '<i class="fa-regular fa-eye mr-1.5"></i>Mostrar dados';
+        clearTimeout(hideT); if (mostrar) hideT = setTimeout(function () { privacidade(false); }, 15000);
+    }
+    var CSS = '.cc-wrap{perspective:1100px;max-width:440px;margin:0 auto}.cc-tilt{transform:perspective(1000px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .18s ease-out}' +
+        '.cc-card{position:relative;aspect-ratio:1.586;width:100%}.cc-in{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.2,.8,.2,1)}.cc-card.back .cc-in{transform:rotateY(180deg)}' +
+        '.cc-face{position:absolute;inset:0;border-radius:22px;padding:18px 20px;color:#fff;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:linear-gradient(145deg,#140809,#3a0c10 55%,#b91c1c);box-shadow:0 24px 50px -20px rgba(220,38,38,.55),inset 0 1px 0 rgba(255,255,255,.18);display:flex;flex-direction:column;justify-content:space-between}' +
+        '.cc-face::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(circle at var(--mx,30%) var(--my,0%),rgba(255,255,255,.26),transparent 45%),linear-gradient(115deg,transparent 30%,rgba(255,255,255,.1) 45%,rgba(245,158,11,.14) 50%,transparent 62%)}' +
+        '.cc-back{transform:rotateY(180deg);align-items:center;justify-content:center;text-align:center;gap:6px}.cc-top,.cc-bot{display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.08em}' +
+        '.cc-brand{display:flex;align-items:center;gap:8px;font:800 16px Sora,Inter,sans-serif;letter-spacing:-.02em}.cc-mk{width:24px;height:24px;border-radius:8px;background:#dc2626;display:grid;place-items:center;font-size:13px}.cc-tag{opacity:.75;font-weight:600}' +
+        '.cc-mid{display:flex;gap:14px;align-items:center}.cc-ph{width:76px;height:94px;object-fit:cover;border-radius:12px;border:2px solid rgba(255,255,255,.35);background:#222}.cc-nm{font:700 17px/1.15 Sora,Inter,sans-serif}.cc-cr{font-size:12px;opacity:.75;margin:2px 0 8px}' +
+        '.cc-mid dl{display:flex;gap:16px}.cc-mid dt{font-size:11px;opacity:.6;letter-spacing:.08em}.cc-mid dd{font:600 13px Inter;font-variant-numeric:tabular-nums}.cc-ok{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:#6ee7b7}.cc-ok i{width:7px;height:7px;border-radius:50%;background:#34d399}' +
+        '.cc-qr{width:104px;height:104px;background:#fff;border-radius:12px;padding:6px}.cc-chip{padding:.4rem .8rem;border-radius:999px;font-size:12px;font-weight:600;border:1px solid rgba(127,127,127,.3);color:#64748b;transition:all .2s}.cc-chip:hover{color:#dc2626}.cc-chip.on{background:#dc2626;border-color:#dc2626;color:#fff}' +
+        '.cc-item{display:flex;align-items:center;gap:.75rem;width:100%;text-align:left;padding:.65rem .75rem;border-radius:16px;border:1px solid transparent;transition:background .2s,border-color .2s}.cc-item:hover{background:rgba(127,127,127,.1)}.cc-item.on{border-color:rgba(220,38,38,.55);background:rgba(220,38,38,.08)}' +
+        '.cc-num{width:28px;height:28px;flex:none;border-radius:9px;display:grid;place-items:center;font:700 12px Inter;background:rgba(127,127,127,.15)}.cc-item.on .cc-num{background:#dc2626;color:#fff}' +
+        '.cc-off{font:700 12px Inter;color:#d97706;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.28);padding:.18rem .55rem;border-radius:999px;white-space:nowrap}' +
+        '.cc-map{--bg:#eceff3;--st:#fff;--wa:#bfdbfe;--pk:#bbf7d0;--tx:#475569}.dark .cc-map{--bg:#0d0d11;--st:#1b1b23;--wa:#0c2036;--pk:#0f2a1c;--tx:#8b8b95}' +
+        '.cc-lb{font:600 11px Inter,sans-serif;fill:var(--tx);text-anchor:middle}.cc-campus{font:800 14px Sora,Inter,sans-serif;fill:#fff;text-anchor:middle;dominant-baseline:central}' +
+        '.cc-pin{cursor:pointer;transition:opacity .2s;outline:none}.cc-pin .p{transform-box:fill-box;transform-origin:center;transition:transform .2s}.cc-pin .b{fill:#dc2626;stroke:#fff;stroke-width:2}.cc-pin text{fill:#fff;font:700 11px Inter,sans-serif;text-anchor:middle;dominant-baseline:central;pointer-events:none}' +
+        '.cc-pin .ring{fill:none;stroke:#dc2626;stroke-width:2;opacity:0}.cc-pin.on .p{transform:scale(1.3)}.cc-pin.on .ring{opacity:.8;animation:cc-ping 1.8s ease-out infinite}.cc-pin:focus-visible .b{stroke:#f59e0b;stroke-width:3}.cc-pin.dim{opacity:.18}' +
+        '@keyframes cc-ping{from{transform:scale(.8);opacity:.8}to{transform:scale(2);opacity:0}}.cc-pin .ring{transform-box:fill-box;transform-origin:center}' +
+        '.cc-faq summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:12px;font-size:13px;font-weight:600}.cc-faq summary::-webkit-details-marker{display:none}.cc-faq[open] summary i{transform:rotate(180deg)}.cc-faq summary i{transition:transform .2s}';
+    if (!$('cc-style')) { var st = document.createElement('style'); st.id = 'cc-style'; st.textContent = CSS; document.head.appendChild(st); }
+
+    window.renderCampus = function (container) {
+        var d = dados(), max = Math.max.apply(null, P.map(function (p) { return p.off === 50 ? 0 : p.off; }));
+        container.innerHTML = '<div id="cc-root" class="space-y-6"><div><h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-id-card text-brand-600"></i> Carteirinha & Parceiros</h2>' +
+            '<p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Sua identidade na FNET e descontos em Porto Esperança.</p></div>' +
+            '<div class="grid lg:grid-cols-12 gap-6 items-center"><div class="lg:col-span-5"><div class="cc-wrap"><div class="cc-tilt" id="cc-tilt"><div class="cc-card" id="cc-card"><div class="cc-in">' +
+            '<div class="cc-face"><div class="cc-top"><div class="cc-brand"><span class="cc-mk">N</span>FNET</div><span class="cc-tag">CARTEIRA DO ESTUDANTE</span></div>' +
+            '<div class="cc-mid"><img class="cc-ph" src="' + d.foto + '" alt="Foto de ' + d.nome + '"><div><div class="cc-nm">' + d.nome + '</div><div class="cc-cr">' + d.curso + '</div><dl><div><dt>RA</dt><dd data-sec="' + d.ra + '">••••••••</dd></div><div><dt>NASCIMENTO</dt><dd data-sec="' + d.nasc + '">••••••••</dd></div></dl></div></div>' +
+            '<div class="cc-bot"><span>VÁLIDA ATÉ 12/2026</span><span class="cc-ok"><i></i>ATIVA</span></div></div>' +
+            '<div class="cc-face cc-back"><div class="cc-qr" id="cc-qr"></div><div class="flex items-center gap-2 text-xs"><svg width="26" height="26" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="4"/><circle id="cc-ring" cx="22" cy="22" r="18" fill="none" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" stroke-dasharray="113.1" transform="rotate(-90 22 22)"/></svg>Renova em <b id="cc-left">30s</b></div>' +
+            '<p style="font-size:11px;opacity:.7">Mostre este código no caixa. Perda ou roubo: fale com o SAC.</p></div></div></div></div></div>' +
+            '<div class="flex justify-center gap-2 mt-4"><button type="button" id="cc-flip" class="apple-btn px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-medium"><i class="fa-solid fa-rotate mr-1.5"></i>Virar carteirinha</button>' +
+            '<button type="button" id="cc-reveal" class="apple-btn px-4 py-2 bg-black/5 dark:bg-white/10 text-slate-900 dark:text-slate-100 rounded-xl text-xs font-medium"><i class="fa-regular fa-eye mr-1.5"></i>Mostrar dados</button></div></div>' +
+            '<div class="lg:col-span-7 apple-card rounded-[28px] p-6"><div class="flex items-center justify-between mb-4"><h3 class="text-sm font-bold text-slate-900 dark:text-white">Como funciona</h3><div class="flex gap-2 text-[12px] font-semibold"><span class="cc-off">' + P.length + ' parceiros</span><span class="cc-off">até ' + max + '% off</span></div></div>' +
+            '<ol class="grid sm:grid-cols-3 gap-4">' + STEPS.map(function (s, i) { return '<li class="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5"><div class="w-9 h-9 rounded-xl bg-brand-500/10 text-brand-600 flex items-center justify-center mb-3"><i class="fa-solid ' + s[0] + '"></i></div><p class="text-[12px] font-bold text-brand-600 mb-0.5">PASSO ' + (i + 1) + '</p><h4 class="text-[13px] font-bold text-slate-900 dark:text-white mb-1">' + s[1] + '</h4><p class="text-xs text-slate-500 dark:text-slate-400">' + s[2] + '</p></li>'; }).join('') + '</ol>' +
+            '<p class="text-xs text-slate-500 dark:text-slate-400 mt-4"><i class="fa-solid fa-circle-info text-brand-600 mr-1.5"></i>Em breve: a mesma carteirinha libera pedidos na cantina e o aluguel de livros físicos.</p></div></div>' +
+            '<div class="apple-card rounded-[28px] p-4 sm:p-6"><div class="flex flex-wrap items-center justify-between gap-3 mb-4"><h3 class="text-sm font-bold text-slate-900 dark:text-white"><i class="fa-solid fa-map-location-dot text-brand-600 mr-2"></i>Onde usar</h3><div id="cc-chips" class="flex flex-wrap gap-2">' +
+            CATS.map(function (c) { return '<button type="button" class="cc-chip" data-c="' + c + '" aria-pressed="false">' + c + '</button>'; }).join('') + '</div></div>' +
+            '<div class="grid lg:grid-cols-12 gap-4"><div id="cc-list" class="lg:col-span-5 space-y-1 lg:max-h-[470px] overflow-y-auto custom-scrollbar pr-1">' + lista() + '</div>' +
+            '<div class="lg:col-span-7"><div class="cc-map rounded-2xl overflow-hidden border border-black/5 dark:border-white/10">' + mapa() + '</div><div id="cc-det" class="mt-3 p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5"></div></div></div></div>' +
+            '<div class="apple-card rounded-[28px] p-6"><h3 class="text-sm font-bold text-slate-900 dark:text-white mb-3"><i class="fa-regular fa-circle-question text-brand-600 mr-2"></i>Dúvidas frequentes</h3><div class="divide-y divide-black/5 dark:divide-white/10">' +
+            FAQ.map(function (q) { return '<details class="cc-faq py-3"><summary class="text-slate-900 dark:text-white">' + q[0] + '<i class="fa-solid fa-chevron-down text-slate-400 text-xs mt-1"></i></summary><p class="text-xs text-slate-500 dark:text-slate-400 mt-2">' + q[1] + '</p></details>'; }).join('') + '</div></div></div>';
+
+        var u = (typeof activeUserSession !== 'undefined' && activeUserSession) || {}; SEED = String(u.matricula || 'fnet'); cur = -1;
+        var card = $('cc-card'), t = $('cc-tilt');
+        $('cc-flip').onclick = function () { card.classList.toggle('back'); tick(); };
+        $('cc-reveal').onclick = function () { privacidade($('cc-reveal').textContent.indexOf('Mostrar') >= 0); };
+        if (!reduz()) {
+            t.addEventListener('pointermove', function (e) { if (e.pointerType !== 'mouse') return; var b = t.getBoundingClientRect(), x = (e.clientX - b.left) / b.width, y = (e.clientY - b.top) / b.height;
+                t.style.setProperty('--ry', ((x - .5) * 14).toFixed(1) + 'deg'); t.style.setProperty('--rx', ((.5 - y) * 10).toFixed(1) + 'deg'); t.style.setProperty('--mx', (x * 100).toFixed(0) + '%'); t.style.setProperty('--my', (y * 100).toFixed(0) + '%'); });
+            t.addEventListener('pointerleave', function () { t.style.setProperty('--rx', '0deg'); t.style.setProperty('--ry', '0deg'); });
+        }
+        $('cc-list').addEventListener('click', function (e) { var b = e.target.closest('[data-p]'); if (b) selecionar(+b.dataset.p); });
+        $('cc-svg').addEventListener('click', function (e) { var g = e.target.closest('.cc-pin'); if (g) selecionar(+g.dataset.pin); });
+        $('cc-svg').addEventListener('keydown', function (e) { var g = e.target.closest && e.target.closest('.cc-pin'); if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); selecionar(+g.dataset.pin); } });
+        $('cc-chips').addEventListener('click', function (e) { var b = e.target.closest('[data-c]'); if (b) filtrar(b.dataset.c); });
+        selecionar(1); filtrar('Todos'); privacidade(false); tick(); if (!T) T = setInterval(tick, 1000);
+    };
+    window.__cc = { codigo: codigo, P: P, fin: fin };
+})();
+
+</script>
+<script>
+/* V12: Cantina & Trailers (pedido antes de chegar, desconto da carteirinha, retirada com código) */
+(function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var R = function (v) { return 'R$ ' + v.toFixed(2).replace('.', ','); };
+    var S = [
+        { id: 1, n: 'Cantina Central', t: 'Almoço e lanches', loc: 'Bloco A, térreo', prep: 12, x: 150, y: 150, m: [['Prato do dia', 'Arroz, feijão, proteína e salada', 18.9, 'fa-bowl-food'], ['Sanduíche natural', 'Frango desfiado, cenoura e alface', 12.5, 'fa-bread-slice'], ['Coxinha', 'Frango com catupiry', 7, 'fa-drumstick-bite'], ['Suco natural 400ml', 'Laranja, limão ou maracujá', 8, 'fa-glass-water'], ['Brownie', 'Chocolate meio amargo', 6.5, 'fa-cookie-bite']] },
+        { id: 2, n: 'Trailer Brasa & Cia', t: 'Hambúrgueres', loc: 'Praça de Convivência', prep: 10, x: 300, y: 230, m: [['Burger Clássico', 'Pão brioche, carne 150g, queijo e molho', 22, 'fa-burger'], ['Burger Duplo', 'Duas carnes, cheddar e cebola caramelizada', 29, 'fa-burger'], ['Batata rústica', 'Porção individual com alecrim', 14, 'fa-bowl-food'], ['Refrigerante lata', '350ml', 6.5, 'fa-glass-water']] },
+        { id: 3, n: 'Açaí da Quadra', t: 'Açaí e vitaminas', loc: 'Ao lado da quadra', prep: 6, x: 480, y: 170, m: [['Açaí 300ml', 'Com banana e granola', 15, 'fa-ice-cream'], ['Açaí 500ml', 'Com banana, granola e leite em pó', 21, 'fa-ice-cream'], ['Vitamina de banana', 'Com aveia, 400ml', 11, 'fa-glass-water'], ['Granola extra', 'Adicional', 3, 'fa-seedling']] },
+        { id: 4, n: 'Café da Biblioteca', t: 'Café e salgados', loc: 'Térreo da Biblioteca', prep: 5, x: 470, y: 255, m: [['Café coado', '180ml', 5, 'fa-mug-hot'], ['Cappuccino', 'Com canela, 250ml', 9, 'fa-mug-hot'], ['Pão de queijo (4 un.)', 'Quentinho', 8, 'fa-bread-slice'], ['Bolo caseiro', 'Fatia do dia', 9, 'fa-cookie-bite']] },
+        { id: 5, n: 'Tapiocaria Doce Praça', t: 'Tapiocas', loc: 'Trailer perto dos Labs', prep: 8, x: 180, y: 245, m: [['Tapioca de queijo', 'Queijo coalho derretido', 11, 'fa-wheat-awn'], ['Tapioca de frango', 'Frango com requeijão', 14, 'fa-wheat-awn'], ['Tapioca de banana', 'Banana, canela e coco', 10, 'fa-wheat-awn'], ['Suco de caju', '400ml', 7, 'fa-glass-water']] }
+    ];
+    var STEPS = [['fa-bag-shopping', 'Monte seu pedido', 'Escolha a loja e os itens. A carteirinha aplica 10% sozinha.'], ['fa-person-walking', 'Diga quando chega', 'Escolha em quantos minutos você chega e o pedido sai na hora certa.'], ['fa-hashtag', 'Retire sem fila', 'Mostre o código de 4 dígitos no balcão. Sem fila e sem dinheiro na mão.']];
+    var ETAS = [5, 10, 15, 20], PAGS = [['Pix', 'fa-pix'], ['Cartão', 'fa-credit-card'], ['Saldo', 'fa-wallet']];
+    var sel = 1, carts = {}, eta = 10, pag = 'Pix', last = '', LK = 'fnet_pedidos';
+
+    function usr() { return (typeof activeUserSession !== 'undefined' && activeUserSession) || {}; }
+    function chave() { return (usr().email || '').toLowerCase(); }
+    function lerP() { try { return JSON.parse(localStorage.getItem(LK) || '{}')[chave()] || []; } catch (e) { return []; } }
+    function salvarP(a) { try { var b = JSON.parse(localStorage.getItem(LK) || '{}'); b[chave()] = a.slice(0, 20); localStorage.setItem(LK, JSON.stringify(b)); } catch (e) { } }
+    function aluno() { return usr().role !== 'professor'; }
+    function cart() { return carts[sel] || (carts[sel] = {}); }
+    function tot() { var s = S[sel - 1], c = cart(), sub = 0, n = 0; Object.keys(c).forEach(function (k) { sub += s.m[k][2] * c[k]; n += c[k]; }); var d = aluno() ? Math.round(sub * 10) / 100 : 0; return { sub: sub, d: d, t: sub - d, n: n }; }
+    function estagio(o, now) { var el = (now - o.t0) / 1000, ps = o.prep * 2; return el < 5 ? 0 : (el < 5 + ps ? 1 : 2); }   /* demo: 1 min de preparo = 2 s */
+    function ativo() { return lerP().filter(function (x) { return !x.retirado; })[0]; }
+    function hora(min) { var d = new Date(Date.now() + min * 60000); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
+
+    function criar() {
+        var s = S[sel - 1], c = cart(), t = tot(); if (!t.n) { showToast('Adicione itens ao carrinho.'); return null; }
+        var o = { id: 'FN' + (1000 + Math.floor(Math.random() * 9000)), lojaId: s.id, loja: s.n, itens: Object.keys(c).map(function (k) { return { n: s.m[k][0], q: c[k], p: s.m[k][2] }; }),
+            sub: t.sub, desc: t.d, total: t.t, eta: eta, pag: pag, t0: Date.now(), prep: s.prep, code: String(1000 + Math.floor(Math.random() * 9000)), retirado: false, notificado: false };
+        var a = lerP(); a.unshift(o); salvarP(a); carts[sel] = {}; last = ''; return o;
+    }
+    function avisar(o) {
+        var mail = { id: Date.now(), de: o.loja, emailDe: 'pedidos@fnet.edu.br', assunto: 'Seu pedido está pronto - ' + o.loja,
+            data: new Date().toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }), desc: 'Pedido ' + o.id + ' pronto para retirada. Código ' + o.code + '.',
+            conteudo: ['Seu pedido ' + o.id + ' está pronto!', '', 'Retire no balcão: ' + o.loja, 'Código de retirada: ' + o.code, '', o.itens.map(function (i) { return i.q + 'x ' + i.n; }).join('\n'), '', 'Total pago: ' + R(o.total) + ' (' + o.pag + ')'].join('\n') };
+        try { var b = JSON.parse(localStorage.getItem('fnet_mailboxes') || '{}'), k = chave(); (b[k] = b[k] || []).unshift(mail); localStorage.setItem('fnet_mailboxes', JSON.stringify(b)); } catch (e) { }
+        if (typeof stateEmails !== 'undefined') stateEmails.unshift(mail);
+        var dot = $('webmail-notif-dot'); if (dot) dot.style.display = '';
+        showToast('Seu pedido está pronto! Retire na ' + o.loja + '.');
+    }
+
+    function mapa() {
+        var b = function (x, y, w, h, l, f) { return '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="14" fill="' + (f || 'var(--st)') + '" stroke="rgba(127,127,127,.25)"/><text x="' + (x + w / 2) + '" y="' + (y + 18) + '" class="cc-lb">' + l + '</text>'; };
+        return '<svg id="cn-svg" viewBox="0 0 600 340" class="w-full h-auto block" role="group" aria-label="Mapa do campus com as lojas"><rect width="600" height="340" fill="var(--bg)"/>' +
+            '<path d="M300 340V110M40 175H570" stroke="var(--st)" stroke-width="12" stroke-linecap="round" fill="none"/>' + b(80, 50, 140, 90, 'Bloco A') + b(250, 50, 110, 70, 'Bloco B') + b(400, 50, 160, 95, 'Quadra', 'var(--pk)') + b(410, 205, 130, 75, 'Biblioteca') + b(50, 195, 90, 75, 'Labs') +
+            '<circle cx="300" cy="230" r="46" fill="var(--pk)"/><text x="300" y="292" class="cc-lb">Praça</text><text x="300" y="332" class="cc-lb" opacity=".7">Portaria</text>' +
+            S.map(function (s) { return '<g class="cc-pin" data-pin="' + s.id + '" tabindex="0" role="button" aria-label="' + s.n + '" transform="translate(' + s.x + ' ' + s.y + ')"><circle class="ring" r="15"/><g class="p"><circle class="b" r="13"/><text>' + s.id + '</text></g><title>' + s.n + '</title></g>'; }).join('') + '</svg>';
+    }
+    function pintarLojas() {
+        var el = $('cn-stores'); if (!el) return;
+        el.innerHTML = S.map(function (s) { return '<button type="button" data-s="' + s.id + '" class="cc-item' + (s.id === sel ? ' on' : '') + '"><span class="cc-num">' + s.id + '</span><span class="min-w-0 flex-1"><b class="block text-[13px] text-slate-900 dark:text-white truncate">' + s.n + '</b><small class="block text-[12px] text-slate-500 dark:text-slate-400">' + s.t + ' · ' + s.loc + '</small></span><span class="cc-off">~' + s.prep + ' min</span></button>'; }).join('');
+        document.querySelectorAll('#cn-svg .cc-pin').forEach(function (g) { g.classList.toggle('on', +g.dataset.pin === sel); });
+    }
+    function pintarMenu() {
+        var el = $('cn-menu'); if (!el) return; var s = S[sel - 1], c = cart();
+        el.innerHTML = '<div class="flex items-center justify-between mb-4"><div><h3 class="text-sm font-bold text-slate-900 dark:text-white">' + s.n + '</h3><p class="text-xs text-slate-500 dark:text-slate-400">' + s.t + ' · ' + s.loc + '</p></div><span class="cc-off">Aberto agora</span></div><div class="grid sm:grid-cols-2 gap-3">' +
+            s.m.map(function (it, k) {
+                var q = c[k] || 0;
+                return '<div class="p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 flex gap-3"><div class="w-12 h-12 flex-none rounded-xl bg-gradient-to-br from-brand-600 to-amber-500 text-white flex items-center justify-center"><i class="fa-solid ' + it[3] + '"></i></div>' +
+                    '<div class="min-w-0 flex-1"><b class="block text-[13px] text-slate-900 dark:text-white">' + it[0] + '</b><p class="text-[12px] text-slate-500 dark:text-slate-400 leading-snug">' + it[1] + '</p><div class="flex items-center justify-between mt-2"><span class="text-[13px] font-bold text-slate-900 dark:text-white">' + R(it[2]) + '</span>' +
+                    (q ? '<span class="flex items-center gap-1"><button type="button" data-d="' + k + '" aria-label="Remover um ' + it[0] + '" class="w-7 h-7 rounded-lg bg-black/10 dark:bg-white/10 text-xs">−</button><b class="w-5 text-center text-xs">' + q + '</b><button type="button" data-a="' + k + '" aria-label="Adicionar um ' + it[0] + '" class="w-7 h-7 rounded-lg bg-brand-600 text-white text-xs">+</button></span>'
+                        : '<button type="button" data-a="' + k + '" class="px-3 py-1 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-xs font-medium">Adicionar</button>') + '</div></div></div>';
+            }).join('') + '</div>';
+    }
+    function pintarCarrinho() {
+        var el = $('cn-cart'); if (!el) return; var s = S[sel - 1], c = cart(), t = tot();
+        var linhas = Object.keys(c).map(function (k) { return '<div class="flex justify-between text-xs"><span class="text-slate-600 dark:text-slate-300">' + c[k] + 'x ' + s.m[k][0] + '</span><span class="text-slate-900 dark:text-white">' + R(s.m[k][2] * c[k]) + '</span></div>'; }).join('');
+        el.innerHTML = '<h3 class="text-sm font-bold text-slate-900 dark:text-white mb-1"><i class="fa-solid fa-bag-shopping text-brand-600 mr-2"></i>Seu pedido</h3><p class="text-xs text-slate-500 dark:text-slate-400 mb-3">' + s.n + '</p>' +
+            '<div class="space-y-2 mb-3 min-h-[44px]">' + (linhas || '<p class="text-xs text-slate-500 dark:text-slate-400">Carrinho vazio. Escolha algo no cardápio.</p>') + '</div>' +
+            '<p class="text-[12px] uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400 mb-1.5">Chego em</p><div class="flex gap-1.5 mb-3">' + ETAS.map(function (m) { return '<button type="button" data-e="' + m + '" aria-pressed="' + (m === eta) + '" class="cc-chip' + (m === eta ? ' on' : '') + '">' + m + ' min</button>'; }).join('') + '</div>' +
+            '<p class="text-[12px] uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400 mb-1.5">Pagamento</p><div class="flex gap-1.5 mb-4">' + PAGS.map(function (p) { return '<button type="button" data-p="' + p[0] + '" aria-pressed="' + (p[0] === pag) + '" class="cc-chip' + (p[0] === pag ? ' on' : '') + '">' + p[0] + '</button>'; }).join('') + '</div>' +
+            '<div class="space-y-1 pt-3 border-t border-black/5 dark:border-white/10 text-xs"><div class="flex justify-between"><span class="text-slate-500 dark:text-slate-400">Subtotal</span><span class="text-slate-900 dark:text-white">' + R(t.sub) + '</span></div>' +
+            (aluno() ? '<div class="flex justify-between"><span class="text-amber-500"><i class="fa-solid fa-id-card mr-1"></i>Carteirinha FNET (10%)</span><span class="text-amber-500">− ' + R(t.d) + '</span></div>' : '') +
+            '<div class="flex justify-between text-sm font-bold pt-1"><span class="text-slate-900 dark:text-white">Total</span><span class="text-brand-600">' + R(t.t) + '</span></div></div>' +
+            '<button type="button" id="cn-go" class="apple-btn w-full mt-4 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-semibold shadow-lg"' + (t.n ? '' : ' disabled style="opacity:.5;cursor:not-allowed"') + '>Pagar ' + R(t.t) + '</button>' +
+            '<p class="text-[12px] text-slate-500 dark:text-slate-400 mt-2 text-center">Retirada prevista às ' + hora(eta) + '. Pagamento simulado (demonstração).</p>';
+    }
+    var STP = [['Recebido', 'fa-receipt'], ['Preparando', 'fa-fire-burner'], ['Pronto', 'fa-bag-shopping']];
+    function pintarPedido() {
+        var box = $('cn-order'); if (!box) return; var a = lerP(), o = a.filter(function (x) { return !x.retirado; })[0], hist = a.filter(function (x) { return x.retirado; }).slice(0, 3);
+        var h = hist.length ? '<div class="mt-4 pt-3 border-t border-black/5 dark:border-white/10"><p class="text-[12px] uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400 mb-1.5">Últimos pedidos</p>' + hist.map(function (x) { return '<p class="text-xs text-slate-500 dark:text-slate-400">' + x.id + ' · ' + x.loja + ' · ' + R(x.total) + ' · retirado</p>'; }).join('') + '</div>' : '';
+        if (!o) { last = ''; box.innerHTML = '<div class="apple-card rounded-[28px] p-5"><p class="text-xs text-slate-500 dark:text-slate-400"><i class="fa-solid fa-mug-hot text-brand-600 mr-2"></i>Nenhum pedido em andamento. Escolha uma loja abaixo e peça antes de chegar.</p>' + h + '</div>'; return; }
+        var st = estagio(o, Date.now()); last = o.id + ':' + st;
+        box.innerHTML = '<div class="apple-card rounded-[28px] p-5"><div class="flex flex-wrap items-start justify-between gap-4"><div><p class="text-[12px] uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400">Pedido ' + o.id + ' · ' + o.loja + '</p>' +
+            '<p class="text-xs text-slate-600 dark:text-slate-300 mt-1">' + o.itens.map(function (i) { return i.q + 'x ' + i.n; }).join(', ') + ' · ' + R(o.total) + '</p><p id="cn-eta" class="text-sm font-bold text-slate-900 dark:text-white mt-2"></p></div>' +
+            '<div class="text-center px-4 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10"><p class="text-[12px] uppercase tracking-wider text-slate-500 dark:text-slate-400">Código de retirada</p><p class="text-2xl font-bold tracking-[.2em] text-brand-600" style="font-variant-numeric:tabular-nums">' + o.code + '</p></div></div>' +
+            '<div class="flex items-center gap-2 mt-5">' + STP.map(function (p, i) { var on = i <= st, cur = i === st; return (i ? '<div class="flex-1 h-0.5 rounded ' + (i <= st ? 'bg-emerald-500' : 'bg-black/10 dark:bg-white/10') + '"></div>' : '') + '<div class="flex flex-col items-center gap-1"><span class="w-9 h-9 rounded-full flex items-center justify-center text-xs ' + (on ? (st === 2 || !cur ? 'bg-emerald-500 text-white' : 'bg-brand-600 text-white') : 'bg-black/10 dark:bg-white/10 text-slate-400') + '"><i class="fa-solid ' + (on && !cur ? 'fa-check' : p[1]) + '"></i></span><span class="text-[12px] font-semibold ' + (on ? 'text-slate-900 dark:text-white' : 'text-slate-400') + '">' + p[0] + '</span></div>'; }).join('') + '</div>' +
+            '<div class="h-1.5 w-full bg-black/5 dark:bg-white/10 rounded-full overflow-hidden mt-4"><div id="cn-bar" class="h-full rounded-full bg-gradient-to-r from-brand-600 to-amber-500" style="width:0%"></div></div>' +
+            '<div class="flex justify-end mt-4"><button type="button" id="cn-done" class="apple-btn px-4 py-2 rounded-xl text-xs font-medium ' + (st === 2 ? 'bg-emerald-500 text-white' : 'bg-black/5 dark:bg-white/10 text-slate-400') + '"' + (st === 2 ? '' : ' disabled') + '><i class="fa-solid fa-hand-holding mr-1.5"></i>Confirmar retirada</button></div>' + h + '</div>';
+        var done = $('cn-done'); if (done) done.onclick = function () { var l = lerP(), x = l.filter(function (q) { return q.id === o.id; })[0]; if (x) { x.retirado = true; salvarP(l); } showToast('Bom apetite!'); pintarPedido(); };
+        tickPedido(o, st);
+    }
+    function tickPedido(o, st) {
+        var el = (Date.now() - o.t0) / 1000, ps = o.prep * 2, e = $('cn-eta'), b = $('cn-bar');
+        if (e) e.textContent = st === 2 ? 'Pronto! Retire no balcão.' : 'Pronto em ~' + Math.max(1, Math.ceil((5 + ps - el) / 2)) + ' min';
+        if (b) b.style.width = Math.min(100, el / (5 + ps) * 100).toFixed(0) + '%';
+    }
+    setInterval(function () {                                            /* roda sempre: avisa no Webmail mesmo fora da tela */
+        var a = lerP(), o = a.filter(function (x) { return !x.retirado; })[0]; if (!o) return;
+        var st = estagio(o, Date.now());
+        if (st === 2 && !o.notificado) { o.notificado = true; salvarP(a); avisar(o); }
+        if ($('cn-order')) { if (last !== o.id + ':' + st) pintarPedido(); else tickPedido(o, st); }
+    }, 1500);
+
+    window.renderCantina = function (container) {
+        container.innerHTML = '<div id="cn-root" class="space-y-6"><div><h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-utensils text-brand-600"></i> Cantina & Trailers</h2>' +
+            '<p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Peça antes de chegar e retire sem fila. Alunos têm 10% com a carteirinha.</p></div><div id="cn-order"></div>' +
+            '<ol class="grid sm:grid-cols-3 gap-3">' + STEPS.map(function (s, i) { return '<li class="apple-card rounded-2xl p-4 flex gap-3"><div class="w-9 h-9 flex-none rounded-xl bg-brand-500/10 text-brand-600 flex items-center justify-center"><i class="fa-solid ' + s[0] + '"></i></div><div><p class="text-[12px] font-bold text-brand-600">PASSO ' + (i + 1) + '</p><h4 class="text-[13px] font-bold text-slate-900 dark:text-white">' + s[1] + '</h4><p class="text-xs text-slate-500 dark:text-slate-400">' + s[2] + '</p></div></li>'; }).join('') + '</ol>' +
+            '<div class="grid lg:grid-cols-12 gap-6 items-start"><div class="lg:col-span-8 space-y-6"><div class="apple-card rounded-[28px] p-4 sm:p-6"><div class="grid md:grid-cols-2 gap-4"><div class="cc-map rounded-2xl overflow-hidden border border-black/5 dark:border-white/10">' + mapa() + '</div><div id="cn-stores" class="space-y-1"></div></div></div>' +
+            '<div id="cn-menu" class="apple-card rounded-[28px] p-4 sm:p-6"></div></div><div id="cn-cart" class="lg:col-span-4 apple-card rounded-[28px] p-5 lg:sticky lg:top-24"></div></div></div>';
+        $('cn-stores').addEventListener('click', function (e) { var b = e.target.closest('[data-s]'); if (b) { sel = +b.dataset.s; pintarLojas(); pintarMenu(); pintarCarrinho(); } });
+        $('cn-svg').addEventListener('click', function (e) { var g = e.target.closest('.cc-pin'); if (g) { sel = +g.dataset.pin; pintarLojas(); pintarMenu(); pintarCarrinho(); } });
+        $('cn-svg').addEventListener('keydown', function (e) { var g = e.target.closest && e.target.closest('.cc-pin'); if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); g.dispatchEvent(new Event('click', { bubbles: true })); } });
+        $('cn-menu').addEventListener('click', function (e) { var a = e.target.closest('[data-a]'), d = e.target.closest('[data-d]'), c = cart();
+            if (a) c[a.dataset.a] = (c[a.dataset.a] || 0) + 1; else if (d) { c[d.dataset.d] = (c[d.dataset.d] || 1) - 1; if (c[d.dataset.d] <= 0) delete c[d.dataset.d]; } else return; pintarMenu(); pintarCarrinho(); });
+        $('cn-cart').addEventListener('click', function (e) { var t = e.target.closest('[data-e]'), p = e.target.closest('[data-p]');
+            if (t) { eta = +t.dataset.e; pintarCarrinho(); } else if (p) { pag = p.dataset.p; pintarCarrinho(); }
+            else if (e.target.closest('#cn-go')) { var o = criar(); if (o) { showToast('Pedido confirmado! Pagamento aprovado (' + pag + ').'); pintarMenu(); pintarCarrinho(); pintarPedido(); var b = $('cn-order'); if (b && b.scrollIntoView) b.scrollIntoView({ behavior: 'smooth', block: 'start' }); } } });
+        last = ''; pintarLojas(); pintarMenu(); pintarCarrinho(); pintarPedido();
+    };
+    window.__cn = { S: S, add: function (k) { cart()[k] = (cart()[k] || 0) + 1; }, tot: tot, criar: criar, estagio: estagio, setSel: function (i) { sel = i; } };
+})();
+
+document.addEventListener("click", function () { document.querySelectorAll(".tn-grp.open").forEach(function (x) { x.classList.remove("open"); }); });
+document.addEventListener("keydown", function (e) { if (e.key === "Escape") document.querySelectorAll(".tn-grp.open").forEach(function (x) { x.classList.remove("open"); }); });
+</script>
+<script>
+/* V13: Aluguel de livros físicos (grátis com a carteirinha; avaliação só se houver dano) */
+(function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var K = 'fnet_alugueis', LIM = 3, DIAS = 7, RES_H = 24, DAY = 86400000;
+    var COR = { 'Programação': ['#7f1d1d', '#dc2626'], 'Engenharia': ['#78350f', '#f59e0b'], 'Design & UX': ['#065f46', '#10b981'], 'Redes': ['#075985', '#38bdf8'], 'Literatura & Humanidades': ['#1e293b', '#64748b'] };
+    var CATS = ['Todos', 'Programação', 'Engenharia', 'Design & UX', 'Redes', 'Literatura & Humanidades'];
+    var B = [
+        { id: 1, t: 'Clean Code', a: 'Robert C. Martin', c: 'Programação', ex: 3 }, { id: 2, t: 'Algoritmos: Teoria e Prática', a: 'Cormen et al.', c: 'Programação', ex: 2 },
+        { id: 3, t: 'O Programador Pragmático', a: 'Hunt & Thomas', c: 'Programação', ex: 1 }, { id: 4, t: 'Arquitetura Limpa', a: 'Robert C. Martin', c: 'Engenharia', ex: 2 },
+        { id: 5, t: 'Padrões de Projeto', a: 'Gamma et al.', c: 'Engenharia', ex: 0 }, { id: 6, t: 'Não Me Faça Pensar', a: 'Steve Krug', c: 'Design & UX', ex: 2 },
+        { id: 7, t: 'O Design do Dia a Dia', a: 'Don Norman', c: 'Design & UX', ex: 2 }, { id: 8, t: 'Redes de Computadores', a: 'Andrew Tanenbaum', c: 'Redes', ex: 2 },
+        { id: 9, t: 'Dom Casmurro', a: 'Machado de Assis', c: 'Literatura & Humanidades', ex: 4 }, { id: 10, t: 'Sapiens', a: 'Yuval Noah Harari', c: 'Literatura & Humanidades', ex: 3 }
+    ];
+    var CHK = [['Capa e lombada', 'fa-book'], ['Páginas (rasgos ou faltando)', 'fa-file-lines'], ['Marcas e anotações', 'fa-pen'], ['Umidade ou manchas', 'fa-droplet']];
+    var cat = 'Todos', q = '', opener = null;
+
+    function usr() { return (typeof activeUserSession !== 'undefined' && activeUserSession) || {}; }
+    function chave() { return (usr().email || '').toLowerCase(); }
+    function ler() { try { return JSON.parse(localStorage.getItem(K) || '{}')[chave()] || []; } catch (e) { return []; } }
+    function salvar(a) { try { var b = JSON.parse(localStorage.getItem(K) || '{}'); b[chave()] = a.slice(0, 30); localStorage.setItem(K, JSON.stringify(b)); } catch (e) { } }
+    function emUso(a) { return a.filter(function (r) { return r.est === 'reservado' || r.est === 'retirado'; }); }
+    function disp(b, a) { return b.ex - emUso(a).filter(function (r) { return r.livro === b.id; }).length; }
+    function dt(ts) { var d = new Date(ts); return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) + ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
+    function mail(assunto, desc, corpo) {
+        var m = { id: Date.now(), de: 'Biblioteca FNET', emailDe: 'biblioteca@fnet.edu.br', assunto: assunto, data: new Date().toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }), desc: desc, conteudo: corpo };
+        try { var b = JSON.parse(localStorage.getItem('fnet_mailboxes') || '{}'), k = chave(); (b[k] = b[k] || []).unshift(m); localStorage.setItem('fnet_mailboxes', JSON.stringify(b)); } catch (e) { }
+        if (typeof stateEmails !== 'undefined') stateEmails.unshift(m);
+        var dot = $('webmail-notif-dot'); if (dot) dot.style.display = '';
+    }
+    function livro(id) { return B.filter(function (b) { return b.id === id; })[0]; }
+
+    function reservar(id) {
+        var a = ler(), b = livro(id);
+        if (emUso(a).length >= LIM) { showToast('Limite de ' + LIM + ' livros ao mesmo tempo. Devolva um para reservar outro.'); return null; }
+        if (emUso(a).some(function (r) { return r.livro === id; })) { showToast('Você já está com este livro.'); return null; }
+        if (disp(b, a) <= 0) { showToast('Sem exemplares disponíveis no momento.'); return null; }
+        var r = { id: 'AL' + (1000 + Math.floor(Math.random() * 9000)), livro: id, titulo: b.t, est: 'reservado', t0: Date.now(), ate: Date.now() + RES_H * 3600000, code: String(1000 + Math.floor(Math.random() * 9000)), renov: false };
+        a.unshift(r); salvar(a);
+        mail('Livro reservado - ' + b.t, 'Retire até ' + dt(r.ate) + ' com a carteirinha. Código ' + r.code + '.', ['Sua reserva está confirmada!', '', 'Livro: ' + b.t + ' (' + b.a + ')', 'Código de retirada: ' + r.code, 'Retire até: ' + dt(r.ate) + ', na Biblioteca, mostrando a carteirinha.', '', 'O empréstimo é gratuito por ' + DIAS + ' dias. Só há custo se o livro for devolvido com danos.'].join('\n'));
+        return r;
+    }
+    function mudar(id, f) { var a = ler(), r = a.filter(function (x) { return x.id === id; })[0]; if (r) { f(r); salvar(a); } return r; }
+
+    function capa(b) { var c = COR[b.c]; return '<div class="al-cv" style="background:linear-gradient(150deg,' + c[0] + ',' + c[1] + ')"><span class="al-sp"></span><b>' + b.t + '</b><small>' + b.a + '</small></div>'; }
+    function pintarMeus() {
+        var el = $('al-mine'); if (!el) return; var a = ler(), uso = emUso(a), hist = a.filter(function (r) { return r.est === 'devolvido' || r.est === 'avaliacao'; }).slice(0, 3);
+        var linhas = a.filter(function (r) { return r.est === 'reservado' || r.est === 'retirado'; }).map(function (r) {
+            var info, btns;
+            if (r.est === 'reservado') { info = 'Reservado · retire até ' + dt(r.ate) + ' · código <b class="text-brand-600 tracking-widest">' + r.code + '</b>'; btns = '<button type="button" data-act="ret" data-id="' + r.id + '" class="apple-btn px-3 py-1.5 bg-brand-600 text-white rounded-xl text-xs font-medium">Retirei na biblioteca</button><button type="button" data-act="can" data-id="' + r.id + '" class="apple-btn px-3 py-1.5 bg-black/5 dark:bg-white/10 text-slate-900 dark:text-slate-100 rounded-xl text-xs font-medium">Cancelar</button>'; }
+            else { var d = Math.ceil((r.due - Date.now()) / DAY); info = d >= 0 ? 'Com você · devolver até ' + dt(r.due) + ' (' + (d === 0 ? 'hoje' : d + (d === 1 ? ' dia' : ' dias')) + ')' : '<span class="text-brand-600">Prazo vencido. Procure a biblioteca.</span>';
+                btns = (r.renov ? '' : '<button type="button" data-act="ren" data-id="' + r.id + '" class="apple-btn px-3 py-1.5 bg-black/5 dark:bg-white/10 text-slate-900 dark:text-slate-100 rounded-xl text-xs font-medium">Renovar +' + DIAS + ' dias</button>') + '<button type="button" data-act="dev" data-id="' + r.id + '" class="apple-btn px-3 py-1.5 bg-brand-600 text-white rounded-xl text-xs font-medium">Devolver</button>'; }
+            return '<div class="flex flex-wrap items-center justify-between gap-3 p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5"><div class="min-w-0"><b class="block text-[13px] text-slate-900 dark:text-white">' + r.titulo + '</b><p class="text-xs text-slate-500 dark:text-slate-400">' + info + '</p></div><div class="flex gap-2">' + btns + '</div></div>';
+        }).join('');
+        var h = hist.map(function (r) { return '<p class="text-xs text-slate-500 dark:text-slate-400">' + r.titulo + ' · ' + (r.est === 'avaliacao' ? '<span class="text-amber-500">em avaliação pela biblioteca</span>' : 'devolvido sem custo') + '</p>'; }).join('');
+        el.innerHTML = '<div class="flex items-center justify-between mb-3"><h3 class="text-sm font-bold text-slate-900 dark:text-white"><i class="fa-solid fa-book-bookmark text-brand-600 mr-2"></i>Meus livros</h3><span class="cc-off">' + uso.length + ' de ' + LIM + ' em uso</span></div>' +
+            (linhas ? '<div class="space-y-2">' + linhas + '</div>' : '<p class="text-xs text-slate-500 dark:text-slate-400">Você não está com nenhum livro. Escolha um no acervo abaixo.</p>') + (h ? '<div class="mt-3 pt-3 border-t border-black/5 dark:border-white/10 space-y-1">' + h + '</div>' : '');
+    }
+    function pintarAcervo() {
+        var el = $('al-cat'); if (!el) return; var a = ler(), t = q.trim().toLowerCase();
+        var l = B.filter(function (b) { return (cat === 'Todos' || b.c === cat) && (!t || (b.t + ' ' + b.a).toLowerCase().indexOf(t) >= 0); });
+        el.innerHTML = l.length ? l.map(function (b) {
+            var d = disp(b, a), tem = emUso(a).some(function (r) { return r.livro === b.id; });
+            return '<div class="al-card flex flex-col gap-3">' + capa(b) + '<div><p class="text-[12px] ' + (d > 0 ? 'text-emerald-500' : 'text-slate-400') + ' font-semibold mb-1.5">' + (d > 0 ? d + (d === 1 ? ' exemplar' : ' exemplares') + ' disponível' + (d === 1 ? '' : 'is') : 'Indisponível') + '</p>' +
+                '<button type="button" data-res="' + b.id + '" class="apple-btn w-full py-2 rounded-xl text-xs font-medium ' + (d > 0 && !tem ? 'bg-brand-600 hover:bg-brand-700 text-white' : 'bg-black/5 dark:bg-white/10 text-slate-400') + '"' + (d > 0 && !tem ? '' : ' disabled') + '>' + (tem ? 'Já está com você' : 'Reservar grátis') + '</button></div></div>';
+        }).join('') : '<p class="text-xs text-slate-500 dark:text-slate-400 col-span-full">Nenhum livro encontrado.</p>';
+    }
+    function fechar() { var m = $('modal-dev'); if (m) m.remove(); document.removeEventListener('keydown', esc); if (opener && opener.focus) opener.focus(); }
+    function esc(e) { if (e.key === 'Escape') fechar(); }
+    function devolver(id) {
+        var r = ler().filter(function (x) { return x.id === id; })[0]; if (!r) return; opener = document.activeElement; fechar();
+        var m = document.createElement('div'); m.id = 'modal-dev'; m.className = 'fixed inset-0 bg-black/80 backdrop-blur-xl flex items-center justify-center z-50 p-4';
+        m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-labelledby', 'dev-t');
+        m.innerHTML = '<div class="apple-glass rounded-[28px] max-w-md w-full p-6 shadow-2xl max-h-[calc(100dvh-2rem)] overflow-y-auto"><div class="flex justify-between items-start mb-1"><h3 id="dev-t" class="text-base font-bold text-slate-900 dark:text-white">Devolver "' + r.titulo + '"</h3><button type="button" id="dev-x" aria-label="Fechar" class="p-2 text-slate-500 hover:text-brand-600"><i class="fa-solid fa-xmark"></i></button></div>' +
+            '<p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Confira o estado do livro. Marque só o que encontrar.</p><div class="space-y-2 mb-4">' +
+            CHK.map(function (c, i) { return '<label class="flex items-center gap-3 p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 cursor-pointer text-xs text-slate-900 dark:text-slate-100"><input type="checkbox" data-d="' + i + '" class="accent-red-600 w-4 h-4"><i class="fa-solid ' + c[1] + ' text-brand-600 w-4"></i><span>' + c[0] + ' com problema</span></label>'; }).join('') + '</div>' +
+            '<p id="dev-msg" class="text-xs p-3 rounded-2xl mb-4 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"><i class="fa-solid fa-circle-check mr-1.5"></i>Tudo certo: devolução sem custo.</p>' +
+            '<div class="flex justify-end gap-2"><button type="button" id="dev-no" class="apple-btn px-4 py-2 bg-black/5 dark:bg-white/10 text-slate-900 dark:text-slate-100 rounded-xl text-xs font-medium">Cancelar</button><button type="button" id="dev-ok" class="apple-btn px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-medium">Confirmar devolução</button></div></div>';
+        document.body.appendChild(m); document.addEventListener('keydown', esc);
+        m.addEventListener('mousedown', function (e) { if (e.target === m) fechar(); });
+        var marcados = function () { return m.querySelectorAll('input[data-d]:checked').length; };
+        m.addEventListener('change', function () { var n = marcados(), g = $('dev-msg');
+            g.className = 'text-xs p-3 rounded-2xl mb-4 border ' + (n ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20');
+            g.innerHTML = n ? '<i class="fa-solid fa-triangle-exclamation mr-1.5"></i>A biblioteca vai avaliar o dano e responde pelo Webmail. Só há custo se ela confirmar o problema.' : '<i class="fa-solid fa-circle-check mr-1.5"></i>Tudo certo: devolução sem custo.'; });
+        $('dev-x').onclick = $('dev-no').onclick = fechar;
+        $('dev-ok').onclick = function () {
+            var dano = []; m.querySelectorAll('input[data-d]:checked').forEach(function (i) { dano.push(CHK[+i.dataset.d][0]); });
+            mudar(id, function (x) { x.est = dano.length ? 'avaliacao' : 'devolvido'; x.dano = dano; });
+            mail(dano.length ? 'Devolução em avaliação - ' + r.titulo : 'Devolução confirmada - ' + r.titulo, dano.length ? 'A biblioteca vai avaliar: ' + dano.join(', ') + '.' : 'Obrigado! Devolução sem custo.',
+                dano.length ? ['Recebemos a devolução de ' + r.titulo + '.', '', 'Você relatou: ' + dano.join('; ') + '.', 'A biblioteca vai avaliar o livro e entra em contato por aqui. Só há custo se o dano for confirmado.'].join('\n') : 'Recebemos ' + r.titulo + ' em bom estado. Obrigado por cuidar do acervo!');
+            fechar(); showToast(dano.length ? 'Devolução enviada para avaliação.' : 'Devolução confirmada, sem custo!'); pintarMeus(); pintarAcervo();
+        };
+        $('dev-ok').focus();
+    }
+    var CSS = '.al-cv{aspect-ratio:3/4;border-radius:6px 12px 12px 6px;padding:12px 12px 12px 18px;color:#fff;display:flex;flex-direction:column;justify-content:flex-end;gap:2px;position:relative;box-shadow:0 12px 24px -12px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.25);transition:transform .25s}' +
+        '.al-sp{position:absolute;left:0;top:0;bottom:0;width:7px;background:rgba(0,0,0,.25);border-radius:6px 0 0 6px}.al-cv b{font:700 13px/1.15 Sora,Inter,sans-serif}.al-cv small{font-size:11px;opacity:.8}@media (hover:hover){.al-card:hover .al-cv{transform:translateY(-4px) rotate(-1deg)}}';
+    if (!$('al-style')) { var st = document.createElement('style'); st.id = 'al-style'; st.textContent = CSS; document.head.appendChild(st); }
+
+    window.renderAluguel = function (container) {
+        var STEPS = [['fa-bookmark', 'Reserve no portal', 'Escolha o livro e reserve. Ele fica separado para você por ' + RES_H + 'h.'], ['fa-id-card', 'Retire com a carteirinha', 'Na biblioteca, mostre a carteirinha e o código da reserva.'], ['fa-rotate-left', 'Devolva em ' + DIAS + ' dias', 'Sem custo se estiver em bom estado. Dá para renovar uma vez.']];
+        container.innerHTML = '<div id="al-root" class="space-y-6"><div class="flex flex-wrap items-end justify-between gap-3"><div><h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-book-bookmark text-brand-600"></i> Aluguel de Livros</h2>' +
+            '<p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Livros físicos da biblioteca, de graça com a carteirinha. Só paga se danificar.</p></div><span class="cc-ok" style="color:#10b981"><i style="background:#10b981"></i>Carteirinha ativa · aluguel liberado</span></div>' +
+            '<div id="al-mine" class="apple-card rounded-[28px] p-5"></div>' +
+            '<ol class="grid sm:grid-cols-3 gap-3">' + STEPS.map(function (s, i) { return '<li class="apple-card rounded-2xl p-4 flex gap-3"><div class="w-9 h-9 flex-none rounded-xl bg-brand-500/10 text-brand-600 flex items-center justify-center"><i class="fa-solid ' + s[0] + '"></i></div><div><p class="text-[12px] font-bold text-brand-600">PASSO ' + (i + 1) + '</p><h4 class="text-[13px] font-bold text-slate-900 dark:text-white">' + s[1] + '</h4><p class="text-xs text-slate-500 dark:text-slate-400">' + s[2] + '</p></div></li>'; }).join('') + '</ol>' +
+            '<div class="apple-card rounded-[28px] p-4 sm:p-6"><div class="flex flex-wrap items-center justify-between gap-3 mb-4"><div id="al-chips" class="flex flex-wrap gap-2">' + CATS.map(function (c) { return '<button type="button" class="cc-chip' + (c === cat ? ' on' : '') + '" data-c="' + c + '" aria-pressed="' + (c === cat) + '">' + c + '</button>'; }).join('') + '</div>' +
+            '<label class="relative"><span class="sr-only">Buscar livro</span><i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i><input id="al-q" type="search" placeholder="Buscar título ou autor" value="' + q + '" class="w-56 max-w-full pl-8 pr-3 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-xs text-slate-900 dark:text-white outline-none"></label></div>' +
+            '<div id="al-cat" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5"></div>' +
+            '<p class="text-[12px] text-slate-500 dark:text-slate-400 mt-5"><i class="fa-solid fa-circle-info text-brand-600 mr-1.5"></i>Regras desta demonstração: até ' + LIM + ' livros ao mesmo tempo, ' + DIAS + ' dias de empréstimo e 1 renovação. A biblioteca confirma a retirada no balcão.</p></div></div>';
+        $('al-chips').addEventListener('click', function (e) { var b = e.target.closest('[data-c]'); if (!b) return; cat = b.dataset.c; document.querySelectorAll('#al-chips .cc-chip').forEach(function (x) { x.classList.toggle('on', x.dataset.c === cat); x.setAttribute('aria-pressed', x.dataset.c === cat); }); pintarAcervo(); });
+        $('al-q').addEventListener('input', function (e) { q = e.target.value; pintarAcervo(); });
+        $('al-cat').addEventListener('click', function (e) { var b = e.target.closest('[data-res]'); if (!b) return; var r = reservar(+b.dataset.res); if (r) { showToast('Reservado! Retire até ' + dt(r.ate) + ' (código ' + r.code + ').'); pintarMeus(); pintarAcervo(); } });
+        $('al-mine').addEventListener('click', function (e) { var b = e.target.closest('[data-act]'); if (!b) return; var id = b.dataset.id, a = b.dataset.act;
+            if (a === 'ret') { mudar(id, function (r) { r.est = 'retirado'; r.due = Date.now() + DIAS * DAY; }); showToast('Retirada registrada. Boa leitura!'); }
+            else if (a === 'can') { var l = ler().filter(function (r) { return r.id !== id; }); salvar(l); showToast('Reserva cancelada.'); }
+            else if (a === 'ren') { mudar(id, function (r) { r.due += DIAS * DAY; r.renov = true; }); showToast('Renovado por mais ' + DIAS + ' dias.'); }
+            else if (a === 'dev') { devolver(id); return; }
+            pintarMeus(); pintarAcervo(); });
+        pintarMeus(); pintarAcervo();
+    };
+    window.__al = { reservar: reservar, mudar: mudar, ler: ler, emUso: emUso, B: B };
+})();
+
+</script>
+<script>
+/* V14: Assistente FNET (SAC) — responde a partir do conteúdo do portal e dos dados do aluno; sem IA externa */
+(function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var esc = function (t) { return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+    var R = function (v) { return 'R$ ' + Number(v).toFixed(2).replace('.', ','); };
+    function lerLS(k) { try { var e = ((typeof activeUserSession !== 'undefined' && activeUserSession && activeUserSession.email) || '').toLowerCase(); return JSON.parse(localStorage.getItem(k) || '{}')[e] || []; } catch (x) { return []; } }
+    function notas() { try { var s = (typeof currentSemesterFilter !== 'undefined' && currentSemesterFilter) || '2026.2'; return mockData.notas.filter(function (n) { return n.semestre === s; }); } catch (x) { return []; } }
+    var B = function (t) { return '<b>' + t + '</b>'; };
+
+    var KB = [
+        { id: 'oi', t: 'Oi!', k: ['oi$', 'ola$', 'bom dia', 'boa tarde', 'boa noite', 'e ai$'], a: 'Oi! Posso ajudar com ' + B('notas, Webmail, salas, carteirinha, cantina e aluguel de livros') + '. O que você precisa?', rel: ['media', 'carteirinha', 'cantina'] },
+        { id: 'quem', t: 'Você é uma IA?', k: ['voce e', 'quem e voce', 'gemini', 'chatgpt', 'robo', 'inteligencia', 'ia$'], a: 'Sou o ' + B('assistente do portal FNET') + '. Respondo com base no conteúdo do portal e nos seus dados (notas, pedidos, livros). Não sou um modelo de linguagem aberto: se eu não souber, abro um atendimento para você.', rel: ['atendente', 'media'] },
+        { id: 'media', t: 'Qual é a minha média?', k: ['media', 'minha nota', 'minhas nota', 'nota', 'boletim', 'cr$'], a: function () { var n = notas(); if (!n.length) return 'Ainda não há notas lançadas neste semestre.'; var m = n.reduce(function (s, x) { return s + Number(x.media); }, 0) / n.length, top = n.slice().sort(function (a, b) { return b.media - a.media; })[0], low = n.slice().sort(function (a, b) { return a.media - b.media; })[0];
+            return 'Sua média geral é ' + B(m.toFixed(1)) + ' em ' + n.length + ' disciplinas. Melhor: ' + B(top.disciplina) + ' (' + Number(top.media).toFixed(1) + '). Ponto de atenção: ' + B(low.disciplina) + ' (' + Number(low.media).toFixed(1) + ').'; }, go: ['notas', 'Ver notas'], rel: ['pdf', 'freq'] },
+        { id: 'pdf', t: 'Como baixo o PDF das notas?', k: ['pdf', 'baix', 'exportar', 'imprimir', 'comprovante', 'historico'], a: 'Em ' + B('Notas & Atividades') + ', clique em ' + B('Exportar PDF') + ' para baixar o boletim do semestre. Para uma disciplina só, use ' + B('Detalhes') + ' e depois ' + B('Baixar PDF') + ' ou ' + B('Enviar ao Webmail') + '.', go: ['notas', 'Abrir Notas'], rel: ['media', 'webmail'] },
+        { id: 'freq', t: 'Como está minha frequência?', k: ['frequencia', 'falta', 'presenca', 'reprov'], a: function () { var n = notas(); if (!n.length) return 'Ainda não há frequência registrada neste semestre.'; var l = n.slice().sort(function (a, b) { return a.frequencia - b.frequencia; })[0], m = n.reduce(function (s, x) { return s + Number(x.frequencia); }, 0) / n.length;
+            return 'Sua frequência média é ' + B(m.toFixed(1) + '%') + '. A menor é em ' + B(l.disciplina) + ': ' + l.frequencia + '% (' + l.faltas + (l.faltas === 1 ? ' falta' : ' faltas') + ').'; }, go: ['notas', 'Ver notas'], rel: ['media'] },
+        { id: 'webmail', t: 'Como uso o Webmail?', k: ['webmail', 'email', 'e-mail', 'mensagem', 'caixa de entrada'], a: 'No ' + B('Webmail FNET') + ' você lê e envia mensagens a alunos e professores. Avisos do portal chegam lá: detalhamento de notas, reservas de livro e pedidos prontos na cantina.', go: ['webmail', 'Abrir Webmail'], rel: ['pedido', 'pdf'] },
+        { id: 'salas', t: 'Como reservo uma sala?', k: ['sala', 'espaco', 'reservar sala', 'estudar em grupo', 'laboratorio'], a: 'Em ' + B('Salas & Espaços') + ', escolha a sala no mapa (verdes estão livres) e confirme o horário. Reservas rendem XP, com limite diário.', go: ['salas', 'Abrir Salas'], rel: ['xp'] },
+        { id: 'recomenda', t: 'Me recomende um livro de Engenharia de Software', k: ['recomend', 'sugest', 'indic', 'livro'], a: function () { try { var l = window.__al.B.filter(function (b) { return (b.c === 'Programação' || b.c === 'Engenharia') && b.ex > 0; }).slice(0, 3); return 'Boas opções para começar: ' + l.map(function (b) { return B(b.t) + ' (' + b.a + ')'; }).join('; ') + '. Todos disponíveis para aluguel grátis.'; } catch (x) { return 'Veja o acervo em Aluguel de Livros.'; } }, go: ['aluguel', 'Ver acervo'], rel: ['aluguel'] },
+        { id: 'aluguel', t: 'Como alugo um livro físico?', k: ['alug', 'emprest', 'fisic', 'livro'], a: 'Em ' + B('Aluguel de Livros') + ': reserve (fica separado por 24h), retire na biblioteca com a carteirinha e devolva em ' + B('7 dias') + '. É ' + B('grátis') + '; você pode ter até 3 livros e renovar 1 vez. A biblioteca só avalia custo se houver dano.', go: ['aluguel', 'Ir para Aluguel'], rel: ['dano', 'meuslivros'] },
+        { id: 'dano', t: 'E se eu rasgar ou estragar o livro?', k: ['livro', 'rasg', 'estrag', 'dano', 'multa', 'molh', 'perdi o livro', 'cobranc'], a: 'Na devolução você faz um checklist (capa, páginas, marcas, umidade). Se marcar algum problema, o livro vai para ' + B('avaliação') + ' e a biblioteca responde pelo Webmail. ' + B('Só há custo se ela confirmar o dano') + '. Os valores dependem da política da biblioteca.', go: ['aluguel', 'Ir para Aluguel'], rel: ['aluguel'] },
+        { id: 'meuslivros', t: 'Quando devo devolver meus livros?', k: ['meus livro', 'prazo', 'devolver', 'devolucao', 'renovar'], a: function () { var a = lerLS('fnet_alugueis').filter(function (r) { return r.est === 'retirado' || r.est === 'reservado'; }); if (!a.length) return 'Você não está com nenhum livro agora.'; return a.map(function (r) { return B(r.titulo) + ': ' + (r.est === 'reservado' ? 'reservado, retire até ' + new Date(r.ate).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : 'devolver até ' + new Date(r.due).toLocaleDateString('pt-BR')); }).join('<br>'); }, go: ['aluguel', 'Ver meus livros'], rel: ['aluguel'] },
+        { id: 'biblioteca', t: 'O que tem na Biblioteca Digital?', k: ['biblioteca', 'livro digital', 'leitor', 'ler ', 'digital', 'pdf do livro'], a: 'Na ' + B('Biblioteca Digital') + ' você lê livros no próprio portal, retoma de onde parou e responde quizzes. Cada livro concluído vira pontos.', go: ['biblioteca', 'Abrir Biblioteca'], rel: ['aluguel', 'xp'] },
+        { id: 'xp', t: 'Quanto XP eu tenho?', k: ['xp$', 'ponto', 'nivel', 'missao', 'missoes', 'ofensiva', 'premio', 'conquista'], a: function () { var e = $('topbar-xp-val'); return (e ? 'Você tem ' + B(e.textContent.trim()) + '. ' : '') + 'Ganhe XP acessando o portal, enviando mensagens, reservando salas e concluindo missões na aba ' + B('Prêmios') + '. Há limites diários por ação.'; }, go: ['gamificacao', 'Ver Prêmios'], rel: ['salas'] },
+        { id: 'desconto', t: 'Onde a carteirinha dá desconto?', k: ['desconto', 'parceiro', 'cinema', 'farmacia', 'academia', 'pizza', 'cafe', 'barbearia', 'meia entrada'], a: function () { try { var l = window.__cc.P.filter(function (p) { return p.off !== 50; }).sort(function (a, b) { return b.off - a.off; }).slice(0, 3); return 'Temos ' + window.__cc.P.length + ' parceiros em Porto Esperança. Os maiores descontos: ' + l.map(function (p) { return B(p.n) + ' (' + p.off + '%)'; }).join(', ') + '. Veja todos no mapa.'; } catch (x) { return 'Veja os parceiros na página da Carteirinha.'; } }, go: ['campus', 'Ver parceiros'], rel: ['carteirinha'] },
+        { id: 'carteirinha', t: 'Como funciona a carteirinha?', k: ['carteirinha', 'carteira', 'identidade', 'qr', 'codigo dinamico', 'meu ra'], a: 'A ' + B('carteirinha digital') + ' mostra foto, RA e nascimento (ocultos até você tocar em "Mostrar dados"). No verso há um código que muda a cada 30s. Ela vale como identificação nos parceiros, na cantina (10%) e no aluguel de livros.', go: ['campus', 'Abrir Carteirinha'], rel: ['desconto', 'cantina'] },
+        { id: 'cantina', t: 'Como peço na cantina?', k: ['cantina', 'trailer', 'lanche', 'fome', 'comer', 'almoc', 'acai', 'cardapio', 'pedir'], a: 'Em ' + B('Cantina & Trailers') + ' escolha a loja, monte o pedido e diga em quantos minutos chega. Alunos têm ' + B('10% de desconto') + ' automático. Quando ficar pronto, você recebe um aviso e o código de retirada.', go: ['cantina', 'Abrir Cantina'], rel: ['pedido', 'carteirinha'] },
+        { id: 'pedido', t: 'Como está meu pedido?', k: ['pedido', 'retirada', 'codigo de retirada'], a: function () { var o = lerLS('fnet_pedidos').filter(function (x) { return !x.retirado; })[0]; if (!o) return 'Você não tem pedido em andamento. Que tal pedir algo na cantina?'; var el = (Date.now() - o.t0) / 1000, ps = o.prep * 2, st = el < 5 ? 'recebido' : (el < 5 + ps ? 'sendo preparado' : 'pronto para retirar');
+            return 'Pedido ' + B(o.id) + ' na ' + B(o.loja) + ': ' + B(st) + '. Código de retirada: ' + B(o.code) + ' · Total ' + R(o.total) + '.'; }, go: ['cantina', 'Ver pedido'], rel: ['cantina'] },
+        { id: 'boleto', t: 'Como tiro a 2ª via do boleto?', k: ['boleto', 'mensalidade', '2a via', 'segunda via', 'financeiro', 'pagamento da', 'bolsa'], a: 'O portal ainda ' + B('não tem área financeira') + ', então não consigo emitir boleto por aqui. Posso abrir um atendimento para o setor Financeiro responder pelo Webmail.', act: 'ticket', rel: ['atendente'] },
+        { id: 'senha', t: 'Esqueci minha senha', k: ['senha', 'esqueci', 'login', 'nao consigo entrar', 'acesso'], a: 'Na tela de login há a opção ' + B('Esqueceu?') + ' ao lado da senha. Se não resolver, abro um atendimento para a Secretaria.', act: 'ticket', rel: ['atendente'] },
+        { id: 'perfil', t: 'Como altero meu perfil?', k: ['perfil', 'foto', 'avatar', 'alterar dados', 'trocar nome', 'telefone'], a: 'Em ' + B('Meu Perfil') + ' você altera foto, nome, telefone e bio. A foto também aparece na carteirinha.', go: ['perfil', 'Abrir Perfil'], rel: ['carteirinha'] },
+        { id: 'tema', t: 'Como mudo o tema ou a fonte?', k: ['tema', 'escuro', 'claro', 'acessibilidade', 'fonte', 'dislexia', 'contraste', 'letra'], a: 'O ícone de ' + B('sol/lua') + ' no topo troca entre tema claro e escuro. Em acessibilidade você ativa fonte para dislexia, alto contraste, mais espaçamento e reduzir movimento.', rel: ['atalho'] },
+        { id: 'atalho', t: 'Existe algum atalho de teclado?', k: ['atalho', 'ctrl', 'teclado', 'paleta', 'comando', 'buscar'], a: 'Aperte ' + B('Ctrl + K') + ' (⌘ + K no Mac) para abrir a busca e ir direto a qualquer página, sem usar o mouse.', rel: ['media'] },
+        { id: 'guia', t: 'Onde está o guia do portal?', k: ['guia', 'manual', 'tutorial', 'como funciona', 'como usar', 'primeiros passos', 'passo a passo'], a: 'O ' + B('Guia do Aluno') + ' explica cada parte do portal, passo a passo. Você pode ler na tela ou ' + B('baixar em PDF') + '.', go: ['guia', 'Abrir Guia do Aluno'], rel: ['atalho', 'carteirinha'] },
+        { id: 'breve', t: 'O que vem por aí?', k: ['simulado', 'vestibular', 'esporte', 'time', 'futebol', 'natacao', 'jornal', 'horas complementares', 'estagio'], a: 'Simulados, vestibulares internos, times esportivos e o jornal da FNET estão ' + B('em desenvolvimento') + '. Ainda não estão disponíveis no portal.', rel: ['cantina'] },
+        { id: 'atendente', t: 'Quero falar com um atendente', k: ['atendente', 'humano', 'pessoa', 'falar com', 'reclama', 'ouvidoria', 'ajuda', 'suporte', 'problema'], a: 'Claro! Posso abrir um atendimento com a equipe do SAC. Você recebe o protocolo no Webmail.', act: 'ticket', rel: [] },
+        { id: 'obrigado', t: 'Obrigado!', k: ['obrigad', 'valeu', 'brigad', 'show$', 'top$'], a: 'De nada! Se precisar de mais alguma coisa, é só chamar. 😊', rel: [] }
+    ];
+    var ANT = null;
+    function norm(s) { return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim(); }
+    function busca(q) {
+        var n = ' ' + norm(q) + ' ', toks = n.trim().split(' '), best = null, bs = 0;
+        KB.forEach(function (e) {
+            var s = 0; e.k.forEach(function (k) {
+                var ex = k.charAt(k.length - 1) === '$', st = ex ? k.slice(0, -1) : k;
+                var hit = st.indexOf(' ') >= 0 ? n.indexOf(' ' + st) >= 0 : toks.some(function (t) { return ex ? t === st : t.indexOf(st) === 0; });
+                if (hit) s += ex ? 2 : (st.length >= 4 ? 1.5 : 1);
+            }); if (s > bs) { bs = s; best = e; }
+        });
+        return bs >= 1.5 ? best : null;
+    }
+    function porId(id) { return KB.filter(function (e) { return e.id === id; })[0]; }
+    function botoes(e) {
+        var h = '';
+        if (e && e.go) h += '<button type="button" onclick="__sac.go(\'' + e.go[0] + '\')" class="apple-btn mr-1.5 mt-2 px-2.5 py-1 bg-brand-600 text-white rounded-full text-[12px] font-semibold"><i class="fa-solid fa-arrow-right mr-1"></i>' + e.go[1] + '</button>';
+        if (e && e.act === 'ticket') h += '<button type="button" onclick="__sac.ticket()" class="apple-btn mr-1.5 mt-2 px-2.5 py-1 bg-brand-600 text-white rounded-full text-[12px] font-semibold"><i class="fa-solid fa-headset mr-1"></i>Abrir atendimento</button>';
+        var rel = (e && e.rel || []).map(porId).filter(Boolean).slice(0, 3);
+        if (rel.length) h += '<div class="mt-2 flex flex-wrap gap-1.5">' + rel.map(function (r) { return '<button type="button" onclick="__sac.ask(\'' + r.id + '\')" class="apple-btn px-2.5 py-1 bg-black/5 dark:bg-white/10 text-slate-600 dark:text-slate-300 rounded-full text-[12px] hover:bg-brand-600 hover:text-white transition-colors">' + esc(r.t) + '</button>'; }).join('') + '</div>';
+        return h;
+    }
+    function responder(pergunta, forcado) {
+        var e = forcado || busca(pergunta); ANT = e;
+        var chat = $('chat-messages-ia'); if (!chat) return;
+        var tip = document.createElement('div'); tip.className = 'flex items-start gap-2'; tip.setAttribute('aria-hidden', 'true');
+        tip.innerHTML = '<div class="apple-card p-3 rounded-2xl text-xs text-slate-400"><i class="fa-solid fa-ellipsis fa-fade"></i></div>'; chat.appendChild(tip); chat.scrollTop = chat.scrollHeight;
+        setTimeout(function () {
+            tip.remove();
+            if (e) { var a = typeof e.a === 'function' ? e.a() : e.a; adicionarMensagemChat(a + botoes(e), 'ia'); }
+            else { var f = { act: 'ticket', rel: ['media', 'carteirinha', 'cantina'] }; adicionarMensagemChat('Não encontrei isso no portal, e prefiro não inventar. Posso abrir um atendimento para a equipe ou você pode tentar um destes temas:' + botoes(f), 'ia'); }
+        }, 450 + Math.random() * 250);
+    }
+    function ticket() {
+        var proto = 'SAC-' + (10000 + Math.floor(Math.random() * 90000)), u = (typeof activeUserSession !== 'undefined' && activeUserSession) || {}, k = (u.email || '').toLowerCase();
+        var m = { id: Date.now(), de: 'SAC FNET', emailDe: 'sac@fnet.edu.br', assunto: 'Atendimento aberto - ' + proto, data: new Date().toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }),
+            desc: 'Recebemos sua solicitação. Protocolo ' + proto + '.', conteudo: ['Olá, ' + (u.nome || 'aluno') + '!', '', 'Recebemos sua solicitação pelo assistente do portal.', 'Protocolo: ' + proto, '', 'Nossa equipe responde por este Webmail. (Prazo de exemplo: demonstração do portal.)'].join('\n') };
+        try { var b = JSON.parse(localStorage.getItem('fnet_mailboxes') || '{}'); (b[k] = b[k] || []).unshift(m); localStorage.setItem('fnet_mailboxes', JSON.stringify(b)); } catch (x) { }
+        if (typeof stateEmails !== 'undefined') stateEmails.unshift(m);
+        var dot = $('webmail-notif-dot'); if (dot) dot.style.display = '';
+        adicionarMensagemChat('Pronto! Abri o atendimento ' + B(proto) + '. Enviei o protocolo para o seu Webmail.<div class="mt-2"><button type="button" onclick="__sac.go(\'webmail\')" class="apple-btn px-2.5 py-1 bg-brand-600 text-white rounded-full text-[12px] font-semibold"><i class="fa-solid fa-envelope mr-1"></i>Abrir Webmail</button></div>', 'ia');
+    }
+    function go(view) { var p = $('chat-popup-ia'); if (p && !p.classList.contains('hidden')) toggleChatIA(); navigate(view); }
+    function ask(id) { var e = porId(id); if (!e) return; adicionarMensagemChat(esc(e.t), 'user'); responder(e.t, e); }
+
+    var baseAdd = window.adicionarMensagemChat;
+    window.adicionarMensagemChat = function (t, r) { baseAdd(r === 'user' ? esc(t) : t, r); };   /* mensagem do usuário não executa HTML */
+    window.processarRespostaIA = function (pergunta) { responder(pergunta); };
+    window.__sac = { go: go, ask: ask, ticket: ticket, busca: busca, KB: KB };
+
+    var h = document.querySelector('#chat-popup-ia h3'); if (h) h.textContent = 'Assistente FNET';
+    var sub = document.querySelector('#chat-popup-ia .text-emerald-300'); if (sub) sub.lastChild.textContent = ' Responde com base no portal';
+    var hi = document.querySelector('#chat-messages-ia .apple-card'); if (hi) hi.textContent = 'Olá! Sou o assistente da FNET. Respondo dúvidas sobre notas, Webmail, salas, carteirinha, cantina e aluguel de livros usando as informações do portal. Pergunte à vontade!';
+    var chips = document.querySelector('#chat-popup-ia .overflow-x-auto');
+    if (chips) [['media', 'Minha média', 'fa-chart-pie'], ['pedido', 'Meu pedido', 'fa-utensils'], ['carteirinha', 'Carteirinha', 'fa-id-card']].forEach(function (c) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'apple-btn px-2.5 py-1 bg-black/5 dark:bg-white/5 text-[12px] font-medium text-slate-400 rounded-full whitespace-nowrap hover:bg-brand-600 hover:text-white transition-colors';
+        b.innerHTML = '<i class="fa-solid ' + c[2] + ' mr-1"></i> ' + c[1]; b.onclick = function () { ask(c[0]); }; chips.appendChild(b);
+    });
+})();
+
+</script>
+<script>
+/* V15: Guia do Aluno (página + PDF). Uma única lista de conteúdo alimenta os dois. */
+(function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var G = [
+        { id: 'inicio', ic: 'fa-house', t: 'Primeiros passos', v: 'dashboard', r: 'O Início reúne suas entregas, mensagens, missões e atalhos. É o ponto de partida do portal.',
+            p: ['Entre com seu e-mail ou matrícula e sua senha.', 'Navegue pela barra do topo (no celular, pela barra inferior e pelo menu lateral).', 'Aperte Ctrl + K (⌘ + K no Mac) para buscar e ir direto a qualquer página.', 'Troque entre tema claro e escuro no ícone de sol/lua.'],
+            d: ['Em acessibilidade você ativa fonte para dislexia, alto contraste, mais espaçamento e reduzir movimento.', 'O sino e o ícone de e-mail mostram avisos novos.'] },
+        { id: 'notas', ic: 'fa-chart-pie', t: 'Notas & Atividades', v: 'notas', r: 'Acompanhe média, frequência e situação de cada disciplina, e leve o boletim com você.',
+            p: ['Abra Notas & Atividades e escolha o semestre.', 'Veja a média, a frequência e a situação de cada disciplina.', 'Clique em Detalhes para ver P1, P2, trabalho e observações sobre sua evolução.', 'Use Exportar PDF para baixar o boletim do semestre.', 'No Detalhes, use Baixar PDF (só aquela disciplina) ou Enviar ao Webmail.'],
+            d: ['O e-mail enviado pelo Detalhes fica salvo na sua caixa de entrada.', 'Semestres sem notas lançadas mostram um aviso em vez de um PDF vazio.'] },
+        { id: 'webmail', ic: 'fa-envelope', t: 'Webmail FNET', v: 'webmail', r: 'Mensagens entre alunos, professores e o próprio portal.',
+            p: ['Abra o Webmail e clique em uma mensagem para ler.', 'Use Nova mensagem para escrever a alunos ou professores.', 'Acompanhe avisos automáticos do portal: detalhamento de notas, reservas de livro, pedidos prontos e protocolos do SAC.'],
+            d: ['O ponto vermelho no ícone de e-mail indica mensagem nova.', 'Enviar mensagens rende XP, com limite diário.'] },
+        { id: 'salas', ic: 'fa-door-open', t: 'Salas & Espaços', v: 'salas', r: 'Reserve salas de estudo e espaços do campus direto pelo mapa.',
+            p: ['Abra Salas & Espaços e veja o mapa.', 'Salas livres aparecem em verde; as ocupadas ficam indicadas.', 'Escolha uma sala, defina o horário e confirme a reserva.'],
+            d: ['Reservar sala rende XP, com limite diário.', 'Cancele pelo próprio portal se não for mais usar.'] },
+        { id: 'biblioteca', ic: 'fa-book-bookmark', t: 'Biblioteca Digital', v: 'biblioteca', r: 'Leia livros no próprio portal, retome de onde parou e responda quizzes.',
+            p: ['Abra a Biblioteca Digital e escolha um livro.', 'Leia no leitor; use as setas do teclado para virar a página.', 'Responda ao quiz do capítulo para continuar.', 'Seu progresso fica salvo e você retoma de onde parou.'],
+            d: ['Livros concluídos viram pontos de XP.', 'Se o PDF não abrir no leitor, use "Abrir em nova aba".'] },
+        { id: 'premios', ic: 'fa-trophy', t: 'Prêmios e XP', v: 'gamificacao', r: 'Ganhe XP por usar o portal, suba de nível e mantenha sua ofensiva diária.',
+            p: ['Abra Prêmios para ver seu nível, seu XP e suas missões.', 'Cumpra missões diárias, como acessar o portal e enviar mensagens.', 'Cada nível pede 200 XP; os títulos vão de Calouro a Lenda.', 'Entre todo dia para manter a ofensiva (dias seguidos).'],
+            d: ['Algumas ações têm limite diário de XP.', 'O XP aparece também no topo da tela.'] },
+        { id: 'carteirinha', ic: 'fa-id-card', t: 'Carteirinha e parceiros', v: 'campus', r: 'Sua identidade de estudante digital, com descontos em 10 parceiros de Porto Esperança.',
+            p: ['Abra Carteirinha & Parceiros (menu Campus). A carteirinha mostra foto, nome e curso.', 'Toque em Mostrar dados para ver RA e nascimento (voltam a ficar ocultos em 15 segundos).', 'Vire a carteirinha para ver o código, que muda a cada 30 segundos.', 'Escolha um parceiro na lista ou no mapa para ver desconto, regra, endereço e horário.', 'No caixa, mostre o código e receba o desconto na hora.'],
+            d: ['O desconto não acumula com outras promoções.', 'Use o filtro por categoria para achar o que precisa mais rápido.'] },
+        { id: 'cantina', ic: 'fa-utensils', t: 'Cantina e trailers', v: 'cantina', r: 'Peça antes de chegar e retire sem fila em 5 pontos de venda dentro do campus.',
+            p: ['Abra Cantina & Trailers e escolha a loja no mapa ou na lista.', 'Monte o pedido no cardápio.', 'Escolha em quantos minutos você chega e a forma de pagamento.', 'Alunos recebem 10% de desconto automático com a carteirinha.', 'Acompanhe: Recebido, Preparando, Pronto. Mostre o código de 4 dígitos no balcão.'],
+            d: ['Quando o pedido fica pronto, você recebe um aviso e um e-mail no Webmail.', 'Nesta versão de demonstração o pagamento é simulado.'] },
+        { id: 'aluguel', ic: 'fa-book', t: 'Aluguel de livros físicos', v: 'aluguel', r: 'Pegue livros da biblioteca de graça com a carteirinha. Só há custo se houver dano.',
+            p: ['Abra Aluguel de Livros e reserve um título (ele fica separado por 24 horas).', 'Retire na biblioteca mostrando a carteirinha e o código da reserva.', 'Leia por até 7 dias; renove uma vez, se precisar.', 'Na devolução, faça o checklist: capa, páginas, marcas e umidade.', 'Sem problemas: devolução sem custo. Com problema: a biblioteca avalia e responde pelo Webmail.'],
+            d: ['Você pode ter até 3 livros ao mesmo tempo.', 'Os valores em caso de dano seguem a política da biblioteca.'] },
+        { id: 'sac', ic: 'fa-headset', t: 'Assistente FNET (SAC)', v: 'dashboard', r: 'O botão vermelho no canto da tela abre o assistente, que responde dúvidas sobre o portal.',
+            p: ['Clique no botão do assistente no canto inferior direito.', 'Escreva sua dúvida ou toque em uma sugestão.', 'Use os botões das respostas para ir direto à página certa.', 'Se ele não souber, escolha Abrir atendimento: você recebe um protocolo no Webmail.'],
+            d: ['Pergunte, por exemplo: "qual a minha média?" ou "como está meu pedido?".', 'Ele responde com base no portal e nos seus dados.'] },
+        { id: 'breve', ic: 'fa-rocket', t: 'Em breve', v: null, r: 'Estas novidades estão em desenvolvimento e ainda não estão disponíveis.',
+            p: ['Simulados e vestibulares internos.', 'Times esportivos, horas complementares e quadras com mapa.', 'Jornal da FNET.'],
+            d: ['Acompanhe os avisos pelo Webmail.'] }
+    ];
+    var norm = function (s) { return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); };
+    var texto = function (g) { return norm([g.t, g.r].concat(g.p, g.d).join(' ')); };
+    var DESTINO = { dashboard: 'Início', notas: 'Notas', webmail: 'Webmail', salas: 'Salas', biblioteca: 'Biblioteca', gamificacao: 'Prêmios', campus: 'Carteirinha', cantina: 'Cantina', aluguel: 'Aluguel' };
+
+    /* ---------- PDF ---------- */
+    function carregar() { return new Promise(function (ok, no) { if (window.jspdf) return ok(); var s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'; s.onload = ok; s.onerror = no; document.head.appendChild(s); }); }
+    function montar() {
+        var d = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' }), M = 18, W = 174, y = 0, pg = {}, hoje = new Date().toLocaleDateString('pt-BR');
+        d.setFillColor(20, 8, 9); d.rect(0, 0, 210, 297, 'F'); d.setFillColor(220, 38, 38); d.rect(0, 0, 210, 12, 'F'); d.rect(M, 110, 28, 2.2, 'F');
+        d.setTextColor(255, 255, 255); d.setFont('helvetica', 'bold'); d.setFontSize(40); d.text('Guia do Aluno', M, 135); d.setFont('helvetica', 'normal'); d.setFontSize(16); d.text('Portal FNET', M, 147);
+        d.setFontSize(11); d.setTextColor(180, 180, 190); d.text(d.splitTextToSize('Como usar cada parte do portal, passo a passo: notas, Webmail, salas, biblioteca, prêmios, carteirinha, cantina e aluguel de livros.', 140), M, 162); d.text('Edição de ' + hoje, M, 270);
+        d.addPage(); d.setTextColor(30, 41, 59); d.setFont('helvetica', 'bold'); d.setFontSize(22); d.text('Sumário', M, 30);
+        G.forEach(function (g, i) { var yy = 46 + i * 11; d.setFont('helvetica', 'bold'); d.setFontSize(11); d.setTextColor(220, 38, 38); d.text(String(i + 1).padStart(2, '0'), M, yy); d.setFont('helvetica', 'normal'); d.setTextColor(30, 41, 59); d.text(g.t, M + 12, yy); });
+        d.addPage(); y = 28;
+        function precisa(h) { if (y + h > 275) { d.addPage(); y = 24; } }
+        function par(txt, x, w, tam, cor, estilo) { d.setFont('helvetica', estilo || 'normal'); d.setFontSize(tam); d.setTextColor(cor[0], cor[1], cor[2]); d.splitTextToSize(txt, w).forEach(function (l) { precisa(6); d.text(l, x, y); y += tam * 0.5 + 1.6; }); }
+        G.forEach(function (g, i) {
+            precisa(60); pg[i] = d.getNumberOfPages();
+            d.setFillColor(220, 38, 38); d.roundedRect(M, y - 7, 11, 11, 2.5, 2.5, 'F'); d.setTextColor(255, 255, 255); d.setFont('helvetica', 'bold'); d.setFontSize(10); d.text(String(i + 1), M + 5.5, y, { align: 'center' });
+            d.setTextColor(30, 41, 59); d.setFontSize(16); d.text(g.t, M + 16, y); y += 9;
+            par(g.r, M, W, 10.5, [71, 85, 105]); y += 3;
+            d.setFont('helvetica', 'bold'); d.setFontSize(10); d.setTextColor(220, 38, 38); precisa(8); d.text('PASSO A PASSO', M, y); y += 6;
+            g.p.forEach(function (t, k) { d.setFont('helvetica', 'bold'); d.setFontSize(10); d.setTextColor(30, 41, 59); precisa(7); d.text((k + 1) + '.', M, y); par(t, M + 7, W - 7, 10, [30, 41, 59]); y += 0.8; });
+            y += 2; precisa(14); d.setFont('helvetica', 'bold'); d.setFontSize(10); d.setTextColor(217, 119, 6); d.text('DICAS', M, y); y += 6;
+            g.d.forEach(function (t) { precisa(7); d.setTextColor(217, 119, 6); d.setFont('helvetica', 'bold'); d.text('-', M, y); par(t, M + 6, W - 6, 10, [71, 85, 105]); y += .8; });
+            y += 8;
+        });
+        var n = d.getNumberOfPages();
+        d.setPage(2); d.setFont('helvetica', 'normal'); d.setFontSize(11); d.setTextColor(100, 116, 139); G.forEach(function (g, i) { d.text(String(pg[i]), 192, 46 + i * 11, { align: 'right' }); });
+        for (var p = 2; p <= n; p++) { d.setPage(p); d.setFontSize(8); d.setTextColor(148, 163, 184); d.text('FNET · Guia do Aluno', M, 288); d.text('Página ' + p + ' de ' + n, 192, 288, { align: 'right' }); }
+        d.save('guia-do-aluno-fnet.pdf'); return n;
+    }
+    function imprimir() {
+        var w = window.open('', '_blank'); if (!w) { showToast('Libere pop-ups para gerar o PDF.'); return; }
+        w.document.write('<title>Guia do Aluno - FNET</title><body style="font:14px system-ui;max-width:720px;margin:32px auto;padding:0 16px"><h1>Guia do Aluno - FNET</h1>' + G.map(function (g, i) { return '<h2>' + (i + 1) + '. ' + g.t + '</h2><p>' + g.r + '</p><ol>' + g.p.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ol><ul>' + g.d.map(function (x) { return '<li><i>' + x + '</i></li>'; }).join('') + '</ul>'; }).join(''));
+        w.document.close(); w.focus(); w.print();
+    }
+    function baixar() { showToast('Gerando o guia em PDF...'); carregar().then(function () { var n = montar(); showToast('Guia baixado (' + n + ' páginas)!'); }).catch(function () { showToast('Abrindo versão para impressão (Salvar como PDF).'); imprimir(); }); }
+
+    /* ---------- Página ---------- */
+    window.renderGuia = function (c) {
+        c.innerHTML = '<div id="gd-root" class="space-y-6"><div class="apple-card rounded-[28px] p-6 flex flex-wrap items-center justify-between gap-4"><div><h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-circle-question text-brand-600"></i> Guia do Aluno</h2>' +
+            '<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Como usar cada parte do portal, passo a passo.</p></div><button type="button" id="gd-pdf" class="apple-btn px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-semibold shadow-lg"><i class="fa-solid fa-file-pdf mr-1.5"></i>Baixar guia em PDF</button></div>' +
+            '<div class="grid lg:grid-cols-12 gap-6 items-start"><aside class="lg:col-span-3 lg:sticky lg:top-24 space-y-3"><label class="relative block"><span class="sr-only">Buscar no guia</span><i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>' +
+            '<input id="gd-q" type="search" placeholder="Buscar no guia" class="w-full pl-8 pr-3 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-xs text-slate-900 dark:text-white outline-none"></label><nav id="gd-toc" aria-label="Sumário do guia" class="space-y-0.5"></nav></aside>' +
+            '<div id="gd-list" class="lg:col-span-9 space-y-4"></div></div></div>';
+        function pintar(q) {
+            var t = norm(q || '').trim(), l = G.filter(function (g) { return !t || texto(g).indexOf(t) >= 0; });
+            $('gd-toc').innerHTML = l.map(function (g) { return '<button type="button" data-t="' + g.id + '" class="cc-item"><span class="cc-num"><i class="fa-solid ' + g.ic + ' text-[11px]"></i></span><span class="text-[13px] font-semibold text-slate-900 dark:text-white">' + g.t + '</span></button>'; }).join('');
+            $('gd-list').innerHTML = l.length ? l.map(function (g) {
+                var n = G.indexOf(g) + 1;
+                return '<section id="gd-' + g.id + '" class="apple-card rounded-[28px] p-6" style="scroll-margin-top:96px"><div class="flex items-start justify-between gap-3 mb-3"><div class="flex items-center gap-3"><span class="w-10 h-10 rounded-xl bg-brand-500/10 text-brand-600 flex items-center justify-center"><i class="fa-solid ' + g.ic + '"></i></span><div><p class="text-[12px] font-bold text-brand-600">CAPÍTULO ' + n + '</p><h3 class="text-sm font-bold text-slate-900 dark:text-white">' + g.t + '</h3></div></div>' +
+                    (g.v ? '<button type="button" data-go="' + g.v + '" class="apple-btn px-3 py-1.5 bg-black/5 dark:bg-white/10 text-slate-900 dark:text-slate-100 rounded-xl text-xs font-medium whitespace-nowrap">Abrir ' + DESTINO[g.v] + ' <i class="fa-solid fa-arrow-right ml-1"></i></button>' : '') + '</div>' +
+                    '<p class="text-xs text-slate-600 dark:text-slate-300 mb-4">' + g.r + '</p><ol class="space-y-2 mb-4">' + g.p.map(function (x, k) { return '<li class="flex gap-3 text-xs text-slate-700 dark:text-slate-200"><span class="w-5 h-5 flex-none rounded-full bg-brand-600 text-white text-[11px] font-bold flex items-center justify-center">' + (k + 1) + '</span><span>' + x + '</span></li>'; }).join('') + '</ol>' +
+                    '<div class="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 space-y-1">' + g.d.map(function (x) { return '<p class="text-xs text-slate-600 dark:text-slate-300"><i class="fa-solid fa-lightbulb text-amber-500 mr-1.5"></i>' + x + '</p>'; }).join('') + '</div></section>';
+            }).join('') : '<p class="text-xs text-slate-500 dark:text-slate-400">Nada encontrado para "' + q.replace(/[<>&"]/g, '') + '". Tente outra palavra ou pergunte ao assistente.</p>';
+        }
+        pintar('');
+        $('gd-q').addEventListener('input', function (e) { pintar(e.target.value); });
+        $('gd-pdf').onclick = baixar;
+        $('gd-toc').addEventListener('click', function (e) { var b = e.target.closest('[data-t]'); var s = b && $('gd-' + b.dataset.t); if (s) s.scrollIntoView({ block: 'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); });
+        $('gd-list').addEventListener('click', function (e) { var b = e.target.closest('[data-go]'); if (b) navigate(b.dataset.go); });
+    };
+    window.__gd = { G: G, montar: montar };
 })();
 
 </script>
