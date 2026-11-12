@@ -475,6 +475,14 @@
         .tn-menu i { width: 16px; color: #dc2626; }
         @media (min-width: 1280px) and (max-width: 1439px) { .fx-search { display: none !important; } header button[aria-label="Buscar"] { display: inline-flex !important; } }
         body[data-view="cantina"] { --tc: 245 158 11; --tc2: 220 38 38; }
+    
+        /* V16/V17 */
+        @media (hover: hover) { .cp-card { transition: transform .25s, box-shadow .25s; } .cp-card:hover { transform: translateY(-3px); } }
+        .cp-card:focus-visible { outline: 2px solid #f59e0b; outline-offset: 2px; }
+    
+        /* V19: correções de celular achadas em teste real */
+        #main-view .grid > * { min-width: 0; }
+        @media (max-width: 1023px) { header .tn-streak, header .tn-av, header .tn-out { display: none !important; } }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
@@ -1103,6 +1111,8 @@
             { id: 'campus', label: 'Carteirinha & Parceiros', icon: 'fa-id-card', roles: ['aluno'] },
             { id: 'aluguel', label: 'Aluguel de Livros', icon: 'fa-book-bookmark', roles: ['aluno'] },
             { id: 'cantina', label: 'Cantina & Trailers', icon: 'fa-utensils', roles: ['aluno', 'professor'] },
+            { id: 'jornal', label: 'Jornal FNET', icon: 'fa-newspaper', roles: ['aluno', 'professor'] },
+            { id: 'esportes', label: 'Esportes & Atléticas', icon: 'fa-medal', roles: ['aluno'] },
             { id: 'guia', label: 'Guia do Aluno', icon: 'fa-circle-question', roles: ['aluno', 'professor'] },
             { id: 'webmail', label: 'Webmail FNET', icon: 'fa-envelope', roles: ['aluno', 'professor'] },
             { id: 'perfil', label: 'Meu Perfil', icon: 'fa-user-gear', roles: ['aluno', 'professor'] }
@@ -1286,7 +1296,7 @@
                             </h2>
                             <p class="text-xs text-slate-400 mt-0.5">Visão analítica de notas, horas ACC e presença.</p>
                         </div>
-                        <div class="flex items-center gap-2">
+                        <div class="flex flex-wrap items-center gap-2">
                             <select id="select-semestre" onchange="alterarSemestreNotas(this.value)" class="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-slate-900 dark:text-white rounded-xl px-3.5 py-2 text-xs font-semibold focus:outline-none">
                                 <option value="2026.2">Semestre Vigente (2026.2)</option>
                                 <option value="2026.1">Semestre Anterior (2026.1)</option>
@@ -2541,6 +2551,8 @@
                 case 'cantina': renderCantina(mainView); break;
                 case 'aluguel': renderAluguel(mainView); break;
                 case 'guia': renderGuia(mainView); break;
+                case 'esportes': renderEsportes(mainView); break;
+                case 'jornal': renderJornal(mainView); break;
                 case 'webmail': renderWebmail(mainView); break;
                 case 'perfil': renderPerfil(mainView); break;
                 default: renderDashboard(mainView);
@@ -3833,8 +3845,9 @@ document.addEventListener('keydown', function (ev) {
     function sync() {
         try {
             document.body.dataset.view = currentView;
+            try { var it = navItems.filter(function (n) { return n.id === currentView; })[0]; document.title = 'FNET · ' + (it ? it.label : 'Portal'); } catch (e) { }
             var nav = top.querySelector('nav'), html = '';
-            var GRP = ['campus', 'aluguel', 'cantina', 'guia'], g = [];
+            var GRP = ['campus', 'aluguel', 'cantina', 'esportes', 'jornal', 'guia'], g = [];
             navItems.forEach(function (n) {
                 if (n.roles.indexOf(currentUserRole) < 0) return;
                 if (GRP.indexOf(n.id) >= 0) { g.push(n); return; }
@@ -4148,9 +4161,9 @@ document.addEventListener('keydown', function (ev) {
         for (k = 1; k <= 5; k++) st += '<path d="M' + (k * 100) + ' 0V420M0 ' + (k * 70) + 'H600"/>';
         return '<svg id="cc-svg" viewBox="0 0 600 420" class="w-full h-auto block" role="group" aria-label="Mapa de Porto Esperança com os parceiros">' +
             '<rect width="600" height="420" fill="var(--bg)"/><path d="M-10 385C150 335 250 405 420 352S580 305 620 315" stroke="var(--wa)" stroke-width="30" fill="none"/>' +
-            '<rect x="30" y="16" width="130" height="60" rx="18" fill="var(--pk)"/><text x="95" y="50" class="cc-lb">Parque Central</text>' +
+            '<rect x="30" y="16" width="130" height="60" rx="18" fill="var(--pk)"/>' +
             '<g stroke="var(--st)" stroke-width="10" stroke-linecap="round" fill="none">' + st + '</g>' +
-            '<text x="580" y="408" text-anchor="end" class="cc-lb" opacity=".6">PORTO ESPERANÇA</text>' +
+            '<text x="95" y="50" class="cc-lb">Parque Central</text><text x="580" y="408" class="cc-lb" style="text-anchor:end" opacity=".6">PORTO ESPERANÇA</text>' +
             '<path id="cc-route" d="" fill="none" stroke="#dc2626" stroke-width="3" stroke-dasharray="7 6" stroke-linecap="round"/>' +
             '<g transform="translate(300 210)"><rect x="-30" y="-21" width="60" height="42" rx="12" fill="#dc2626"/><text class="cc-campus" y="1">FNET</text></g>' + pins() + '</svg>';
     }
@@ -4236,7 +4249,8 @@ document.addEventListener('keydown', function (ev) {
             FAQ.map(function (q) { return '<details class="cc-faq py-3"><summary class="text-slate-900 dark:text-white">' + q[0] + '<i class="fa-solid fa-chevron-down text-slate-400 text-xs mt-1"></i></summary><p class="text-xs text-slate-500 dark:text-slate-400 mt-2">' + q[1] + '</p></details>'; }).join('') + '</div></div></div>';
 
         var u = (typeof activeUserSession !== 'undefined' && activeUserSession) || {}; SEED = String(u.matricula || 'fnet'); cur = -1;
-        var card = $('cc-card'), t = $('cc-tilt');
+        var card = $('cc-card'), t = $('cc-tilt'), im = container.querySelector('.cc-ph');
+        if (im) { var fb = function () { var dv = document.createElement('div'); dv.className = 'cc-ph'; dv.style.cssText = 'display:grid;place-items:center;font:800 28px Sora,Inter,sans-serif;background:linear-gradient(145deg,#7f1d1d,#dc2626)'; dv.textContent = d.nome.split(' ').slice(0, 2).map(function (x) { return x.charAt(0); }).join('').toUpperCase(); im.replaceWith(dv); }; im.onerror = fb; if (!d.foto || (im.complete && !im.naturalWidth)) fb(); }
         $('cc-flip').onclick = function () { card.classList.toggle('back'); tick(); };
         $('cc-reveal').onclick = function () { privacidade($('cc-reveal').textContent.indexOf('Mostrar') >= 0); };
         if (!reduz()) {
@@ -4364,7 +4378,7 @@ document.addEventListener('keydown', function (ev) {
         container.innerHTML = '<div id="cn-root" class="space-y-6"><div><h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-utensils text-brand-600"></i> Cantina & Trailers</h2>' +
             '<p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Peça antes de chegar e retire sem fila. Alunos têm 10% com a carteirinha.</p></div><div id="cn-order"></div>' +
             '<ol class="grid sm:grid-cols-3 gap-3">' + STEPS.map(function (s, i) { return '<li class="apple-card rounded-2xl p-4 flex gap-3"><div class="w-9 h-9 flex-none rounded-xl bg-brand-500/10 text-brand-600 flex items-center justify-center"><i class="fa-solid ' + s[0] + '"></i></div><div><p class="text-[12px] font-bold text-brand-600">PASSO ' + (i + 1) + '</p><h4 class="text-[13px] font-bold text-slate-900 dark:text-white">' + s[1] + '</h4><p class="text-xs text-slate-500 dark:text-slate-400">' + s[2] + '</p></div></li>'; }).join('') + '</ol>' +
-            '<div class="grid lg:grid-cols-12 gap-6 items-start"><div class="lg:col-span-8 space-y-6"><div class="apple-card rounded-[28px] p-4 sm:p-6"><div class="grid md:grid-cols-2 gap-4"><div class="cc-map rounded-2xl overflow-hidden border border-black/5 dark:border-white/10">' + mapa() + '</div><div id="cn-stores" class="space-y-1"></div></div></div>' +
+            '<div class="grid lg:grid-cols-12 gap-6 items-start"><div class="lg:col-span-8 space-y-6"><div class="apple-card rounded-[28px] p-4 sm:p-6"><div class="grid md:grid-cols-2 gap-4 items-start"><div class="cc-map rounded-2xl overflow-hidden border border-black/5 dark:border-white/10">' + mapa() + '</div><div id="cn-stores" class="space-y-1"></div></div></div>' +
             '<div id="cn-menu" class="apple-card rounded-[28px] p-4 sm:p-6"></div></div><div id="cn-cart" class="lg:col-span-4 apple-card rounded-[28px] p-5 lg:sticky lg:top-24"></div></div></div>';
         $('cn-stores').addEventListener('click', function (e) { var b = e.target.closest('[data-s]'); if (b) { sel = +b.dataset.s; pintarLojas(); pintarMenu(); pintarCarrinho(); } });
         $('cn-svg').addEventListener('click', function (e) { var g = e.target.closest('.cc-pin'); if (g) { sel = +g.dataset.pin; pintarLojas(); pintarMenu(); pintarCarrinho(); } });
@@ -4542,7 +4556,9 @@ document.addEventListener("keydown", function (e) { if (e.key === "Escape") docu
         { id: 'tema', t: 'Como mudo o tema ou a fonte?', k: ['tema', 'escuro', 'claro', 'acessibilidade', 'fonte', 'dislexia', 'contraste', 'letra'], a: 'O ícone de ' + B('sol/lua') + ' no topo troca entre tema claro e escuro. Em acessibilidade você ativa fonte para dislexia, alto contraste, mais espaçamento e reduzir movimento.', rel: ['atalho'] },
         { id: 'atalho', t: 'Existe algum atalho de teclado?', k: ['atalho', 'ctrl', 'teclado', 'paleta', 'comando', 'buscar'], a: 'Aperte ' + B('Ctrl + K') + ' (⌘ + K no Mac) para abrir a busca e ir direto a qualquer página, sem usar o mouse.', rel: ['media'] },
         { id: 'guia', t: 'Onde está o guia do portal?', k: ['guia', 'manual', 'tutorial', 'como funciona', 'como usar', 'primeiros passos', 'passo a passo'], a: 'O ' + B('Guia do Aluno') + ' explica cada parte do portal, passo a passo. Você pode ler na tela ou ' + B('baixar em PDF') + '.', go: ['guia', 'Abrir Guia do Aluno'], rel: ['atalho', 'carteirinha'] },
-        { id: 'breve', t: 'O que vem por aí?', k: ['simulado', 'vestibular', 'esporte', 'time', 'futebol', 'natacao', 'jornal', 'horas complementares', 'estagio'], a: 'Simulados, vestibulares internos, times esportivos e o jornal da FNET estão ' + B('em desenvolvimento') + '. Ainda não estão disponíveis no portal.', rel: ['cantina'] },
+        { id: 'esportes', t: 'Como entro num time esportivo?', k: ['esporte', 'time', 'futebol', 'futsal', 'volei', 'basquete', 'natacao', 'atletismo', 'treino', 'uniforme', 'horas complementares', 'quadra', 'piscina', 'atletica'], a: function () { var d = lerLS('fnet_esportes'), n = Math.min(40, ((d && d.p) || []).length * 2); return 'Em ' + B('Esportes & Atléticas') + ' você entra em um dos 6 times (futebol, futsal, vôlei, basquete, natação e atletismo). Cada treino com presença vale ' + B('2 horas complementares') + ' (até 40h) e 15 XP.' + (n ? ' Você já soma ' + B(n + 'h') + '.' : ''); }, go: ['esportes', 'Abrir Esportes'], rel: ['xp', 'carteirinha'] },
+        { id: 'jornal', t: 'Como escrevo no Jornal FNET?', k: ['jornal', 'noticia', 'materia', 'reporter', 'redacao', 'publicar', 'estagio', 'extensao', 'enquete'], a: function () { var d = lerLS('fnet_jornal'), n = ((d && d.env) || []).filter(function (e) { return e.est === 'publicada'; }).length; return 'No ' + B('Jornal FNET') + ' você lê as notícias do campus e, em ' + B('Seja repórter') + ', envia a sua matéria (mínimo 150 caracteres). Publicada, ela rende ' + B('50 XP') + '.' + (n ? ' Você já tem ' + B(n + (n === 1 ? ' matéria publicada' : ' matérias publicadas')) + '.' : '') + ' Se conta como extensão, horas complementares ou estágio, quem define é a coordenação.'; }, go: ['jornal', 'Abrir Jornal'], rel: ['xp', 'esportes'] },
+        { id: 'breve', t: 'O que vem por aí?', k: ['simulado', 'vestibular'], a: 'Simulados e vestibulares internos estão ' + B('em desenvolvimento') + '. Ainda não estão disponíveis no portal.', rel: ['cantina'] },
         { id: 'atendente', t: 'Quero falar com um atendente', k: ['atendente', 'humano', 'pessoa', 'falar com', 'reclama', 'ouvidoria', 'ajuda', 'suporte', 'problema'], a: 'Claro! Posso abrir um atendimento com a equipe do SAC. Você recebe o protocolo no Webmail.', act: 'ticket', rel: [] },
         { id: 'obrigado', t: 'Obrigado!', k: ['obrigad', 'valeu', 'brigad', 'show$', 'top$'], a: 'De nada! Se precisar de mais alguma coisa, é só chamar. 😊', rel: [] }
     ];
@@ -4639,16 +4655,22 @@ document.addEventListener("keydown", function (e) { if (e.key === "Escape") docu
         { id: 'aluguel', ic: 'fa-book', t: 'Aluguel de livros físicos', v: 'aluguel', r: 'Pegue livros da biblioteca de graça com a carteirinha. Só há custo se houver dano.',
             p: ['Abra Aluguel de Livros e reserve um título (ele fica separado por 24 horas).', 'Retire na biblioteca mostrando a carteirinha e o código da reserva.', 'Leia por até 7 dias; renove uma vez, se precisar.', 'Na devolução, faça o checklist: capa, páginas, marcas e umidade.', 'Sem problemas: devolução sem custo. Com problema: a biblioteca avalia e responde pelo Webmail.'],
             d: ['Você pode ter até 3 livros ao mesmo tempo.', 'Os valores em caso de dano seguem a política da biblioteca.'] },
+        { id: 'esportes', ic: 'fa-medal', t: 'Esportes e atléticas', v: 'esportes', r: 'Entre num time da FNET, registre presença nos treinos e some horas complementares e XP.',
+            p: ['Abra Esportes & Atléticas (menu Campus) e escolha um dos 6 times.', 'Clique em Entrar no time para se inscrever.', 'Registre presença em cada treino: ele vale 2 horas complementares (até 40 h no semestre).', 'Veja no mapa onde ficam o campo, o ginásio, a piscina e a pista.', 'Marque Vou torcer nos próximos jogos e peça seu uniforme oficial com 10% da carteirinha.'],
+            d: ['Você ganha 15 XP por treino (1 por dia) e 25 XP ao entrar num time.', 'A coordenação valida as horas complementares.'] },
+        { id: 'jornal', ic: 'fa-newspaper', t: 'Jornal FNET', v: 'jornal', r: 'Notícias do campus feitas por estudantes. Leia, participe da enquete e escreva a sua matéria.',
+            p: ['Abra o Jornal FNET (menu Campus) e escolha uma editoria: Campus, Esportes, Cultura, Carreira ou Entretenimento.', 'Clique em uma matéria para ler; você pode curtir e copiar o link.', 'Vote na enquete do dia e veja o resultado.', 'Em Seja repórter, escreva título e texto (mínimo 150 caracteres) e envie à redação.', 'Acompanhe o status: Enviada, Em revisão, Publicada. Matérias publicadas aparecem no topo do jornal.'],
+            d: ['Ler matérias rende XP (até 3 por dia) e publicar rende 50 XP.', 'A coordenação define se a atividade conta como extensão, horas complementares ou estágio.'] },
         { id: 'sac', ic: 'fa-headset', t: 'Assistente FNET (SAC)', v: 'dashboard', r: 'O botão vermelho no canto da tela abre o assistente, que responde dúvidas sobre o portal.',
             p: ['Clique no botão do assistente no canto inferior direito.', 'Escreva sua dúvida ou toque em uma sugestão.', 'Use os botões das respostas para ir direto à página certa.', 'Se ele não souber, escolha Abrir atendimento: você recebe um protocolo no Webmail.'],
             d: ['Pergunte, por exemplo: "qual a minha média?" ou "como está meu pedido?".', 'Ele responde com base no portal e nos seus dados.'] },
         { id: 'breve', ic: 'fa-rocket', t: 'Em breve', v: null, r: 'Estas novidades estão em desenvolvimento e ainda não estão disponíveis.',
-            p: ['Simulados e vestibulares internos.', 'Times esportivos, horas complementares e quadras com mapa.', 'Jornal da FNET.'],
+            p: ['Simulados e vestibulares internos.'],
             d: ['Acompanhe os avisos pelo Webmail.'] }
     ];
     var norm = function (s) { return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); };
     var texto = function (g) { return norm([g.t, g.r].concat(g.p, g.d).join(' ')); };
-    var DESTINO = { dashboard: 'Início', notas: 'Notas', webmail: 'Webmail', salas: 'Salas', biblioteca: 'Biblioteca', gamificacao: 'Prêmios', campus: 'Carteirinha', cantina: 'Cantina', aluguel: 'Aluguel' };
+    var DESTINO = { dashboard: 'Início', notas: 'Notas', webmail: 'Webmail', salas: 'Salas', biblioteca: 'Biblioteca', gamificacao: 'Prêmios', campus: 'Carteirinha', cantina: 'Cantina', aluguel: 'Aluguel', esportes: 'Esportes', jornal: 'Jornal' };
 
     /* ---------- PDF ---------- */
     function carregar() { return new Promise(function (ok, no) { if (window.jspdf) return ok(); var s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'; s.onload = ok; s.onerror = no; document.head.appendChild(s); }); }
@@ -4656,7 +4678,7 @@ document.addEventListener("keydown", function (e) { if (e.key === "Escape") docu
         var d = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' }), M = 18, W = 174, y = 0, pg = {}, hoje = new Date().toLocaleDateString('pt-BR');
         d.setFillColor(20, 8, 9); d.rect(0, 0, 210, 297, 'F'); d.setFillColor(220, 38, 38); d.rect(0, 0, 210, 12, 'F'); d.rect(M, 110, 28, 2.2, 'F');
         d.setTextColor(255, 255, 255); d.setFont('helvetica', 'bold'); d.setFontSize(40); d.text('Guia do Aluno', M, 135); d.setFont('helvetica', 'normal'); d.setFontSize(16); d.text('Portal FNET', M, 147);
-        d.setFontSize(11); d.setTextColor(180, 180, 190); d.text(d.splitTextToSize('Como usar cada parte do portal, passo a passo: notas, Webmail, salas, biblioteca, prêmios, carteirinha, cantina e aluguel de livros.', 140), M, 162); d.text('Edição de ' + hoje, M, 270);
+        d.setFontSize(11); d.setTextColor(180, 180, 190); d.text(d.splitTextToSize('Como usar cada parte do portal, passo a passo: notas, Webmail, salas, biblioteca, prêmios, carteirinha, cantina, aluguel de livros, esportes e jornal.', 140), M, 162); d.text('Edição de ' + hoje, M, 270);
         d.addPage(); d.setTextColor(30, 41, 59); d.setFont('helvetica', 'bold'); d.setFontSize(22); d.text('Sumário', M, 30);
         G.forEach(function (g, i) { var yy = 46 + i * 11; d.setFont('helvetica', 'bold'); d.setFontSize(11); d.setTextColor(220, 38, 38); d.text(String(i + 1).padStart(2, '0'), M, yy); d.setFont('helvetica', 'normal'); d.setTextColor(30, 41, 59); d.text(g.t, M + 12, yy); });
         d.addPage(); y = 28;
@@ -4710,6 +4732,330 @@ document.addEventListener("keydown", function (e) { if (e.key === "Escape") docu
         $('gd-list').addEventListener('click', function (e) { var b = e.target.closest('[data-go]'); if (b) navigate(b.dataset.go); });
     };
     window.__gd = { G: G, montar: montar };
+})();
+
+</script>
+<script>
+/* V16: Esportes & Atléticas (times, treinos = horas complementares + XP, locais no mapa, jogos, uniformes) */
+(function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var R = function (v) { return 'R$ ' + Number(v).toFixed(2).replace('.', ','); };
+    var K = 'fnet_esportes', LIM = 40, HT = 2, XPT = 15, DAY = 864e5;
+    var L = [
+        { id: 1, n: 'Campo de Futebol', x: 135, y: 100, h: 'Todos os dias, 6h às 22h', d: 'Gramado com iluminação para treinos noturnos e arquibancada.' },
+        { id: 2, n: 'Ginásio Poliesportivo', x: 340, y: 98, h: 'Seg a Sáb, 7h às 22h', d: '3 quadras cobertas: futsal, vôlei e basquete, com vestiários.' },
+        { id: 3, n: 'Piscina Olímpica', x: 495, y: 100, h: 'Seg a Sex, 6h às 21h', d: '8 raias de 50 m, vestiários e armários.' },
+        { id: 4, n: 'Pista de Atletismo', x: 300, y: 250, h: 'Todos os dias, 6h às 20h', d: 'Pista de 400 m com 6 raias e caixa de salto.' }
+    ];
+    var T = [
+        { id: 1, n: 'Falcões FC', m: 'Futebol', ic: 'fa-futbol', loc: 1, dias: 'Ter e Qui, 19h às 21h', tec: 'Rodrigo Alves', v: 6, art: 'campo' },
+        { id: 2, n: 'Raposas', m: 'Futsal', ic: 'fa-futbol', loc: 2, dias: 'Seg e Qua, 18h às 20h', tec: 'Camila Duarte', v: 4, art: 'futsal' },
+        { id: 3, n: 'Tempestade', m: 'Vôlei', ic: 'fa-volleyball', loc: 2, dias: 'Ter e Qui, 18h às 20h', tec: 'Marcos Lima', v: 3, art: 'volei' },
+        { id: 4, n: 'Titãs', m: 'Basquete', ic: 'fa-basketball', loc: 2, dias: 'Seg e Sex, 19h às 21h', tec: 'Paula Nogueira', v: 5, art: 'basquete' },
+        { id: 5, n: 'Tubarões', m: 'Natação', ic: 'fa-person-swimming', loc: 3, dias: 'Qua e Sex, 7h às 9h', tec: 'Felipe Rocha', v: 8, art: 'natacao' },
+        { id: 6, n: 'Velocistas', m: 'Atletismo', ic: 'fa-person-running', loc: 4, dias: 'Ter, Qui e Sáb, 7h às 9h', tec: 'Juliana Prado', v: 10, art: 'atletismo' }
+    ];
+    var J = [{ id: 1, t: 1, adv: 'Univ. Vale Azul', off: 3, h: '20:00', loc: 1 }, { id: 2, t: 3, adv: 'Faculdade Serra Alta', off: 6, h: '19:00', loc: 2 }, { id: 3, t: 4, adv: 'Centro Univ. Litoral', off: 10, h: '20:30', loc: 2 }, { id: 4, t: 5, adv: 'Interclasses Regional', off: 14, h: '09:00', loc: 3 }];
+    var U = [{ id: 1, n: 'Camisa de jogo', d: 'Dry-fit com escudo e nome do time', p: 89.9, c: ['#7f1d1d', '#dc2626'] }, { id: 2, n: 'Camisa torcedor', d: 'Algodão com escudo bordado', p: 59.9, c: ['#78350f', '#f59e0b'] }, { id: 3, n: 'Agasalho oficial', d: 'Moletom com capuz e zíper', p: 139.9, c: ['#1e293b', '#64748b'] }];
+    var sel = 1;
+
+    function usr() { return (typeof activeUserSession !== 'undefined' && activeUserSession) || {}; }
+    function chave() { return (usr().email || '').toLowerCase(); }
+    function st() { try { var s = JSON.parse(localStorage.getItem(K) || '{}')[chave()] || {}; s.t = s.t || {}; s.p = s.p || []; s.j = s.j || {}; s.x = s.x || {}; s.u = s.u || []; return s; } catch (e) { return { t: {}, p: [], j: {}, x: {}, u: [] }; } }
+    function put(s) { try { var b = JSON.parse(localStorage.getItem(K) || '{}'); b[chave()] = s; localStorage.setItem(K, JSON.stringify(b)); } catch (e) { } }
+    function hoje() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+    function horas(s) { return Math.min(LIM, s.p.length * HT); }
+    function xp(q, m, k) { if (typeof adicionarXP === 'function') { if (k && typeof GX !== 'undefined') GX.CAPS[k] = 1; adicionarXP(q, m, k); } }
+    function mail(assunto, desc, corpo) {
+        var m = { id: Date.now(), de: 'Atlética FNET', emailDe: 'atletica@fnet.edu.br', assunto: assunto, data: new Date().toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }), desc: desc, conteudo: corpo };
+        try { var b = JSON.parse(localStorage.getItem('fnet_mailboxes') || '{}'), k = chave(); (b[k] = b[k] || []).unshift(m); localStorage.setItem('fnet_mailboxes', JSON.stringify(b)); } catch (e) { }
+        if (typeof stateEmails !== 'undefined') stateEmails.unshift(m);
+        var dot = $('webmail-notif-dot'); if (dot) dot.style.display = '';
+    }
+    function time(id) { return T.filter(function (t) { return t.id === id; })[0]; }
+
+    function entrar(id) { var s = st(), t = time(id); if (s.t[id]) return false; s.t[id] = { desde: Date.now() }; var novo = !s.x['t' + id]; s.x['t' + id] = 1; put(s); showToast('Você entrou no time ' + t.n + '!');
+        if (novo) xp(25, 'Bem-vindo ao ' + t.n + '!'); mail('Inscrição confirmada - ' + t.n, 'Treinos: ' + t.dias + '.', ['Você agora faz parte do ' + t.n + ' (' + t.m + ')!', '', 'Treinos: ' + t.dias, 'Local: ' + L[t.loc - 1].n, 'Técnico(a): ' + t.tec, '', 'Cada treino com presença vale ' + HT + ' horas complementares (até ' + LIM + 'h no semestre) e ' + XPT + ' XP.'].join('\n')); return true; }
+    function sair(id) { var s = st(); delete s.t[id]; put(s); showToast('Você saiu do time. Suas horas continuam salvas.'); }
+    function presenca(id) {
+        var s = st(), t = time(id), h = hoje(); if (!s.t[id]) return null;
+        if (s.p.some(function (p) { return p.t === id && p.d === h; })) { showToast('A presença de hoje neste time já foi registrada.'); return null; }
+        s.p.push({ t: id, d: h }); put(s); showToast('Presença registrada! Você soma ' + horas(s) + ' de ' + LIM + ' horas complementares.'); xp(XPT, 'Treino do ' + t.n, 'treino'); return horas(s);
+    }
+    function torcer(id) { var s = st(), j = J.filter(function (x) { return x.id === id; })[0]; s.j[id] = !s.j[id]; var novo = s.j[id] && !s.x['j' + id]; if (s.j[id]) s.x['j' + id] = 1; put(s); if (novo) xp(10, 'Torcida confirmada!'); return s.j[id]; }
+    function pedir(pid, tid, tam) {
+        var s = st(), p = U.filter(function (x) { return x.id === pid; })[0], t = time(tid), d = Math.round(p.p * 10) / 100, o = { id: 'UN' + (1000 + Math.floor(Math.random() * 9000)), prod: p.n, time: t.n, tam: tam, total: p.p - d, t0: Date.now() };
+        s.u.unshift(o); put(s); showToast('Pedido ' + o.id + ' registrado! Pagamento simulado.');
+        mail('Pedido de uniforme ' + o.id, p.n + ' ' + t.n + ' (' + tam + '): ' + R(o.total) + '.', ['Recebemos seu pedido ' + o.id + '.', '', p.n + ' - ' + t.n + ' - tamanho ' + tam, 'Total com 10% da carteirinha: ' + R(o.total), '', 'Retirada na sala da Atlética em cerca de 7 dias. (Demonstração: pagamento simulado.)'].join('\n')); return o;
+    }
+
+    function arte(a) {
+        var f = '<svg viewBox="0 0 300 150" class="w-full h-full block" preserveAspectRatio="xMidYMid slice" aria-hidden="true">', ln = '<g fill="none" stroke="#fff" stroke-width="2" opacity=".85">', i, s = '';
+        if (a === 'campo') { for (i = 0; i < 6; i++) s += '<rect x="' + i * 50 + '" width="25" height="150" fill="#15803d" opacity=".55"/>'; return f + '<rect width="300" height="150" fill="#166534"/>' + s + ln + '<rect x="14" y="14" width="272" height="122"/><path d="M150 14V136"/><circle cx="150" cy="75" r="22"/><rect x="14" y="48" width="36" height="54"/><rect x="250" y="48" width="36" height="54"/></g></svg>'; }
+        if (a === 'futsal') return f + '<rect width="300" height="150" fill="#b45309"/>' + ln + '<rect x="14" y="14" width="272" height="122"/><path d="M150 14V136"/><circle cx="150" cy="75" r="20"/><path d="M14 45a30 30 0 0 1 0 60M286 45a30 30 0 0 0 0 60"/></g></svg>';
+        if (a === 'volei') return f + '<rect width="300" height="150" fill="#0e7490"/>' + ln + '<rect x="14" y="14" width="272" height="122"/><path d="M100 14V136M200 14V136"/><path d="M150 8V142" stroke-width="4" stroke-dasharray="3 3"/></g></svg>';
+        if (a === 'basquete') return f + '<rect width="300" height="150" fill="#c2410c"/>' + ln + '<rect x="14" y="14" width="272" height="122"/><path d="M150 14V136"/><circle cx="150" cy="75" r="20"/><rect x="14" y="50" width="52" height="50"/><rect x="234" y="50" width="52" height="50"/><path d="M66 50a25 25 0 0 1 0 50M234 50a25 25 0 0 0 0 50"/></g></svg>';
+        if (a === 'natacao') { for (i = 1; i < 8; i++) s += '<path d="M10 ' + (14 + i * 15.25).toFixed(1) + 'H290" stroke-dasharray="6 5"/>'; return f + '<rect width="300" height="150" fill="#0369a1"/><rect x="0" y="0" width="300" height="150" fill="#38bdf8" opacity=".15"/>' + ln + '<rect x="10" y="14" width="280" height="122"/>' + s + '</g></svg>'; }
+        for (i = 0; i < 5; i++) s += '<ellipse cx="150" cy="75" rx="' + (130 - i * 8) + '" ry="' + (58 - i * 7) + '" fill="none" stroke="#fff" stroke-width="1.2" opacity=".6"/>';
+        return f + '<rect width="300" height="150" fill="#166534"/><ellipse cx="150" cy="75" rx="130" ry="58" fill="#b91c1c"/>' + s + '<ellipse cx="150" cy="75" rx="92" ry="30" fill="#166534"/></svg>';
+    }
+    function mapa() {
+        var ln = 'fill="none" stroke="#fff" stroke-width="1.5" opacity=".8"';
+        return '<svg id="es-svg" viewBox="0 0 600 340" class="w-full h-auto block" role="group" aria-label="Mapa das instalações esportivas"><rect width="600" height="340" fill="var(--bg)"/><path d="M40 180H570M300 0V340" stroke="var(--st)" stroke-width="12" stroke-linecap="round" fill="none"/>' +
+            '<rect x="60" y="50" width="150" height="100" rx="12" fill="#166534" opacity=".9"/><g ' + ln + '><path d="M135 55V145"/><circle cx="135" cy="100" r="16"/></g><text x="135" y="168" class="cc-lb">Campo</text>' +
+            '<rect x="270" y="55" width="140" height="85" rx="14" fill="var(--st)" stroke="rgba(127,127,127,.3)"/><rect x="278" y="64" width="38" height="66" rx="5" fill="#b45309" opacity=".8"/><rect x="321" y="64" width="38" height="66" rx="5" fill="#0e7490" opacity=".8"/><rect x="364" y="64" width="38" height="66" rx="5" fill="#c2410c" opacity=".8"/><text x="340" y="158" class="cc-lb">Ginásio</text>' +
+            '<rect x="440" y="55" width="110" height="90" rx="12" fill="#0369a1" opacity=".9"/><g ' + ln + ' stroke-dasharray="5 4"><path d="M446 75H544M446 95H544M446 115H544M446 135H544"/></g><text x="495" y="163" class="cc-lb">Piscina</text>' +
+            '<ellipse cx="300" cy="250" rx="130" ry="55" fill="#b91c1c" opacity=".9"/><ellipse cx="300" cy="250" rx="88" ry="28" fill="#166534"/><text x="300" y="325" class="cc-lb">Pista</text>' +
+            L.map(function (l) { return '<g class="cc-pin" data-pin="' + l.id + '" tabindex="0" role="button" aria-label="' + l.n + '" transform="translate(' + l.x + ' ' + l.y + ')"><circle class="ring" r="15"/><g class="p"><circle class="b" r="13"/><text>' + l.id + '</text></g><title>' + l.n + '</title></g>'; }).join('') + '</svg>';
+    }
+    function pintarLocal() {
+        var l = L[sel - 1], el = $('es-det'); document.querySelectorAll('#es-svg .cc-pin').forEach(function (g) { g.classList.toggle('on', +g.dataset.pin === sel); });
+        document.querySelectorAll('#es-locs [data-l]').forEach(function (b) { b.classList.toggle('on', +b.dataset.l === sel); }); if (!el) return;
+        el.innerHTML = '<h4 class="text-sm font-bold text-slate-900 dark:text-white">' + l.n + '</h4><p class="text-xs text-slate-600 dark:text-slate-300 mt-1">' + l.d + '</p><p class="text-xs text-slate-500 dark:text-slate-400 mt-2"><i class="fa-regular fa-clock mr-1.5 text-brand-600"></i>' + l.h + '</p>' +
+            '<div class="flex flex-wrap gap-1.5 mt-3">' + T.filter(function (t) { return t.loc === l.id; }).map(function (t) { return '<span class="cc-off"><i class="fa-solid ' + t.ic + ' mr-1"></i>' + t.m + '</span>'; }).join('') + '</div>';
+    }
+    function pintarTimes() {
+        var s = st(), h = horas(s), el = $('es-times'); if (!el) return;
+        el.innerHTML = T.map(function (t) {
+            var ins = !!s.t[t.id], hoje_ = s.p.some(function (p) { return p.t === t.id && p.d === hoje(); });
+            return '<article class="apple-card rounded-[28px] overflow-hidden flex flex-col"><div class="h-36 relative">' + arte(t.art) + '<span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-black/55 text-white text-[12px] font-semibold backdrop-blur"><i class="fa-solid ' + t.ic + ' mr-1.5"></i>' + t.m + '</span>' +
+                (ins ? '<span class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-emerald-500 text-white text-[12px] font-bold"><i class="fa-solid fa-check mr-1"></i>Inscrito</span>' : '') + '</div>' +
+                '<div class="p-5 flex-1 flex flex-col"><h3 class="text-sm font-bold text-slate-900 dark:text-white">' + t.n + '</h3><p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Técnico(a) ' + t.tec + '</p>' +
+                '<ul class="text-xs text-slate-600 dark:text-slate-300 mt-3 space-y-1"><li><i class="fa-regular fa-calendar text-brand-600 w-4"></i> ' + t.dias + '</li><li><i class="fa-solid fa-location-dot text-brand-600 w-4"></i> <button type="button" data-ver="' + t.loc + '" class="underline decoration-dotted">' + L[t.loc - 1].n + '</button></li><li><i class="fa-solid fa-user-group text-brand-600 w-4"></i> ' + (t.v - (ins ? 1 : 0)) + ' vagas abertas</li></ul>' +
+                '<div class="flex flex-wrap gap-1.5 mt-3"><span class="cc-off">+' + HT + 'h por treino</span><span class="cc-off">+' + XPT + ' XP</span></div><div class="flex gap-2 mt-4 pt-4 mt-auto border-t border-black/5 dark:border-white/10">' +
+                (ins ? '<button type="button" data-pres="' + t.id + '" class="apple-btn flex-1 py-2 rounded-xl text-xs font-semibold ' + (hoje_ ? 'bg-black/5 dark:bg-white/10 text-slate-400' : 'bg-brand-600 hover:bg-brand-700 text-white') + '"' + (hoje_ ? ' disabled' : '') + '><i class="fa-solid fa-clipboard-check mr-1.5"></i>' + (hoje_ ? 'Presença de hoje feita' : 'Registrar presença') + '</button><button type="button" data-sair="' + t.id + '" aria-label="Sair do time ' + t.n + '" class="apple-btn px-3 py-2 rounded-xl text-xs bg-black/5 dark:bg-white/10 text-slate-500"><i class="fa-solid fa-right-from-bracket"></i></button>'
+                    : '<button type="button" data-ent="' + t.id + '" class="apple-btn flex-1 py-2 rounded-xl text-xs font-semibold bg-brand-600 hover:bg-brand-700 text-white">Entrar no time</button>') + '</div></div></article>';
+        }).join('');
+        var b = $('es-hbar'); if (b) b.style.width = (h / LIM * 100) + '%'; var n = $('es-h'); if (n) n.textContent = h + 'h';
+    }
+    function pintarJogos() {
+        var s = st(), el = $('es-jogos'); if (!el) return;
+        el.innerHTML = J.map(function (j) { var t = time(j.t), d = new Date(Date.now() + j.off * DAY).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' }), on = !!s.j[j.id];
+            return '<div class="flex items-center gap-3 p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5"><div class="w-12 flex-none text-center"><p class="text-[12px] uppercase text-slate-500 dark:text-slate-400">' + d.split(',')[0] + '</p><p class="text-sm font-bold text-brand-600">' + d.split(',')[1].trim().slice(0, 5) + '</p></div>' +
+                '<div class="min-w-0 flex-1"><b class="block text-[13px] text-slate-900 dark:text-white truncate">' + t.n + ' x ' + j.adv + '</b><small class="text-[12px] text-slate-500 dark:text-slate-400"><i class="fa-solid ' + t.ic + ' mr-1"></i>' + t.m + ' · ' + j.h + ' · ' + L[j.loc - 1].n + '</small></div>' +
+                '<button type="button" data-jg="' + j.id + '" aria-pressed="' + on + '" class="apple-btn px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap ' + (on ? 'bg-emerald-500 text-white' : 'bg-black/5 dark:bg-white/10 text-slate-900 dark:text-slate-100') + '">' + (on ? '<i class="fa-solid fa-check mr-1"></i>Vou torcer' : 'Vou torcer') + '</button></div>'; }).join('');
+    }
+    function pintarUnif() {
+        var s = st(), el = $('es-unif'); if (!el) return;
+        el.innerHTML = '<div class="grid sm:grid-cols-3 gap-4">' + U.map(function (p) {
+            return '<div class="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 flex flex-col gap-3"><div class="h-24 rounded-xl flex items-center justify-center text-white text-3xl" style="background:linear-gradient(145deg,' + p.c[0] + ',' + p.c[1] + ')"><i class="fa-solid fa-shirt"></i></div>' +
+                '<div><b class="block text-[13px] text-slate-900 dark:text-white">' + p.n + '</b><p class="text-[12px] text-slate-500 dark:text-slate-400">' + p.d + '</p><p class="text-sm font-bold text-slate-900 dark:text-white mt-1">' + R(p.p) + ' <span class="text-[12px] font-semibold text-amber-500">' + R(p.p * .9) + ' com carteirinha</span></p></div>' +
+                '<select aria-label="Time" data-time="' + p.id + '" class="w-full px-2 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-xs text-slate-900 dark:text-white outline-none">' + T.map(function (t) { return '<option value="' + t.id + '">' + t.n + ' (' + t.m + ')</option>'; }).join('') + '</select>' +
+                '<div class="flex gap-1.5" role="radiogroup" aria-label="Tamanho">' + ['P', 'M', 'G', 'GG'].map(function (z, i) { return '<label class="flex-1"><input type="radio" name="tam' + p.id + '" value="' + z + '" class="peer sr-only"' + (i === 1 ? ' checked' : '') + '><span class="block text-center py-1.5 rounded-lg text-xs font-semibold cursor-pointer border border-black/10 dark:border-white/10 text-slate-500 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:border-brand-600 peer-focus-visible:ring-2 peer-focus-visible:ring-amber-500">' + z + '</span></label>'; }).join('') + '</div>' +
+                '<button type="button" data-ped="' + p.id + '" class="apple-btn w-full py-2 rounded-xl text-xs font-semibold bg-brand-600 hover:bg-brand-700 text-white">Pedir</button></div>'; }).join('') + '</div>' +
+            (s.u.length ? '<div class="mt-4 pt-3 border-t border-black/5 dark:border-white/10 space-y-1"><p class="text-[12px] uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400 mb-1">Meus pedidos</p>' + s.u.slice(0, 3).map(function (o) { return '<p class="text-xs text-slate-500 dark:text-slate-400">' + o.id + ' · ' + o.prod + ' · ' + o.time + ' · ' + o.tam + ' · ' + R(o.total) + ' · retirar na Atlética em ~7 dias</p>'; }).join('') + '</div>' : '');
+    }
+
+    window.renderEsportes = function (c) {
+        var STEPS = [['fa-people-group', 'Entre num time', 'Escolha a modalidade e veja treinos, local e técnico.'], ['fa-clipboard-check', 'Registre presença', 'Em cada treino: ' + HT + 'h complementares e ' + XPT + ' XP (1 treino por dia conta XP).'], ['fa-medal', 'Acompanhe sua meta', 'Até ' + LIM + 'h no semestre. A coordenação valida as horas.']];
+        c.innerHTML = '<div id="es-root" class="space-y-6"><div class="flex flex-wrap items-end justify-between gap-4"><div><h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-medal text-brand-600"></i> Esportes & Atléticas</h2>' +
+            '<p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Treine, represente a FNET e some horas complementares e XP.</p></div>' +
+            '<div class="apple-card rounded-2xl px-4 py-3 min-w-[240px]"><div class="flex justify-between text-xs mb-1.5"><span class="font-semibold text-slate-900 dark:text-white">Horas complementares</span><span class="font-bold text-brand-600"><span id="es-h">0h</span> / ' + LIM + 'h</span></div><div class="h-1.5 w-full bg-black/5 dark:bg-white/10 rounded-full overflow-hidden"><div id="es-hbar" class="h-full rounded-full bg-gradient-to-r from-brand-600 to-amber-500" style="width:0%"></div></div></div></div>' +
+            '<ol class="grid sm:grid-cols-3 gap-3">' + STEPS.map(function (s, i) { return '<li class="apple-card rounded-2xl p-4 flex gap-3"><div class="w-9 h-9 flex-none rounded-xl bg-brand-500/10 text-brand-600 flex items-center justify-center"><i class="fa-solid ' + s[0] + '"></i></div><div><p class="text-[12px] font-bold text-brand-600">PASSO ' + (i + 1) + '</p><h4 class="text-[13px] font-bold text-slate-900 dark:text-white">' + s[1] + '</h4><p class="text-xs text-slate-500 dark:text-slate-400">' + s[2] + '</p></div></li>'; }).join('') + '</ol>' +
+            '<div id="es-times" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-5"></div>' +
+            '<div id="es-mapa" class="apple-card rounded-[28px] p-4 sm:p-6"><h3 class="text-sm font-bold text-slate-900 dark:text-white mb-4"><i class="fa-solid fa-map-location-dot text-brand-600 mr-2"></i>Onde treinar</h3><div class="grid lg:grid-cols-12 gap-4"><div class="lg:col-span-7"><div class="cc-map rounded-2xl overflow-hidden border border-black/5 dark:border-white/10">' + mapa() + '</div></div>' +
+            '<div class="lg:col-span-5"><div id="es-locs" class="space-y-1 mb-3">' + L.map(function (l) { return '<button type="button" data-l="' + l.id + '" class="cc-item"><span class="cc-num">' + l.id + '</span><span class="text-[13px] font-semibold text-slate-900 dark:text-white">' + l.n + '</span></button>'; }).join('') + '</div><div id="es-det" class="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5"></div></div></div></div>' +
+            '<div class="grid lg:grid-cols-12 gap-6 items-start"><div class="lg:col-span-5 apple-card rounded-[28px] p-5"><h3 class="text-sm font-bold text-slate-900 dark:text-white mb-3"><i class="fa-solid fa-calendar-days text-brand-600 mr-2"></i>Próximos jogos</h3><div id="es-jogos" class="space-y-2"></div></div>' +
+            '<div class="lg:col-span-7 apple-card rounded-[28px] p-5"><h3 class="text-sm font-bold text-slate-900 dark:text-white mb-3"><i class="fa-solid fa-shirt text-brand-600 mr-2"></i>Uniformes oficiais</h3><div id="es-unif"></div></div></div>' +
+            '<p class="text-[12px] text-slate-500 dark:text-slate-400"><i class="fa-solid fa-circle-info text-brand-600 mr-1.5"></i>Times, horários e jogos desta página são fictícios. A presença é registrada por você nesta demonstração; na prática o técnico confirma.</p></div>';
+        $('es-times').addEventListener('click', function (e) { var a = e.target.closest('[data-ent]'), p = e.target.closest('[data-pres]'), s = e.target.closest('[data-sair]'), v = e.target.closest('[data-ver]');
+            if (a) entrar(+a.dataset.ent); else if (p) presenca(+p.dataset.pres); else if (s) sair(+s.dataset.sair);
+            else if (v) { sel = +v.dataset.ver; pintarLocal(); var m = $('es-mapa'); if (m && m.scrollIntoView) m.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; } else return; pintarTimes(); });
+        $('es-jogos').addEventListener('click', function (e) { var b = e.target.closest('[data-jg]'); if (b) { torcer(+b.dataset.jg); pintarJogos(); } });
+        $('es-unif').addEventListener('click', function (e) { var b = e.target.closest('[data-ped]'); if (!b) return; var pid = +b.dataset.ped, root = $('es-unif'), tm = root.querySelector('select[data-time="' + pid + '"]'), z = root.querySelector('input[name="tam' + pid + '"]:checked'); pedir(pid, +tm.value, z ? z.value : 'M'); pintarUnif(); });
+        $('es-locs').addEventListener('click', function (e) { var b = e.target.closest('[data-l]'); if (b) { sel = +b.dataset.l; pintarLocal(); } });
+        $('es-svg').addEventListener('click', function (e) { var g = e.target.closest('.cc-pin'); if (g) { sel = +g.dataset.pin; pintarLocal(); } });
+        $('es-svg').addEventListener('keydown', function (e) { var g = e.target.closest && e.target.closest('.cc-pin'); if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); sel = +g.dataset.pin; pintarLocal(); } });
+        pintarTimes(); pintarLocal(); pintarJogos(); pintarUnif();
+    };
+    window.__es = { entrar: entrar, sair: sair, presenca: presenca, torcer: torcer, pedir: pedir, st: st, horas: horas, T: T };
+})();
+
+</script>
+<script>
+/* V17: atalhos do Campus no Início */
+(function () {
+    var _rd = window.renderDashboard; if (typeof _rd !== 'function') return;
+    var A = [['campus', 'fa-id-card', 'Carteirinha', 'Descontos e identidade', 'aluno'], ['cantina', 'fa-utensils', 'Cantina', 'Peça antes de chegar', 'todos'], ['aluguel', 'fa-book-bookmark', 'Aluguel de livros', 'Grátis com a carteirinha', 'aluno'], ['esportes', 'fa-medal', 'Esportes', 'Times, horas e XP', 'aluno'], ['jornal', 'fa-newspaper', 'Jornal FNET', 'Notícias e seja repórter', 'todos'], ['guia', 'fa-circle-question', 'Guia do Aluno', 'Passo a passo + PDF', 'todos']];
+    window.renderDashboard = function (c) {
+        _rd.apply(this, arguments);
+        try {
+            var root = c.firstElementChild || c; if (root.querySelector('#cp-atalhos')) return;
+            var papel = (typeof currentUserRole !== 'undefined' && currentUserRole) || 'aluno';
+            root.insertAdjacentHTML('beforeend', '<section id="cp-atalhos" aria-label="Atalhos do Campus" style="margin-top:1.5rem"><div class="flex items-center justify-between mb-3"><h3 class="text-sm font-bold text-slate-900 dark:text-white"><i class="fa-solid fa-compass text-brand-600 mr-2"></i>Campus FNET</h3><span class="text-[12px] text-slate-500 dark:text-slate-400">Tudo o que você usa no dia a dia</span></div><div class="grid grid-cols-2 lg:grid-cols-6 gap-3">' +
+                A.filter(function (a) { return a[4] === 'todos' || a[4] === papel; }).map(function (a) { return '<button type="button" data-cp="' + a[0] + '" class="apple-card cp-card rounded-2xl p-4 flex flex-col gap-3 text-left"><span class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-600 to-amber-500 text-white flex items-center justify-center"><i class="fa-solid ' + a[1] + '"></i></span><span><b class="block text-[13px] text-slate-900 dark:text-white">' + a[2] + '</b><small class="text-[12px] text-slate-500 dark:text-slate-400">' + a[3] + '</small></span></button>'; }).join('') + '</div></section>');
+            root.querySelector('#cp-atalhos').onclick = function (e) { var b = e.target.closest('[data-cp]'); if (b) navigate(b.dataset.cp); };
+        } catch (e) { }
+    };
+})();
+
+</script>
+<script>
+/* V18: Jornal FNET (matérias, enquete, "Seja repórter" com publicação, XP e aviso no Webmail) */
+(function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var esc = function (t) { return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+    var K = 'fnet_jornal', DAY = 864e5, META = 10;
+    var CATS = ['Todas', 'Campus', 'Esportes', 'Cultura', 'Carreira', 'Entretenimento'];
+    var COV = { Campus: 'fachada', Esportes: 'time', Cultura: 'palco', Carreira: 'feira', Entretenimento: 'biblioteca' };
+    var CORC = { Campus: '#dc2626', Esportes: '#16a34a', Cultura: '#9333ea', Carreira: '#0284c7', Entretenimento: '#d97706' };
+    var A = [
+        { id: 1, c: 'Esportes', cv: 'time', t: 'Falcões FC vence o clássico universitário e avança às semifinais', sub: 'Gol nos acréscimos garante a vitória por 2 a 1 diante de mais de 800 torcedores.', a: 'Redação FNET', m: 3, d: 0, v: 1240, p: ['Com o Campo de Futebol lotado, o Falcões FC virou o jogo no segundo tempo e confirmou a vaga na semifinal do torneio regional. O gol da vitória saiu aos 47 minutos.', 'O técnico Rodrigo Alves destacou a entrega do elenco e a torcida organizada. A próxima partida será no fim de semana, com entrada gratuita para quem apresentar a carteirinha.'] },
+        { id: 2, c: 'Campus', cv: 'formatura', t: 'Formatura 2026.2: 312 alunos recebem o diploma em cerimônia no ginásio', sub: 'Becas vermelhas tomaram o Ginásio Poliesportivo em uma noite de emoção e chapéus ao alto.', a: 'Ana Beatriz Souza', m: 4, d: 1, v: 2210, p: ['A cerimônia reuniu familiares, professores e convidados. A turma de Engenharia de Software foi a maior, com 68 formandos, e a oradora destacou os projetos de extensão que marcaram o curso.', 'Ao fim, a tradição se repetiu: os capelos foram lançados ao ar enquanto a banda dos formandos tocava o hino da FNET.'] },
+        { id: 3, c: 'Campus', cv: 'carteirinha', t: 'Portal FNET ganha carteirinha digital e aluguel de livros sem custo', sub: 'Estudantes terão descontos em parceiros, pedidos na cantina e retirada de livros físicos.', a: 'Redação FNET', m: 3, d: 2, v: 1890, p: ['A carteirinha digital reúne foto, RA e um código que muda a cada 30 segundos. Ela vale em dez parceiros da cidade e dá 10% de desconto na cantina.', 'O aluguel de livros físicos é gratuito por sete dias. A biblioteca só avalia custo em caso de dano ao exemplar.'] },
+        { id: 4, c: 'Carreira', cv: 'feira', t: 'Feira de Estágios reúne 40 empresas e mais de 600 vagas', sub: 'Evento no pátio central oferece workshops de currículo e simulações de entrevista.', a: 'Lucas Ferreira', m: 4, d: 3, v: 980, p: ['Empresas de tecnologia, saúde e indústria ocuparam o pátio central durante todo o dia. Os estudantes puderam deixar o currículo e participar de entrevistas rápidas.', 'Segundo a organização, a próxima edição já tem data e deve ampliar as vagas para os primeiros períodos.'] },
+        { id: 5, c: 'Cultura', cv: 'palco', t: 'Sarau FNET celebra 10 anos com bandas dos cursos de Design e Música', sub: 'Noite de palco aberto terá ingressos solidários e apresentações de calouros e veteranos.', a: 'Marina Costa', m: 2, d: 4, v: 760, p: ['O Sarau chega à décima edição com palco montado ao ar livre e participação de oito bandas formadas dentro do campus.', 'Quem levar um alimento não perecível ganha entrada e concorre a um kit com a camisa oficial da FNET.'] },
+        { id: 6, c: 'Entretenimento', cv: 'biblioteca', t: 'Os 5 melhores lugares para estudar no campus, segundo veteranos', sub: 'De cantinhos silenciosos a mesas com tomada: o guia de quem já sobreviveu às provas.', a: 'Pedro Almeida', m: 3, d: 5, v: 1530, p: ['A Biblioteca lidera a lista, seguida pelo piso superior do Bloco B e pelas salas de estudo reservadas pelo portal. A dica é chegar cedo para garantir a mesa perto da janela.', 'Entre as surpresas está a Praça de Convivência, que rendeu elogios pelo wi-fi e pelo açaí do trailer vizinho.'] },
+        { id: 7, c: 'Esportes', cv: 'natacao', t: 'Tubarões da natação batem recorde em torneio regional', sub: 'Equipe feminina baixa a marca dos 200 m livre e conquista três medalhas de ouro.', a: 'Redação FNET', m: 2, d: 6, v: 640, p: ['A equipe de natação da FNET fez história no torneio regional. A marca anterior estava de pé havia seis anos.', 'Os treinos continuam às quartas e sextas, às 7h, na Piscina Olímpica, e ainda há vagas para novos atletas.'] },
+        { id: 8, c: 'Campus', cv: 'fachada', t: 'Nova cantina e trailers abrem com preços de aluno e retirada sem fila', sub: 'Pedidos feitos pelo portal ficam prontos antes da chegada e rendem aviso por e-mail.', a: 'Ana Beatriz Souza', m: 3, d: 7, v: 1120, p: ['Cinco pontos de venda passam a atender dentro do campus, da cantina central ao trailer de açaí ao lado da quadra.', 'Alunos têm 10% de desconto automático com a carteirinha, e o pedido pode ser feito com antecedência.'] }
+    ];
+    var ENQ = { q: 'Qual espaço do campus você mais usa?', o: [['Biblioteca', 182], ['Cantina e trailers', 141], ['Quadras e ginásio', 96], ['Salas de estudo', 121]] };
+    var AG = [['Sarau FNET', 'Cultura', 2], ['Palestra: Carreira em Tecnologia', 'Carreira', 5], ['Torneio Interclasses', 'Esportes', 9]];
+    var PELE = ['#f1c27d', '#e0ac69', '#c68642', '#8d5524', '#ffdbac'], CAB = ['#1f1f1f', '#3b2314', '#6b3e26', '#c9a227'];
+
+    function usr() { return (typeof activeUserSession !== 'undefined' && activeUserSession) || {}; }
+    function chave() { return (usr().email || '').toLowerCase(); }
+    function st() { try { var s = JSON.parse(localStorage.getItem(K) || '{}')[chave()] || {}; s.lk = s.lk || {}; s.rd = s.rd || {}; s.env = s.env || []; return s; } catch (e) { return { lk: {}, rd: {}, env: [] }; } }
+    function put(s) { try { var b = JSON.parse(localStorage.getItem(K) || '{}'); b[chave()] = s; localStorage.setItem(K, JSON.stringify(b)); } catch (e) { } }
+    function xp(q, m, k, cap) { if (typeof adicionarXP === 'function') { if (k && typeof GX !== 'undefined') GX.CAPS[k] = cap || 1; adicionarXP(q, m, k); } }
+    function mail(assunto, desc, corpo) {
+        var m = { id: Date.now(), de: 'Redação FNET', emailDe: 'jornal@fnet.edu.br', assunto: assunto, data: new Date().toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }), desc: desc, conteudo: corpo };
+        try { var b = JSON.parse(localStorage.getItem('fnet_mailboxes') || '{}'), k = chave(); (b[k] = b[k] || []).unshift(m); localStorage.setItem('fnet_mailboxes', JSON.stringify(b)); } catch (e) { }
+        if (typeof stateEmails !== 'undefined') stateEmails.unshift(m);
+        var dot = $('webmail-notif-dot'); if (dot) dot.style.display = '';
+    }
+    function quando(d) { return d === 0 ? 'hoje' : d === 1 ? 'ontem' : 'há ' + d + ' dias'; }
+
+    /* ---------- ilustrações (originais, com a marca FNET) ---------- */
+    function P(x, y, o) {
+        o = o || {}; var s = '<rect x="' + (x - 10) + '" y="' + (y + 12) + '" width="9" height="22" rx="3" fill="' + (o.l || '#1e293b') + '"/><rect x="' + (x + 1) + '" y="' + (y + 12) + '" width="9" height="22" rx="3" fill="' + (o.l || '#1e293b') + '"/>' +
+            '<rect x="' + (x - 17) + '" y="' + (y - 26) + '" width="34" height="44" rx="13" fill="' + (o.c || '#dc2626') + '"/>';
+        if (o.g) s += '<path d="M' + (x - 7) + ' ' + (y - 26) + 'L' + x + ' ' + (y - 10) + 'L' + (x + 7) + ' ' + (y - 26) + 'z" fill="#fff" opacity=".92"/><rect x="' + (x + 6) + '" y="' + (y - 16) + '" width="5" height="32" rx="2" fill="#f59e0b"/>';
+        s += '<text x="' + x + '" y="' + (y + (o.g ? 8 : -4)) + '" font-size="8" font-weight="800" fill="#fff" text-anchor="middle" font-family="Sora,Inter,sans-serif">FNET</text>' +
+            '<circle cx="' + x + '" cy="' + (y - 40) + '" r="13" fill="' + (o.p || PELE[1]) + '"/><path d="M' + (x - 13) + ' ' + (y - 42) + 'a13 13 0 0 1 26 0z" fill="' + (o.h || CAB[0]) + '"/>';
+        if (o.g) s += '<rect x="' + (x - 18) + '" y="' + (y - 59) + '" width="36" height="5" rx="1" fill="#111827"/><rect x="' + (x - 10) + '" y="' + (y - 55) + '" width="20" height="8" fill="#111827"/><path d="M' + (x + 16) + ' ' + (y - 57) + 'v13" stroke="#f59e0b" stroke-width="2"/>';
+        return s;
+    }
+    function F(txt, x, y, w, sz) { return '<rect x="' + (x - w / 2) + '" y="' + (y - sz) + '" width="' + w + '" height="' + (sz * 1.5) + '" rx="10" fill="#dc2626"/><text x="' + x + '" y="' + (y + sz * .28) + '" font-size="' + (sz * .8) + '" font-weight="800" fill="#fff" text-anchor="middle" font-family="Sora,Inter,sans-serif">' + txt + '</text>'; }
+    function cena(t) {
+        var s = '', i;
+        if (t === 'time') { s = '<rect width="400" height="240" fill="#0f172a"/><rect y="118" width="400" height="122" fill="#14532d"/><circle cx="50" cy="38" r="22" fill="#fef9c3" opacity=".16"/><circle cx="50" cy="38" r="10" fill="#fef9c3"/><circle cx="350" cy="38" r="22" fill="#fef9c3" opacity=".16"/><circle cx="350" cy="38" r="10" fill="#fef9c3"/>' + F('FNET', 200, 62, 170, 24) + '<path d="M0 150H400" stroke="#fff" opacity=".25"/>';
+            [70, 135, 200, 265, 330].forEach(function (x, k) { s += P(x, 178, { p: PELE[k % 5], h: CAB[k % 4], l: '#f8fafc' }); }); s += '<path d="M190 112h20v10a10 10 0 0 1-20 0z" fill="#fbbf24"/><rect x="196" y="130" width="8" height="8" fill="#fbbf24"/>'; }
+        else if (t === 'formatura') { s = '<rect width="400" height="240" fill="#2a0a0c"/>'; for (i = 0; i < 8; i++) s += '<rect x="' + i * 52 + '" width="26" height="240" fill="#7f1d1d" opacity=".55"/>'; s += F('FNET · FORMATURA', 200, 56, 240, 22) + '<rect y="205" width="400" height="35" fill="#450a0a"/>';
+            [[60, 40, 100], [150, 60, 80], [255, 56, 70], [345, 44, 96], [105, 24, 70], [300, 30, 82]].forEach(function (c) { s += '<rect x="' + c[0] + '" y="' + c[2] + '" width="14" height="14" fill="#111827" transform="rotate(' + (c[1] * 2) + ' ' + c[0] + ' ' + c[2] + ')"/>'; });
+            [75, 150, 250, 325].forEach(function (x, k) { s += P(x, 190, { g: 1, c: '#b91c1c', p: PELE[(k + 1) % 5], h: CAB[k % 4] }); }); }
+        else if (t === 'fachada') { s = '<defs><linearGradient id="jg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7dd3fc"/><stop offset="1" stop-color="#fde68a"/></linearGradient></defs><rect width="400" height="240" fill="url(#jg)"/><rect y="205" width="400" height="35" fill="#65a30d"/>' +
+            '<path d="M70 100L200 50L330 100z" fill="#cbd5e1"/><rect x="80" y="100" width="240" height="105" fill="#f1f5f9"/>' + F('FNET', 200, 86, 120, 20) + '<path d="M96 110v95M140 110v95M260 110v95M304 110v95" stroke="#cbd5e1" stroke-width="12"/><rect x="170" y="150" width="60" height="55" rx="4" fill="#7f1d1d"/><rect x="60" y="205" width="280" height="8" fill="#94a3b8"/>' +
+            '<circle cx="34" cy="170" r="26" fill="#16a34a"/><circle cx="372" cy="170" r="26" fill="#15803d"/><rect x="30" y="190" width="8" height="18" fill="#78350f"/><rect x="368" y="190" width="8" height="18" fill="#78350f"/>'; }
+        else if (t === 'feira') { s = '<rect width="400" height="240" fill="#e0f2fe"/><rect y="190" width="400" height="50" fill="#cbd5e1"/>' + F('FEIRA DE ESTÁGIOS', 200, 40, 250, 18);
+            [['#f59e0b', 40], ['#0ea5e9', 150], ['#10b981', 260]].forEach(function (c) { s += '<path d="M' + c[1] + ' 120L' + (c[1] + 50) + ' 80L' + (c[1] + 100) + ' 120z" fill="' + c[0] + '"/><rect x="' + (c[1] + 8) + '" y="120" width="84" height="70" fill="#fff"/><rect x="' + (c[1] + 18) + '" y="132" width="64" height="18" rx="3" fill="' + c[0] + '" opacity=".35"/>'; });
+            s += P(110, 200, { p: PELE[0] }) + P(330, 200, { p: PELE[3], h: CAB[1] }); }
+        else if (t === 'palco') { s = '<rect width="400" height="240" fill="#0b0b10"/><path d="M60 0L20 190H120zM200 0L150 190H250zM340 0L280 190H380z" fill="#fff" opacity=".07"/><rect y="188" width="400" height="52" fill="#1f2937"/>' + F('SARAU FNET', 200, 40, 190, 20) +
+            '<circle cx="200" cy="165" r="22" fill="#dc2626"/><text x="200" y="169" font-size="9" font-weight="800" fill="#fff" text-anchor="middle" font-family="Sora,Inter,sans-serif">FNET</text>' + P(95, 188, { p: PELE[2] }) + P(305, 188, { p: PELE[4], h: CAB[3] }); }
+        else if (t === 'biblioteca') { s = '<rect width="400" height="240" fill="#451a03"/>'; var cs = ['#dc2626', '#f59e0b', '#fbbf24', '#7c2d12', '#b91c1c', '#fde68a']; for (var r = 0; r < 3; r++) { s += '<rect y="' + (30 + r * 52) + '" width="400" height="5" fill="#292524"/>'; for (i = 0; i < 20; i++) s += '<rect x="' + (8 + i * 19.5) + '" y="' + (8 + r * 52 + (i % 3) * 3) + '" width="14" height="' + (22 - (i % 3) * 3) + '" fill="' + cs[(i + r) % 6] + '"/>'; }
+            s += '<rect y="196" width="400" height="44" fill="#78350f"/>' + P(200, 190, { p: PELE[1] }) + '<rect x="238" y="168" width="44" height="26" rx="3" fill="#e2e8f0"/><rect x="226" y="194" width="68" height="4" rx="2" fill="#94a3b8"/>'; }
+        else if (t === 'natacao') { s = '<rect width="400" height="240" fill="#0369a1"/>' + F('FNET NATAÇÃO', 200, 44, 230, 20); for (i = 0; i < 5; i++) s += '<path d="M0 ' + (90 + i * 30) + 'H400" stroke="#fff" stroke-width="2" stroke-dasharray="8 6" opacity=".6"/>';
+            [[90, 105], [200, 135], [300, 165]].forEach(function (c, k) { s += '<circle cx="' + c[0] + '" cy="' + c[1] + '" r="10" fill="' + PELE[k] + '"/><path d="M' + (c[0] - 10) + ' ' + (c[1] - 2) + 'a10 10 0 0 1 20 0z" fill="#dc2626"/><path d="M' + (c[0] + 10) + ' ' + c[1] + 'h28" stroke="' + PELE[k] + '" stroke-width="6" stroke-linecap="round"/>'; }); }
+        else { s = '<rect width="400" height="240" fill="#450a0a"/><rect x="85" y="40" width="230" height="150" rx="16" fill="#dc2626"/><rect x="85" y="40" width="230" height="150" rx="16" fill="#000" opacity=".18"/><circle cx="145" cy="105" r="30" fill="#fde68a"/><circle cx="145" cy="96" r="11" fill="#c68642"/><path d="M122 128a24 22 0 0 1 46 0z" fill="#c68642"/>' +
+            '<text x="190" y="82" font-size="22" font-weight="800" fill="#fff" font-family="Sora,Inter,sans-serif">FNET</text><rect x="190" y="94" width="100" height="6" rx="3" fill="#fff" opacity=".7"/><rect x="190" y="108" width="70" height="6" rx="3" fill="#fff" opacity=".45"/>'; for (i = 0; i < 6; i++) for (var j = 0; j < 3; j++) if ((i * 3 + j) % 2 === 0) s += '<rect x="' + (250 + i * 8) + '" y="' + (130 + j * 8) + '" width="6" height="6" fill="#fff"/>'; s += '<rect x="105" y="150" width="90" height="8" rx="4" fill="#fff" opacity=".5"/>'; }
+        return '<svg viewBox="0 0 400 240" class="w-full h-full block" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' + s + '</svg>';
+    }
+    function capa(a, cls) { return '<div class="jn-cv ' + (cls || '') + '">' + (a.img ? '<img src="' + esc(a.img) + '" alt="" class="w-full h-full object-cover" onerror="this.remove()">' : '') + cena(a.cv) + '<span class="jn-tag">' + (a.img ? 'Foto' : 'Ilustração') + '</span></div>'; }
+
+    /* ---------- dados: feed com matérias publicadas pelo aluno ---------- */
+    function todas() {
+        var s = st(), meus = s.env.filter(function (e) { return e.est === 'publicada'; }).map(function (e) { return { id: e.id, c: e.c, cv: COV[e.c], t: e.t, sub: e.x.slice(0, 110) + (e.x.length > 110 ? '...' : ''), a: usr().nome || 'Você', m: Math.max(1, Math.round(e.x.length / 900)), d: 0, v: 12, p: e.x.split(/\n+/), user: true }; });
+        return meus.concat(A);
+    }
+    function pub(e) {
+        xp(50, 'Sua matéria foi publicada no Jornal!');
+        mail('Sua matéria foi publicada: ' + e.t, 'Parabéns! "' + e.t + '" está no ar.', ['Parabéns, ' + (usr().nome || 'repórter') + '!', '', 'Sua matéria "' + e.t + '" (' + e.c + ') foi aprovada e já está no Jornal FNET.', '', 'Você ganhou 50 XP e 2 horas de extensão (exemplo). Continue escrevendo!', '', 'Redação FNET'].join('\n'));
+        if (typeof showToast === 'function') showToast('Sua matéria foi publicada no Jornal FNET!');
+    }
+    setInterval(function () {                                           /* roda sempre: publica e avisa mesmo fora da página */
+        var s = st(), mud = false;
+        s.env.forEach(function (e) { var el = (Date.now() - e.t0) / 1000, est = el < 6 ? 'enviada' : (el < 16 ? 'revisao' : 'publicada'); if (est !== e.est) { e.est = est; mud = true; if (est === 'publicada' && !e.notif) { e.notif = true; pub(e); } } });
+        if (mud) { put(s); if ($('jn-root')) { pintarMinhas(); pintarFeed(); } }
+    }, 1500);
+
+    var cat = 'Todas';
+    function card(a, big) {
+        return '<article><button type="button" data-ler="' + a.id + '" class="jn-art group text-left w-full ' + (big ? 'jn-big' : '') + '">' + capa(a, big ? 'jn-cv-big' : 'jn-cv-sm') + '<div class="p-1 pt-3"><span class="jn-cat" style="color:' + CORC[a.c] + '">' + a.c.toUpperCase() + (a.user ? ' · POR VOCÊ' : '') + '</span>' +
+            '<h3 class="jn-h ' + (big ? 'text-2xl sm:text-3xl' : 'text-lg') + ' text-slate-900 dark:text-white mt-1">' + esc(a.t) + '</h3>' + (big ? '<p class="text-sm text-slate-600 dark:text-slate-300 mt-2">' + esc(a.sub) + '</p>' : '') +
+            '<p class="text-[12px] text-slate-500 dark:text-slate-400 mt-2">' + esc(a.a) + ' · ' + a.m + ' min de leitura · ' + quando(a.d) + '</p></div></button></article>';
+    }
+    function pintarFeed() {
+        var el = $('jn-feed'); if (!el) return; var l = todas().filter(function (a) { return cat === 'Todas' || a.c === cat; });
+        if (!l.length) { el.innerHTML = '<p class="text-xs text-slate-500 dark:text-slate-400">Sem matérias nesta editoria ainda.</p>'; return; }
+        el.innerHTML = card(l[0], true) + '<div class="grid sm:grid-cols-2 gap-6 mt-8">' + l.slice(1).map(function (a) { return card(a); }).join('') + '</div>';
+    }
+    function pintarLaterais() {
+        var s = st(), top = A.slice().sort(function (a, b) { return b.v - a.v; }).slice(0, 4), tot = ENQ.o.reduce(function (n, o) { return n + o[1]; }, 0) + (s.voto != null ? 1 : 0);
+        $('jn-top').innerHTML = top.map(function (a, i) { return '<button type="button" data-ler="' + a.id + '" class="flex gap-3 text-left w-full group"><span class="jn-h text-2xl text-brand-600 w-6">' + (i + 1) + '</span><span class="text-[13px] font-semibold text-slate-900 dark:text-white group-hover:underline">' + esc(a.t) + '</span></button>'; }).join('');
+        $('jn-enq').innerHTML = '<p class="text-[13px] font-bold text-slate-900 dark:text-white mb-3">' + ENQ.q + '</p><div class="space-y-2">' + ENQ.o.map(function (o, i) {
+            var n = o[1] + (s.voto === i ? 1 : 0), p = Math.round(n / tot * 100);
+            return s.voto != null ? '<div><div class="flex justify-between text-xs mb-1"><span class="text-slate-700 dark:text-slate-200' + (s.voto === i ? ' font-bold' : '') + '">' + o[0] + '</span><span class="text-slate-500 dark:text-slate-400">' + p + '%</span></div><div class="h-1.5 rounded-full bg-black/5 dark:bg-white/10 overflow-hidden"><div class="h-full rounded-full ' + (s.voto === i ? 'bg-brand-600' : 'bg-slate-400/60') + '" style="width:' + p + '%"></div></div></div>'
+                : '<button type="button" data-voto="' + i + '" class="cc-item" style="border-color:rgba(127,127,127,.25)"><span class="text-xs font-semibold text-slate-900 dark:text-white">' + o[0] + '</span></button>'; }).join('') + '</div>' + (s.voto != null ? '<p class="text-[12px] text-slate-500 dark:text-slate-400 mt-3">' + tot + ' votos. Obrigado por participar!</p>' : '');
+    }
+    function pintarMinhas() {
+        var el = $('jn-mine'); if (!el) return; var s = st(), n = s.env.filter(function (e) { return e.est === 'publicada'; }).length, ST = { enviada: ['Enviada', 0], revisao: ['Em revisão', 1], publicada: ['Publicada', 2] };
+        el.innerHTML = '<div class="flex justify-between text-xs mb-1.5"><span class="font-semibold text-slate-900 dark:text-white">Meta: Repórter FNET</span><span class="font-bold text-brand-600">' + Math.min(n, META) + ' / ' + META + ' matérias</span></div><div class="h-1.5 rounded-full bg-black/5 dark:bg-white/10 overflow-hidden mb-1"><div class="h-full rounded-full bg-gradient-to-r from-brand-600 to-amber-500" style="width:' + Math.min(100, n / META * 100) + '%"></div></div>' +
+            '<p class="text-[12px] text-slate-500 dark:text-slate-400 mb-4">Horas de extensão (exemplo): <b class="text-slate-900 dark:text-white">' + n * 2 + 'h</b></p>' +
+            (s.env.length ? s.env.slice(0, 4).map(function (e) { var x = ST[e.est]; return '<div class="flex items-center justify-between gap-3 py-2 border-t border-black/5 dark:border-white/10"><span class="text-xs text-slate-900 dark:text-white truncate">' + esc(e.t) + '</span><span class="cc-off" style="' + (x[1] === 2 ? 'color:#10b981;background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3)' : '') + '">' + x[0] + '</span></div>'; }).join('') : '<p class="text-xs text-slate-500 dark:text-slate-400">Você ainda não enviou matérias.</p>');
+    }
+
+    /* ---------- leitor ---------- */
+    var opener = null;
+    function fechar() { var m = $('modal-jn'); if (m) m.remove(); document.removeEventListener('keydown', tecla); if (opener && opener.focus) opener.focus(); }
+    function tecla(e) { if (e.key === 'Escape') fechar(); }
+    function ler(id) {
+        var a = todas().filter(function (x) { return String(x.id) === String(id); })[0]; if (!a) return; opener = document.activeElement; fechar();
+        var s = st(); if (!s.rd[a.id]) { s.rd[a.id] = 1; put(s); xp(5, 'Leitura no Jornal FNET', 'jornal', 3); }
+        var m = document.createElement('div'); m.id = 'modal-jn'; m.className = 'fixed inset-0 bg-black/80 backdrop-blur-xl flex items-start justify-center z-50 p-4 overflow-y-auto'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-labelledby', 'jn-t');
+        var gostei = !!s.lk[a.id];
+        m.innerHTML = '<div class="apple-glass rounded-[28px] max-w-2xl w-full my-6 overflow-hidden shadow-2xl"><div class="relative">' + capa(a, 'jn-cv-read') + '<button type="button" id="jn-x" aria-label="Fechar matéria" class="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/55 text-white backdrop-blur"><i class="fa-solid fa-xmark"></i></button></div>' +
+            '<div class="p-6 sm:p-8"><span class="jn-cat" style="color:' + CORC[a.c] + '">' + a.c.toUpperCase() + '</span><h2 id="jn-t" class="jn-h text-2xl sm:text-3xl text-slate-900 dark:text-white mt-1">' + esc(a.t) + '</h2><p class="text-sm text-slate-600 dark:text-slate-300 mt-2">' + esc(a.sub) + '</p>' +
+            '<p class="text-[12px] text-slate-500 dark:text-slate-400 mt-3 pb-4 border-b border-black/5 dark:border-white/10">Por <b>' + esc(a.a) + '</b> · ' + a.m + ' min de leitura · ' + quando(a.d) + '</p><div class="mt-5 space-y-4 text-[15px] leading-relaxed text-slate-700 dark:text-slate-200">' + a.p.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') + '</div>' +
+            '<div class="flex gap-2 mt-6 pt-4 border-t border-black/5 dark:border-white/10"><button type="button" id="jn-like" aria-pressed="' + gostei + '" class="apple-btn px-4 py-2 rounded-xl text-xs font-semibold ' + (gostei ? 'bg-brand-600 text-white' : 'bg-black/5 dark:bg-white/10 text-slate-900 dark:text-slate-100') + '"><i class="fa-' + (gostei ? 'solid' : 'regular') + ' fa-heart mr-1.5"></i>' + (gostei ? 'Curtido' : 'Curtir') + '</button>' +
+            '<button type="button" id="jn-share" class="apple-btn px-4 py-2 rounded-xl text-xs font-semibold bg-black/5 dark:bg-white/10 text-slate-900 dark:text-slate-100"><i class="fa-solid fa-link mr-1.5"></i>Copiar link</button></div></div></div>';
+        document.body.appendChild(m); document.addEventListener('keydown', tecla); m.addEventListener('mousedown', function (e) { if (e.target === m) fechar(); });
+        $('jn-x').onclick = fechar;
+        $('jn-like').onclick = function () { var q = st(); q.lk[a.id] = !q.lk[a.id]; put(q); var on = q.lk[a.id]; this.setAttribute('aria-pressed', on); this.className = 'apple-btn px-4 py-2 rounded-xl text-xs font-semibold ' + (on ? 'bg-brand-600 text-white' : 'bg-black/5 dark:bg-white/10 text-slate-900 dark:text-slate-100'); this.innerHTML = '<i class="fa-' + (on ? 'solid' : 'regular') + ' fa-heart mr-1.5"></i>' + (on ? 'Curtido' : 'Curtir'); };
+        $('jn-share').onclick = function () { try { navigator.clipboard.writeText(location.href.split('#')[0] + '#jornal-' + a.id); } catch (e) { } showToast('Link copiado!'); };
+        $('jn-x').focus();
+    }
+    function enviar() {
+        var t = $('jn-ti').value.trim(), x = $('jn-tx').value.trim(), c = $('jn-ca').value;
+        if (t.length < 8) { showToast('Dê um título com pelo menos 8 letras.'); return; }
+        if (x.length < 150) { showToast('A matéria precisa de pelo menos 150 caracteres (faltam ' + (150 - x.length) + ').'); return; }
+        var s = st(); s.env.unshift({ id: 'u' + Date.now(), t: t, c: c, x: x, t0: Date.now(), est: 'enviada', notif: false }); put(s);
+        $('jn-ti').value = ''; $('jn-tx').value = ''; $('jn-cn').textContent = '0'; showToast('Matéria enviada à redação! Acompanhe o status ao lado.'); pintarMinhas();
+    }
+    var CSS = '.jn-h{font-family:"Playfair Display",Georgia,serif;font-weight:800;line-height:1.12;letter-spacing:-.01em}.jn-cv{position:relative;overflow:hidden;border-radius:18px;background:#111}.jn-cv-big{aspect-ratio:16/8}.jn-cv-sm{aspect-ratio:16/9}.jn-cv-read{aspect-ratio:16/8;border-radius:0}.jn-cv>img{position:absolute;inset:0}' +
+        '.jn-tag{position:absolute;left:10px;bottom:10px;font:600 11px Inter,sans-serif;color:#fff;background:rgba(0,0,0,.5);padding:.15rem .5rem;border-radius:999px;backdrop-filter:blur(4px)}.jn-cat{font:700 11.5px Inter,sans-serif;letter-spacing:.1em}.jn-art:hover .jn-h{text-decoration:underline;text-decoration-color:#dc2626;text-underline-offset:4px}' +
+        '@media (hover:hover){.jn-art .jn-cv svg{transition:transform .6s cubic-bezier(.2,.8,.2,1)}.jn-art:hover .jn-cv svg{transform:scale(1.04)}}';
+    window.renderJornal = function (c) {
+        if (!$('jn-style')) { var st_ = document.createElement('style'); st_.id = 'jn-style'; st_.textContent = CSS; document.head.appendChild(st_); var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&display=swap'; document.head.appendChild(l); }
+        var hoje = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        c.innerHTML = '<div id="jn-root" class="space-y-8"><div class="text-center pb-5 border-b-2 border-slate-900/80 dark:border-white/70"><div class="flex flex-wrap justify-between text-[12px] uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-2"><span>Edição nº 128</span><span>' + hoje + '</span><span>Gratuito para a comunidade FNET</span></div>' +
+            '<h2 class="jn-h text-5xl sm:text-6xl text-slate-900 dark:text-white">Jornal <span class="text-brand-600">FNET</span></h2><p class="text-xs text-slate-500 dark:text-slate-400 mt-2">O que acontece no campus, feito por quem vive o campus.</p>' +
+            '<nav id="jn-cats" aria-label="Editorias" class="flex flex-wrap justify-center gap-2 mt-4">' + CATS.map(function (k) { return '<button type="button" class="cc-chip' + (k === cat ? ' on' : '') + '" data-c="' + k + '" aria-pressed="' + (k === cat) + '">' + k + '</button>'; }).join('') + '<button type="button" id="jn-go" class="cc-chip" style="border-color:#dc2626;color:#dc2626"><i class="fa-solid fa-pen-nib mr-1.5"></i>Seja repórter</button></nav></div>' +
+            '<div class="grid lg:grid-cols-12 gap-8 items-start"><div id="jn-feed" class="lg:col-span-8"></div><aside class="lg:col-span-4 space-y-6 lg:sticky lg:top-24"><section class="apple-card rounded-[28px] p-5"><h3 class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-4">Mais lidas</h3><div id="jn-top" class="space-y-4"></div></section>' +
+            '<section class="apple-card rounded-[28px] p-5"><h3 class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-3">Enquete do dia</h3><div id="jn-enq"></div></section>' +
+            '<section class="apple-card rounded-[28px] p-5"><h3 class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-3">Agenda do campus</h3><div class="space-y-3">' + AG.map(function (a) { var d = new Date(Date.now() + a[2] * DAY).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }); return '<div class="flex gap-3 items-center"><span class="text-sm font-bold text-brand-600 w-12">' + d + '</span><span><b class="block text-[13px] text-slate-900 dark:text-white">' + a[0] + '</b><small class="text-[12px] text-slate-500 dark:text-slate-400">' + a[1] + '</small></span></div>'; }).join('') + '</div></section></aside></div>' +
+            '<section id="jn-rep" class="apple-card rounded-[28px] p-6 sm:p-8" style="scroll-margin-top:96px"><div class="grid lg:grid-cols-12 gap-8"><div class="lg:col-span-7"><h3 class="jn-h text-2xl text-slate-900 dark:text-white"><i class="fa-solid fa-pen-nib text-brand-600 mr-2 text-xl"></i>Seja repórter da FNET</h3><p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-5">Escreva sobre o campus. Matérias aprovadas vão ao ar, rendem 50 XP e horas de extensão.</p>' +
+            '<label class="block text-[12px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1" for="jn-ti">Título</label><input id="jn-ti" maxlength="90" class="w-full px-3 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-sm text-slate-900 dark:text-white outline-none mb-3" placeholder="Ex.: Como foi o torneio Interclasses">' +
+            '<label class="block text-[12px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1" for="jn-ca">Editoria</label><select id="jn-ca" class="w-full px-3 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-sm text-slate-900 dark:text-white outline-none mb-3">' + CATS.slice(1).map(function (k) { return '<option>' + k + '</option>'; }).join('') + '</select>' +
+            '<label class="block text-[12px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1" for="jn-tx">Matéria (mínimo 150 caracteres)</label><textarea id="jn-tx" rows="6" class="w-full px-3 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-sm text-slate-900 dark:text-white outline-none" placeholder="Conte o que aconteceu, quem participou e por que importa."></textarea>' +
+            '<div class="flex items-center justify-between mt-3"><span class="text-[12px] text-slate-500 dark:text-slate-400"><span id="jn-cn">0</span> caracteres</span><button type="button" id="jn-send" class="apple-btn px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-semibold shadow-lg">Enviar à redação</button></div></div>' +
+            '<div class="lg:col-span-5"><h4 class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-3">Minhas matérias</h4><div id="jn-mine"></div><p class="text-[12px] text-slate-500 dark:text-slate-400 mt-4"><i class="fa-solid fa-circle-info text-brand-600 mr-1.5"></i>Demonstração: a revisão leva segundos. A coordenação define se a atividade conta como extensão, horas complementares ou estágio, e quais benefícios (como desconto na mensalidade) valem.</p></div></div></section></div>';
+        $('jn-cats').addEventListener('click', function (e) { var b = e.target.closest('[data-c]'); if (!b) return; cat = b.dataset.c; document.querySelectorAll('#jn-cats [data-c]').forEach(function (x) { x.classList.toggle('on', x.dataset.c === cat); x.setAttribute('aria-pressed', x.dataset.c === cat); }); pintarFeed(); });
+        $('jn-go').onclick = function () { var r = $('jn-rep'); if (r && r.scrollIntoView) r.scrollIntoView({ block: 'start', behavior: 'smooth' }); setTimeout(function () { $('jn-ti').focus(); }, 500); };
+        c.onclick = function (e) { var b = e.target.closest('[data-ler]'), v = e.target.closest('[data-voto]'); if (b) ler(b.dataset.ler); else if (v) { var s = st(); if (s.voto == null) { s.voto = +v.dataset.voto; put(s); xp(5, 'Voto na enquete', 'enquete', 1); pintarLaterais(); } } };
+        $('jn-tx').addEventListener('input', function () { $('jn-cn').textContent = this.value.length; }); $('jn-send').onclick = enviar;
+        pintarFeed(); pintarLaterais(); pintarMinhas();
+    };
+    window.__jn = { A: A, st: st, put: put, enviar: enviar, todas: todas, cena: cena };
 })();
 
 </script>
