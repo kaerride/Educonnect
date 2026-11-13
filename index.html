@@ -483,6 +483,11 @@
         /* V19: correções de celular achadas em teste real */
         #main-view .grid > * { min-width: 0; }
         @media (max-width: 1023px) { header .tn-streak, header .tn-av, header .tn-out { display: none !important; } }
+    
+        /* V20: celular */
+        #sb-backdrop { position: fixed; inset: 0; z-index: 29; background: rgba(0,0,0,.55); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); animation: sbfade .25s ease; }
+        @keyframes sbfade { from { opacity: 0; } to { opacity: 1; } }
+        @media (max-width: 480px) { #notif-dropdown { position: fixed; left: .75rem; right: .75rem; top: 4.25rem; width: auto; margin-top: 0; max-height: 70dvh; overflow-y: auto; } }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
@@ -1111,6 +1116,7 @@
             { id: 'campus', label: 'Carteirinha & Parceiros', icon: 'fa-id-card', roles: ['aluno'] },
             { id: 'aluguel', label: 'Aluguel de Livros', icon: 'fa-book-bookmark', roles: ['aluno'] },
             { id: 'cantina', label: 'Cantina & Trailers', icon: 'fa-utensils', roles: ['aluno', 'professor'] },
+            { id: 'simulados', label: 'Simulados & Vestibulares', icon: 'fa-graduation-cap', roles: ['aluno'] },
             { id: 'jornal', label: 'Jornal FNET', icon: 'fa-newspaper', roles: ['aluno', 'professor'] },
             { id: 'esportes', label: 'Esportes & Atléticas', icon: 'fa-medal', roles: ['aluno'] },
             { id: 'guia', label: 'Guia do Aluno', icon: 'fa-circle-question', roles: ['aluno', 'professor'] },
@@ -2553,6 +2559,7 @@
                 case 'guia': renderGuia(mainView); break;
                 case 'esportes': renderEsportes(mainView); break;
                 case 'jornal': renderJornal(mainView); break;
+                case 'simulados': renderSimulados(mainView); break;
                 case 'webmail': renderWebmail(mainView); break;
                 case 'perfil': renderPerfil(mainView); break;
                 default: renderDashboard(mainView);
@@ -3847,7 +3854,7 @@ document.addEventListener('keydown', function (ev) {
             document.body.dataset.view = currentView;
             try { var it = navItems.filter(function (n) { return n.id === currentView; })[0]; document.title = 'FNET · ' + (it ? it.label : 'Portal'); } catch (e) { }
             var nav = top.querySelector('nav'), html = '';
-            var GRP = ['campus', 'aluguel', 'cantina', 'esportes', 'jornal', 'guia'], g = [];
+            var GRP = ['campus', 'aluguel', 'cantina', 'esportes', 'jornal', 'simulados', 'guia'], g = [];
             navItems.forEach(function (n) {
                 if (n.roles.indexOf(currentUserRole) < 0) return;
                 if (GRP.indexOf(n.id) >= 0) { g.push(n); return; }
@@ -4558,7 +4565,7 @@ document.addEventListener("keydown", function (e) { if (e.key === "Escape") docu
         { id: 'guia', t: 'Onde está o guia do portal?', k: ['guia', 'manual', 'tutorial', 'como funciona', 'como usar', 'primeiros passos', 'passo a passo'], a: 'O ' + B('Guia do Aluno') + ' explica cada parte do portal, passo a passo. Você pode ler na tela ou ' + B('baixar em PDF') + '.', go: ['guia', 'Abrir Guia do Aluno'], rel: ['atalho', 'carteirinha'] },
         { id: 'esportes', t: 'Como entro num time esportivo?', k: ['esporte', 'time', 'futebol', 'futsal', 'volei', 'basquete', 'natacao', 'atletismo', 'treino', 'uniforme', 'horas complementares', 'quadra', 'piscina', 'atletica'], a: function () { var d = lerLS('fnet_esportes'), n = Math.min(40, ((d && d.p) || []).length * 2); return 'Em ' + B('Esportes & Atléticas') + ' você entra em um dos 6 times (futebol, futsal, vôlei, basquete, natação e atletismo). Cada treino com presença vale ' + B('2 horas complementares') + ' (até 40h) e 15 XP.' + (n ? ' Você já soma ' + B(n + 'h') + '.' : ''); }, go: ['esportes', 'Abrir Esportes'], rel: ['xp', 'carteirinha'] },
         { id: 'jornal', t: 'Como escrevo no Jornal FNET?', k: ['jornal', 'noticia', 'materia', 'reporter', 'redacao', 'publicar', 'estagio', 'extensao', 'enquete'], a: function () { var d = lerLS('fnet_jornal'), n = ((d && d.env) || []).filter(function (e) { return e.est === 'publicada'; }).length; return 'No ' + B('Jornal FNET') + ' você lê as notícias do campus e, em ' + B('Seja repórter') + ', envia a sua matéria (mínimo 150 caracteres). Publicada, ela rende ' + B('50 XP') + '.' + (n ? ' Você já tem ' + B(n + (n === 1 ? ' matéria publicada' : ' matérias publicadas')) + '.' : '') + ' Se conta como extensão, horas complementares ou estágio, quem define é a coordenação.'; }, go: ['jornal', 'Abrir Jornal'], rel: ['xp', 'esportes'] },
-        { id: 'breve', t: 'O que vem por aí?', k: ['simulado', 'vestibular'], a: 'Simulados e vestibulares internos estão ' + B('em desenvolvimento') + '. Ainda não estão disponíveis no portal.', rel: ['cantina'] },
+        { id: 'simulados', t: 'Como funcionam os simulados?', k: ['simulado', 'vestibular', 'enem', 'prova', 'questoes', 'cupom', 'divulgar', 'indicacao'], a: function () { var d = lerLS('fnet_simulados'), r = (d && d.res) || [], n = r.length; return 'Em ' + B('Simulados & Vestibulares') + ' você faz simulados de Linguagens, Matemática e Ciências, com cronômetro e correção comentada. Com ' + B('2 simulados acima de 70%') + ' você libera ' + B('10% de desconto') + ' no Vestibular FNET, e divulgar vestibulares de outras instituições rende XP.' + (n ? ' Você já fez ' + B(n + (n === 1 ? ' simulado' : ' simulados')) + '.' : ''); }, go: ['simulados', 'Abrir Simulados'], rel: ['xp', 'cantina'] },
         { id: 'atendente', t: 'Quero falar com um atendente', k: ['atendente', 'humano', 'pessoa', 'falar com', 'reclama', 'ouvidoria', 'ajuda', 'suporte', 'problema'], a: 'Claro! Posso abrir um atendimento com a equipe do SAC. Você recebe o protocolo no Webmail.', act: 'ticket', rel: [] },
         { id: 'obrigado', t: 'Obrigado!', k: ['obrigad', 'valeu', 'brigad', 'show$', 'top$'], a: 'De nada! Se precisar de mais alguma coisa, é só chamar. 😊', rel: [] }
     ];
@@ -4664,13 +4671,13 @@ document.addEventListener("keydown", function (e) { if (e.key === "Escape") docu
         { id: 'sac', ic: 'fa-headset', t: 'Assistente FNET (SAC)', v: 'dashboard', r: 'O botão vermelho no canto da tela abre o assistente, que responde dúvidas sobre o portal.',
             p: ['Clique no botão do assistente no canto inferior direito.', 'Escreva sua dúvida ou toque em uma sugestão.', 'Use os botões das respostas para ir direto à página certa.', 'Se ele não souber, escolha Abrir atendimento: você recebe um protocolo no Webmail.'],
             d: ['Pergunte, por exemplo: "qual a minha média?" ou "como está meu pedido?".', 'Ele responde com base no portal e nos seus dados.'] },
-        { id: 'breve', ic: 'fa-rocket', t: 'Em breve', v: null, r: 'Estas novidades estão em desenvolvimento e ainda não estão disponíveis.',
-            p: ['Simulados e vestibulares internos.'],
-            d: ['Acompanhe os avisos pelo Webmail.'] }
+        { id: 'simulados', ic: 'fa-graduation-cap', t: 'Simulados e vestibulares', v: 'simulados', r: 'Treine com simulados, ganhe desconto no vestibular da FNET e divulgue vestibulares para ganhar XP.',
+            p: ['Abra Simulados & Vestibulares (menu Campus) e escolha uma área: Linguagens, Matemática ou Ciências da Natureza.', 'Responda uma questão por vez, com cronômetro. Use 1 a 4 (ou A a D) no teclado.', 'Ao finalizar, veja sua nota e a correção comentada de cada questão.', 'Com 2 simulados acima de 70%, você libera um cupom de 10% na inscrição do Vestibular FNET.', 'Em Divulgue vestibulares, copie o link de outras instituições: +10 XP, e +50 XP por inscrição feita pelo seu link.'],
+            d: ['Cada simulado concluído rende 20 XP (até 3 por dia) e 30 XP de bônus com 80% ou mais.', 'Questões, datas e taxas desta página são exemplos de demonstração.'] }
     ];
     var norm = function (s) { return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); };
     var texto = function (g) { return norm([g.t, g.r].concat(g.p, g.d).join(' ')); };
-    var DESTINO = { dashboard: 'Início', notas: 'Notas', webmail: 'Webmail', salas: 'Salas', biblioteca: 'Biblioteca', gamificacao: 'Prêmios', campus: 'Carteirinha', cantina: 'Cantina', aluguel: 'Aluguel', esportes: 'Esportes', jornal: 'Jornal' };
+    var DESTINO = { dashboard: 'Início', notas: 'Notas', webmail: 'Webmail', salas: 'Salas', biblioteca: 'Biblioteca', gamificacao: 'Prêmios', campus: 'Carteirinha', cantina: 'Cantina', aluguel: 'Aluguel', esportes: 'Esportes', jornal: 'Jornal', simulados: 'Simulados' };
 
     /* ---------- PDF ---------- */
     function carregar() { return new Promise(function (ok, no) { if (window.jspdf) return ok(); var s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'; s.onload = ok; s.onerror = no; document.head.appendChild(s); }); }
@@ -4678,7 +4685,7 @@ document.addEventListener("keydown", function (e) { if (e.key === "Escape") docu
         var d = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' }), M = 18, W = 174, y = 0, pg = {}, hoje = new Date().toLocaleDateString('pt-BR');
         d.setFillColor(20, 8, 9); d.rect(0, 0, 210, 297, 'F'); d.setFillColor(220, 38, 38); d.rect(0, 0, 210, 12, 'F'); d.rect(M, 110, 28, 2.2, 'F');
         d.setTextColor(255, 255, 255); d.setFont('helvetica', 'bold'); d.setFontSize(40); d.text('Guia do Aluno', M, 135); d.setFont('helvetica', 'normal'); d.setFontSize(16); d.text('Portal FNET', M, 147);
-        d.setFontSize(11); d.setTextColor(180, 180, 190); d.text(d.splitTextToSize('Como usar cada parte do portal, passo a passo: notas, Webmail, salas, biblioteca, prêmios, carteirinha, cantina, aluguel de livros, esportes e jornal.', 140), M, 162); d.text('Edição de ' + hoje, M, 270);
+        d.setFontSize(11); d.setTextColor(180, 180, 190); d.text(d.splitTextToSize('Como usar cada parte do portal, passo a passo: notas, Webmail, salas, biblioteca, prêmios, carteirinha, cantina, aluguel de livros, esportes, jornal e simulados.', 140), M, 162); d.text('Edição de ' + hoje, M, 270);
         d.addPage(); d.setTextColor(30, 41, 59); d.setFont('helvetica', 'bold'); d.setFontSize(22); d.text('Sumário', M, 30);
         G.forEach(function (g, i) { var yy = 46 + i * 11; d.setFont('helvetica', 'bold'); d.setFontSize(11); d.setTextColor(220, 38, 38); d.text(String(i + 1).padStart(2, '0'), M, yy); d.setFont('helvetica', 'normal'); d.setTextColor(30, 41, 59); d.text(g.t, M + 12, yy); });
         d.addPage(); y = 28;
@@ -4876,13 +4883,13 @@ document.addEventListener("keydown", function (e) { if (e.key === "Escape") docu
 /* V17: atalhos do Campus no Início */
 (function () {
     var _rd = window.renderDashboard; if (typeof _rd !== 'function') return;
-    var A = [['campus', 'fa-id-card', 'Carteirinha', 'Descontos e identidade', 'aluno'], ['cantina', 'fa-utensils', 'Cantina', 'Peça antes de chegar', 'todos'], ['aluguel', 'fa-book-bookmark', 'Aluguel de livros', 'Grátis com a carteirinha', 'aluno'], ['esportes', 'fa-medal', 'Esportes', 'Times, horas e XP', 'aluno'], ['jornal', 'fa-newspaper', 'Jornal FNET', 'Notícias e seja repórter', 'todos'], ['guia', 'fa-circle-question', 'Guia do Aluno', 'Passo a passo + PDF', 'todos']];
+    var A = [['campus', 'fa-id-card', 'Carteirinha', 'Descontos e identidade', 'aluno'], ['cantina', 'fa-utensils', 'Cantina', 'Peça antes de chegar', 'todos'], ['aluguel', 'fa-book-bookmark', 'Aluguel de livros', 'Grátis com a carteirinha', 'aluno'], ['esportes', 'fa-medal', 'Esportes', 'Times, horas e XP', 'aluno'], ['jornal', 'fa-newspaper', 'Jornal FNET', 'Notícias e seja repórter', 'todos'], ['simulados', 'fa-graduation-cap', 'Simulados', 'Treine e ganhe desconto', 'aluno'], ['guia', 'fa-circle-question', 'Guia do Aluno', 'Passo a passo + PDF', 'todos']];
     window.renderDashboard = function (c) {
         _rd.apply(this, arguments);
         try {
             var root = c.firstElementChild || c; if (root.querySelector('#cp-atalhos')) return;
             var papel = (typeof currentUserRole !== 'undefined' && currentUserRole) || 'aluno';
-            root.insertAdjacentHTML('beforeend', '<section id="cp-atalhos" aria-label="Atalhos do Campus" style="margin-top:1.5rem"><div class="flex items-center justify-between mb-3"><h3 class="text-sm font-bold text-slate-900 dark:text-white"><i class="fa-solid fa-compass text-brand-600 mr-2"></i>Campus FNET</h3><span class="text-[12px] text-slate-500 dark:text-slate-400">Tudo o que você usa no dia a dia</span></div><div class="grid grid-cols-2 lg:grid-cols-6 gap-3">' +
+            root.insertAdjacentHTML('beforeend', '<section id="cp-atalhos" aria-label="Atalhos do Campus" style="margin-top:1.5rem"><div class="flex items-center justify-between mb-3"><h3 class="text-sm font-bold text-slate-900 dark:text-white"><i class="fa-solid fa-compass text-brand-600 mr-2"></i>Campus FNET</h3><span class="text-[12px] text-slate-500 dark:text-slate-400">Tudo o que você usa no dia a dia</span></div><div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">' +
                 A.filter(function (a) { return a[4] === 'todos' || a[4] === papel; }).map(function (a) { return '<button type="button" data-cp="' + a[0] + '" class="apple-card cp-card rounded-2xl p-4 flex flex-col gap-3 text-left"><span class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-600 to-amber-500 text-white flex items-center justify-center"><i class="fa-solid ' + a[1] + '"></i></span><span><b class="block text-[13px] text-slate-900 dark:text-white">' + a[2] + '</b><small class="text-[12px] text-slate-500 dark:text-slate-400">' + a[3] + '</small></span></button>'; }).join('') + '</div></section>');
             root.querySelector('#cp-atalhos').onclick = function (e) { var b = e.target.closest('[data-cp]'); if (b) navigate(b.dataset.cp); };
         } catch (e) { }
@@ -5056,6 +5063,228 @@ document.addEventListener("keydown", function (e) { if (e.key === "Escape") docu
         pintarFeed(); pintarLaterais(); pintarMinhas();
     };
     window.__jn = { A: A, st: st, put: put, enviar: enviar, todas: todas, cena: cena };
+})();
+
+</script>
+<script>
+/* V20: celular — menu lateral e notificações fecham sozinhos; voltar/avançar e F5 mantêm a página */
+(function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var mobile = function () { return window.innerWidth < 768; };
+    function papel() { return (typeof activeUserSession !== 'undefined' && activeUserSession && activeUserSession.role) || (typeof currentUserRole !== 'undefined' && currentUserRole) || null; }
+    function valida(id, role) { try { return navItems.some(function (n) { return n.id === id && (!role || n.roles.indexOf(role) >= 0); }); } catch (e) { return false; } }
+    var hamb = function () { return document.querySelector('header [aria-label="Abrir menu"]'); };
+    var sino = function () { return document.querySelector('header [aria-label="Notificações"]'); };
+
+    /* ---------- menu lateral (celular) ---------- */
+    function sbAberto() { var sb = $('sidebar'); return !!sb && !sb.classList.contains('-translate-x-full'); }
+    function sbFechar(foco) {
+        var bd = $('sb-backdrop'); if (bd) bd.remove(); var sb = $('sidebar'); if (sb && mobile()) sb.classList.add('-translate-x-full');
+        var h = hamb(); if (h) { h.setAttribute('aria-expanded', 'false'); if (foco) h.focus(); }
+    }
+    window.toggleSidebar = function () {
+        var sb = $('sidebar'); if (!sb || !mobile()) return;
+        if (sbAberto()) { sbFechar(true); return; }
+        sb.classList.remove('-translate-x-full');
+        var bd = document.createElement('div'); bd.id = 'sb-backdrop'; bd.setAttribute('aria-hidden', 'true'); bd.addEventListener('pointerdown', function () { sbFechar(false); });
+        sb.parentNode.insertBefore(bd, sb); var h = hamb(); if (h) h.setAttribute('aria-expanded', 'true');
+    };
+    var x0 = null, sb0 = $('sidebar');
+    if (sb0) { sb0.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true }); sb0.addEventListener('touchend', function (e) { if (x0 !== null && e.changedTouches[0].clientX - x0 < -60) sbFechar(false); x0 = null; }, { passive: true }); }
+    window.addEventListener('resize', function () { if (!mobile()) { var bd = $('sb-backdrop'); if (bd) bd.remove(); } });
+
+    /* ---------- notificações ---------- */
+    function notifAberta() { var d = $('notif-dropdown'); return !!d && !d.classList.contains('hidden'); }
+    function notifFechar() { var d = $('notif-dropdown'); if (d) d.classList.add('hidden'); var b = sino(); if (b) b.setAttribute('aria-expanded', 'false'); }
+    var tn = window.toggleNotificationMenu;
+    window.toggleNotificationMenu = function () { tn(); var b = sino(); if (b) b.setAttribute('aria-expanded', String(notifAberta())); };
+    document.addEventListener('pointerdown', function (e) { if (!notifAberta()) return; var d = $('notif-dropdown'), b = sino(); if (!d.contains(e.target) && !(b && b.contains(e.target))) notifFechar(); }, true);
+    document.addEventListener('keydown', function (e) { if (e.key !== 'Escape') return; if (notifAberta()) notifFechar(); else if (sbAberto() && mobile()) sbFechar(true); });
+
+    /* ---------- voltar / avançar / F5 mantêm a página ---------- */
+    var iniciou = false, nav = window.navigate;
+    window.navigate = function (id) {
+        var r = nav.apply(this, arguments);
+        sbFechar(false); notifFechar();
+        try { sessionStorage.setItem('fnet_view', id); } catch (e) { }
+        if (location.hash.slice(1) !== id) { try { (iniciou ? history.pushState : history.replaceState).call(history, null, '', '#' + id); } catch (e) { } }
+        iniciou = true; return r;
+    };
+    window.addEventListener('hashchange', function () {
+        var v = location.hash.slice(1);
+        if (!v || v === currentView || typeof activeUserSession === 'undefined' || !activeUserSession || !valida(v, papel())) return;
+        window.navigate(v);
+    });
+    var ini = window.iniciarSessaoApp;
+    window.iniciarSessaoApp = function () { if (activeUserSession && !valida(currentView, activeUserSession.role)) currentView = 'dashboard'; return ini.apply(this, arguments); };
+    var lo = window.logout;
+    window.logout = function () { lo.apply(this, arguments); currentView = 'dashboard'; iniciou = false; try { sessionStorage.removeItem('fnet_view'); history.replaceState(null, '', location.pathname + location.search); } catch (e) { } };
+
+    var quer = location.hash.slice(1); try { quer = quer || sessionStorage.getItem('fnet_view') || ''; } catch (e) { }
+    if (quer && valida(quer)) {
+        if (typeof activeUserSession !== 'undefined' && activeUserSession) { if (valida(quer, papel()) && quer !== currentView) window.navigate(quer); }
+        else currentView = quer;                                    /* iniciarSessaoApp() abre currentView */
+    }
+})();
+
+</script>
+<script>
+/* V21: Simulados & Vestibulares (modo foco, desconto no vestibular interno, divulgação com XP) */
+(function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var esc = function (t) { return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+    var R = function (v) { return 'R$ ' + Number(v).toFixed(2).replace('.', ','); };
+    var K = 'fnet_simulados', DAY = 864e5, LET = ['A', 'B', 'C', 'D'];
+    var SIM = [
+        { id: 'ling', n: 'Linguagens e Códigos', ic: 'fa-book-open', c: ['#7f1d1d', '#dc2626'], min: 8, q: [
+            { t: 'Em qual alternativa o uso da crase está correto?', o: ['Vou à pé para a escola.', 'Entreguei o livro à professora.', 'Ele falou à cada pessoa.', 'Estamos à disposição à partir de hoje.'], c: 1, e: 'Há crase quando a preposição "a" se une ao artigo "a": "à professora". Não há crase antes de verbo, de "pé", de "cada" ou de "partir".' },
+            { t: 'Em "Os alunos, que estudaram, foram aprovados", a oração destacada é:', o: ['Restritiva, pois limita o sentido de "alunos"', 'Explicativa, pois se refere a todos os alunos', 'Causal, pois indica a causa da aprovação', 'Concessiva, pois indica oposição'], c: 1, e: 'Entre vírgulas, a oração adjetiva é explicativa: acrescenta uma informação que vale para todos os alunos.' },
+            { t: 'Em "Seus olhos são duas estrelas", a figura de linguagem é:', o: ['Metáfora', 'Metonímia', 'Ironia', 'Hipérbole'], c: 0, e: 'Metáfora é a comparação implícita, sem conectivo: os olhos são identificados com estrelas.' },
+            { t: 'Assinale a frase com concordância verbal correta:', o: ['Fazem dois anos que moro aqui.', 'Faz dois anos que moro aqui.', 'Houveram muitos problemas.', 'Existe muitos candidatos.'], c: 1, e: 'O verbo "fazer" indicando tempo decorrido é impessoal e fica no singular. "Houve" e "existem" também seriam as formas corretas nas outras frases.' },
+            { t: 'Em "Dom Casmurro", de Machado de Assis, quem narra a história?', o: ['Capitu', 'Bentinho (Bento Santiago)', 'Escobar', 'José Dias'], c: 1, e: 'A história é narrada em primeira pessoa por Bento Santiago, o Bentinho, já mais velho.' }] },
+        { id: 'mat', n: 'Matemática', ic: 'fa-square-root-variable', c: ['#78350f', '#f59e0b'], min: 8, q: [
+            { t: 'Quanto é 20% de 350?', o: ['60', '70', '75', '80'], c: 1, e: '20% = 0,2 e 0,2 × 350 = 70.' },
+            { t: 'Qual é o valor de x em 2x + 6 = 20?', o: ['5', '6', '7', '8'], c: 2, e: '2x = 20 − 6 = 14, logo x = 7.' },
+            { t: 'Um retângulo mede 8 m por 5 m. Qual é a sua área?', o: ['26 m²', '40 m²', '45 m²', '80 m²'], c: 1, e: 'Área = base × altura = 8 × 5 = 40 m².' },
+            { t: 'Qual é a média aritmética de 6, 8, 9, 7 e 5?', o: ['6,5', '7', '7,5', '8'], c: 1, e: 'Soma = 35; 35 ÷ 5 = 7.' },
+            { t: 'Ao lançar um dado comum, qual a probabilidade de sair um número par?', o: ['1/3', '1/2', '2/3', '1/6'], c: 1, e: 'Há 3 faces pares (2, 4, 6) em 6 possíveis: 3/6 = 1/2.' }] },
+        { id: 'nat', n: 'Ciências da Natureza', ic: 'fa-flask', c: ['#065f46', '#10b981'], min: 8, q: [
+            { t: 'Qual organela é a principal responsável pela respiração celular?', o: ['Ribossomo', 'Mitocôndria', 'Lisossomo', 'Complexo de Golgi'], c: 1, e: 'As mitocôndrias produzem a maior parte do ATP, a energia da célula.' },
+            { t: 'Qual é a unidade de força no Sistema Internacional?', o: ['Joule', 'Watt', 'Newton', 'Pascal'], c: 2, e: 'A unidade de força é o newton (N). Joule mede energia, watt mede potência e pascal mede pressão.' },
+            { t: 'Qual é o gás mais abundante na atmosfera terrestre?', o: ['Oxigênio', 'Nitrogênio', 'Gás carbônico', 'Argônio'], c: 1, e: 'O nitrogênio representa cerca de 78% do ar; o oxigênio, cerca de 21%.' },
+            { t: 'A 25 °C, qual é o pH de uma solução neutra?', o: ['0', '7', '10', '14'], c: 1, e: 'pH 7 é neutro; abaixo é ácido e acima é básico.' },
+            { t: 'Como se chama o processo em que plantas produzem glicose usando luz?', o: ['Respiração', 'Fotossíntese', 'Fermentação', 'Digestão'], c: 1, e: 'Na fotossíntese, a planta usa luz, água e CO₂ para produzir glicose e liberar oxigênio.' }] }
+    ];
+    var VI = { n: 'Vestibular FNET 2027.1', taxa: 80, prova: 45, local: 'Campus FNET, Bloco A', cursos: [['Engenharia de Software', 60], ['Design Digital', 40], ['Administração', 80], ['Direito', 100], ['Medicina Veterinária', 30], ['Psicologia', 50]] };
+    var VE = [{ id: 1, n: 'Vestibular Univ. Vale Azul 2027', l: 'Univ. Vale Azul', d: 20 }, { id: 2, n: 'Processo Seletivo Faculdade Serra Alta', l: 'Faculdade Serra Alta', d: 34 }, { id: 3, n: 'Bolsas de Mérito do Instituto Litoral', l: 'Instituto Litoral', d: 12 }];
+
+    function usr() { return (typeof activeUserSession !== 'undefined' && activeUserSession) || {}; }
+    function chave() { return (usr().email || '').toLowerCase(); }
+    function st() { try { var s = JSON.parse(localStorage.getItem(K) || '{}')[chave()] || {}; s.res = s.res || []; s.div = s.div || {}; s.ind = s.ind || 0; s.insc = s.insc || null; return s; } catch (e) { return { res: [], div: {}, ind: 0, insc: null }; } }
+    function put(s) { try { var b = JSON.parse(localStorage.getItem(K) || '{}'); b[chave()] = s; localStorage.setItem(K, JSON.stringify(b)); } catch (e) { } }
+    function xp(q, m, k, cap) { if (typeof adicionarXP === 'function') { if (k && typeof GX !== 'undefined') GX.CAPS[k] = cap || 1; adicionarXP(q, m, k); } }
+    function mail(assunto, desc, corpo) {
+        var m = { id: Date.now(), de: 'Vestibular FNET', emailDe: 'vestibular@fnet.edu.br', assunto: assunto, data: new Date().toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }), desc: desc, conteudo: corpo };
+        try { var b = JSON.parse(localStorage.getItem('fnet_mailboxes') || '{}'), k = chave(); (b[k] = b[k] || []).unshift(m); localStorage.setItem('fnet_mailboxes', JSON.stringify(b)); } catch (e) { }
+        if (typeof stateEmails !== 'undefined') stateEmails.unshift(m);
+        var dot = $('webmail-notif-dot'); if (dot) dot.style.display = '';
+    }
+    function melhores(s) { var m = {}; s.res.forEach(function (r) { if (!(r.id in m) || r.pct > m[r.id]) m[r.id] = r.pct; }); return m; }
+    function cupom(s) { var m = melhores(s), n = Object.keys(m).filter(function (k) { return m[k] >= 70; }).length; return { n: n, ok: n >= 2, code: 'FNET10-' + String(usr().matricula || '0000').slice(-4) }; }
+    function ra() { return String(usr().matricula || '0000').slice(-4); }
+    function data(off) { return new Date(Date.now() + off * DAY).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }); }
+
+    /* ---------- executor (modo foco) ---------- */
+    var run = null, tm = 0, sair = 0;
+    function fmt(s) { return ('0' + Math.floor(s / 60)).slice(-2) + ':' + ('0' + (s % 60)).slice(-2); }
+    function fechar() { clearInterval(tm); tm = 0; var m = $('modal-sim'); if (m) m.remove(); document.removeEventListener('keydown', tecla); run = null; var s = st(); pintarTudo(); }
+    function tecla(e) {
+        if (!run) return;
+        if (e.key === 'Escape') { e.preventDefault(); tentarSair(); return; }
+        if (run.fim) return;
+        var k = e.key.toLowerCase(), i = ['1', '2', '3', '4'].indexOf(k); if (i < 0) i = ['a', 'b', 'c', 'd'].indexOf(k);
+        if (i >= 0) { run.r[run.i] = i; pintar(); } else if (e.key === 'ArrowRight') ir(1); else if (e.key === 'ArrowLeft') ir(-1);
+    }
+    function tentarSair() { if (run.fim || !run.r.some(function (x) { return x != null; }) || sair) { fechar(); return; } sair = 1; showToast('Se sair agora, perde o progresso. Toque em sair de novo para confirmar.'); setTimeout(function () { sair = 0; }, 3500); }
+    function ir(d) { var n = run.i + d; if (n >= 0 && n < run.s.q.length) { run.i = n; pintar(); } }
+    function abrir(id) {
+        var s = SIM.filter(function (x) { return x.id === id; })[0]; run = { s: s, i: 0, r: [], rest: s.min * 60, fim: false }; sair = 0;
+        var m = document.createElement('div'); m.id = 'modal-sim'; m.className = 'fixed inset-0 bg-black/90 backdrop-blur-xl z-50 overflow-y-auto'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-label', 'Simulado ' + s.n);
+        document.body.appendChild(m); document.addEventListener('keydown', tecla); pintar();
+        tm = setInterval(function () { if (!run || run.fim) return; run.rest--; var t = $('sim-t'); if (t) t.textContent = fmt(run.rest); var rg = $('sim-ring'); if (rg) rg.style.strokeDashoffset = (113.1 * (1 - run.rest / (run.s.min * 60))).toFixed(1); if (run.rest <= 0) { showToast('Tempo esgotado!'); finalizar(); } }, 1000);
+    }
+    function pintar() {
+        var m = $('modal-sim'); if (!m || !run) return; var s = run.s, q = s.q[run.i], n = s.q.length, ult = run.i === n - 1, resp = run.r.filter(function (x) { return x != null; }).length;
+        m.innerHTML = '<div class="max-w-2xl mx-auto px-4 py-6 min-h-full flex flex-col"><div class="flex items-center justify-between gap-3 mb-5"><div class="min-w-0"><p class="text-[12px] uppercase tracking-widest text-slate-400">Simulado · ' + esc(s.n) + '</p><p class="text-sm font-bold text-white">Questão ' + (run.i + 1) + ' de ' + n + '</p></div>' +
+            '<div class="flex items-center gap-3"><div class="flex items-center gap-2 text-white"><svg width="30" height="30" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="4"/><circle id="sim-ring" cx="22" cy="22" r="18" fill="none" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" stroke-dasharray="113.1" stroke-dashoffset="' + (113.1 * (1 - run.rest / (s.min * 60))).toFixed(1) + '" transform="rotate(-90 22 22)"/></svg><b id="sim-t" class="text-sm" style="font-variant-numeric:tabular-nums">' + fmt(run.rest) + '</b></div>' +
+            '<button type="button" id="sim-x" aria-label="Sair do simulado" class="w-9 h-9 rounded-full bg-white/10 text-white"><i class="fa-solid fa-xmark"></i></button></div></div>' +
+            '<div class="flex gap-1.5 mb-6" aria-hidden="true">' + s.q.map(function (_, i) { return '<span class="h-1.5 flex-1 rounded-full ' + (i === run.i ? 'bg-brand-600' : run.r[i] != null ? 'bg-amber-500' : 'bg-white/15') + '"></span>'; }).join('') + '</div>' +
+            '<div class="flex-1"><h2 class="text-lg sm:text-xl font-bold text-white leading-snug mb-5">' + esc(q.t) + '</h2><div class="space-y-3" role="radiogroup" aria-label="Alternativas">' +
+            q.o.map(function (o, i) { var on = run.r[run.i] === i; return '<button type="button" role="radio" aria-checked="' + on + '" data-o="' + i + '" class="w-full flex items-start gap-3 p-4 rounded-2xl text-left border transition-colors ' + (on ? 'bg-brand-600/20 border-brand-600 text-white' : 'bg-white/5 border-white/10 text-slate-200 hover:bg-white/10') + '"><span class="w-7 h-7 flex-none rounded-lg flex items-center justify-center text-xs font-bold ' + (on ? 'bg-brand-600 text-white' : 'bg-white/10') + '">' + LET[i] + '</span><span class="text-sm pt-0.5">' + esc(o) + '</span></button>'; }).join('') + '</div></div>' +
+            '<div class="flex items-center justify-between gap-3 mt-8"><button type="button" id="sim-prev" class="apple-btn px-4 py-2.5 rounded-xl text-xs font-semibold bg-white/10 text-white"' + (run.i ? '' : ' disabled style="opacity:.4"') + '>Anterior</button><span class="text-[12px] text-slate-400">' + resp + ' de ' + n + ' respondidas</span>' +
+            (ult ? '<button type="button" id="sim-fim" class="apple-btn px-5 py-2.5 rounded-xl text-xs font-semibold bg-brand-600 text-white">Finalizar</button>' : '<button type="button" id="sim-next" class="apple-btn px-5 py-2.5 rounded-xl text-xs font-semibold bg-brand-600 text-white">Próxima</button>') + '</div></div>';
+        m.querySelectorAll('[data-o]').forEach(function (b) { b.onclick = function () { run.r[run.i] = +b.dataset.o; pintar(); var f = m.querySelector('[data-o="' + run.r[run.i] + '"]'); if (f) f.focus(); }; });
+        $('sim-x').onclick = tentarSair; if ($('sim-prev')) $('sim-prev').onclick = function () { ir(-1); }; if ($('sim-next')) $('sim-next').onclick = function () { ir(1); }; if ($('sim-fim')) $('sim-fim').onclick = function () { var v = run.s.q.length - resp; if (v && !run.avisou) { run.avisou = 1; showToast('Faltam ' + v + ' questões sem resposta. Finalizar de novo para enviar assim mesmo.'); return; } finalizar(); };
+    }
+    function finalizar() {
+        if (!run || run.fim) return; run.fim = true; clearInterval(tm); var s = run.s, n = s.q.length, a = 0;
+        s.q.forEach(function (q, i) { if (run.r[i] === q.c) a++; }); var pct = Math.round(a / n * 100), seg = s.min * 60 - Math.max(0, run.rest), est = st();
+        est.res.unshift({ id: s.id, a: a, n: n, pct: pct, seg: seg, t0: Date.now() }); put(est);
+        xp(20, 'Simulado concluído!', 'simulado', 3); if (pct >= 80) xp(30, 'Ótimo desempenho no simulado!');
+        var cp = cupom(est), m = $('modal-sim'); if (!m) return;
+        m.innerHTML = '<div class="max-w-2xl mx-auto px-4 py-8"><div class="text-center mb-8"><div class="relative w-36 h-36 mx-auto"><svg viewBox="0 0 44 44" class="w-full h-full" aria-hidden="true"><circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="4"/><circle cx="22" cy="22" r="18" fill="none" stroke="' + (pct >= 70 ? '#10b981' : '#f59e0b') + '" stroke-width="4" stroke-linecap="round" stroke-dasharray="113.1" stroke-dashoffset="' + (113.1 * (1 - pct / 100)).toFixed(1) + '" transform="rotate(-90 22 22)" style="transition:stroke-dashoffset 1s ease"/></svg>' +
+            '<div class="absolute inset-0 flex flex-col items-center justify-center text-white"><b class="text-3xl">' + pct + '%</b><span class="text-[12px] text-slate-400">' + a + ' de ' + n + '</span></div></div><h2 class="text-xl font-bold text-white mt-4">' + (pct >= 80 ? 'Excelente!' : pct >= 60 ? 'Bom resultado!' : 'Continue treinando!') + '</h2><p class="text-xs text-slate-400 mt-1">Tempo: ' + fmt(seg) + ' · +20 XP' + (pct >= 80 ? ' · +30 XP de bônus' : '') + '</p>' +
+            '<p class="text-xs mt-3 ' + (cp.ok ? 'text-emerald-400' : 'text-slate-400') + '">' + (cp.ok ? '<i class="fa-solid fa-ticket mr-1.5"></i>Cupom do vestibular liberado: <b>' + cp.code + '</b> (10% de desconto)' : 'Cupom do vestibular: ' + cp.n + ' de 2 simulados com 70% ou mais.') + '</p></div>' +
+            '<h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Revisão das questões</h3><div class="space-y-3">' + s.q.map(function (q, i) { var ok = run.r[i] === q.c, nr = run.r[i] == null;
+                return '<div class="p-4 rounded-2xl bg-white/5 border ' + (ok ? 'border-emerald-500/40' : 'border-red-500/40') + '"><p class="text-[13px] font-semibold text-white"><span class="' + (ok ? 'text-emerald-400' : 'text-red-400') + '">' + (ok ? '✓' : '✗') + '</span> ' + (i + 1) + '. ' + esc(q.t) + '</p><p class="text-xs mt-2 text-slate-300">Sua resposta: ' + (nr ? '<i>em branco</i>' : '<b>' + LET[run.r[i]] + '</b>') + ' · Correta: <b class="text-emerald-400">' + LET[q.c] + ') ' + esc(q.o[q.c]) + '</b></p><p class="text-xs mt-1.5 text-slate-400">' + esc(q.e) + '</p></div>'; }).join('') + '</div>' +
+            '<div class="flex justify-end gap-2 mt-8"><button type="button" id="sim-again" class="apple-btn px-4 py-2.5 rounded-xl text-xs font-semibold bg-white/10 text-white">Refazer</button><button type="button" id="sim-close" class="apple-btn px-5 py-2.5 rounded-xl text-xs font-semibold bg-brand-600 text-white">Fechar</button></div></div>';
+        $('sim-close').onclick = fechar; $('sim-again').onclick = function () { var id = s.id; fechar(); abrir(id); }; $('sim-close').focus({ preventScroll: true }); m.scrollTop = 0;
+    }
+
+    /* ---------- vestibulares ---------- */
+    function inscrever(curso) {
+        var s = st(); if (s.insc) { showToast('Você já está inscrito(a) no ' + VI.n + '.'); return null; } var cp = cupom(s), val = cp.ok ? VI.taxa * .9 : VI.taxa;
+        s.insc = { id: 'VB' + (2000 + Math.floor(Math.random() * 8000)), curso: curso, valor: val, cupom: cp.ok, t0: Date.now() }; put(s);
+        mail('Inscrição confirmada - ' + VI.n, 'Nº ' + s.insc.id + ' · ' + curso + '.', ['Sua inscrição no ' + VI.n + ' foi confirmada!', '', 'Inscrição: ' + s.insc.id, 'Curso: ' + curso, 'Taxa: ' + R(val) + (cp.ok ? ' (com 10% do cupom de simulados)' : ''), 'Prova: ' + data(VI.prova) + ', ' + VI.local, '', 'Leve um documento com foto. (Demonstração: pagamento simulado.)'].join('\n'));
+        showToast('Inscrição ' + s.insc.id + ' confirmada! Veja o e-mail no Webmail.'); return s.insc;
+    }
+    function divulgar(id) {
+        var s = st(), v = VE.filter(function (x) { return x.id === id; })[0], link = location.href.split('#')[0] + '#indica-FNET' + ra() + '-' + id;
+        try { navigator.clipboard.writeText('Faça o ' + v.n + ' e conheça a FNET: ' + link); } catch (e) { } var novo = !s.div[id]; s.div[id] = 1; put(s);
+        if (novo) { xp(10, 'Divulgação de vestibular', 'divulga', 3); showToast('Link copiado! +10 XP pela divulgação.'); } else showToast('Link copiado!'); return novo;
+    }
+    function indicacao() { var s = st(); if (s.ind >= 3) { showToast('Limite da demonstração: 3 indicações.'); return false; } s.ind++; put(s); xp(50, 'Indicação convertida (demonstração)'); return true; }
+
+    function pintarTudo() { pintarResumo(); pintarSims(); pintarVest(); pintarDiv(); }
+    function pintarResumo() {
+        var el = $('sm-res'); if (!el) return; var s = st(), m = melhores(s), ks = Object.keys(m), media = ks.length ? Math.round(ks.reduce(function (n, k) { return n + m[k]; }, 0) / ks.length) : null, cp = cupom(s);
+        el.innerHTML = [['Simulados feitos', s.res.length, 'fa-clipboard-check'], ['Média dos melhores', media == null ? '—' : media + '%', 'fa-chart-line'], ['Cupom do vestibular', cp.ok ? cp.code : cp.n + '/2', 'fa-ticket']].map(function (x) { return '<div class="apple-card rounded-2xl p-4 flex items-center gap-3"><span class="w-10 h-10 rounded-xl bg-brand-500/10 text-brand-600 flex items-center justify-center"><i class="fa-solid ' + x[2] + '"></i></span><span><small class="block text-[12px] text-slate-500 dark:text-slate-400">' + x[0] + '</small><b class="text-sm text-slate-900 dark:text-white">' + x[1] + '</b></span></div>'; }).join('');
+    }
+    function pintarSims() {
+        var el = $('sm-list'); if (!el) return; var s = st(), m = melhores(s);
+        el.innerHTML = SIM.map(function (x) { var n = s.res.filter(function (r) { return r.id === x.id; }).length;
+            return '<div class="apple-card rounded-[28px] overflow-hidden flex flex-col"><div class="h-24 flex items-center justify-center text-white text-3xl" style="background:linear-gradient(145deg,' + x.c[0] + ',' + x.c[1] + ')"><i class="fa-solid ' + x.ic + '"></i></div><div class="p-5 flex-1 flex flex-col"><h3 class="text-sm font-bold text-slate-900 dark:text-white">' + x.n + '</h3><p class="text-xs text-slate-500 dark:text-slate-400 mt-1">' + x.q.length + ' questões · ' + x.min + ' min</p>' +
+                '<p class="text-xs mt-3 ' + (x.id in m ? 'text-emerald-500 font-semibold' : 'text-slate-500 dark:text-slate-400') + '">' + (x.id in m ? 'Melhor resultado: ' + m[x.id] + '% (' + n + (n === 1 ? ' tentativa)' : ' tentativas)') : 'Ainda não feito') + '</p><button type="button" data-ini="' + x.id + '" class="apple-btn w-full mt-4 py-2.5 rounded-xl text-xs font-semibold bg-brand-600 hover:bg-brand-700 text-white">' + (n ? 'Fazer de novo' : 'Começar') + '</button></div></div>'; }).join('');
+    }
+    function pintarVest() {
+        var el = $('sm-vest'); if (!el) return; var s = st(), cp = cupom(s), val = cp.ok ? VI.taxa * .9 : VI.taxa;
+        el.innerHTML = '<div class="flex flex-wrap items-start justify-between gap-3 mb-4"><div><h3 class="text-sm font-bold text-slate-900 dark:text-white">' + VI.n + '</h3><p class="text-xs text-slate-500 dark:text-slate-400 mt-1"><i class="fa-regular fa-calendar text-brand-600 mr-1.5"></i>Prova em ' + data(VI.prova) + ' · ' + VI.local + '</p></div><span class="cc-off">Inscrições abertas</span></div>' +
+            (s.insc ? '<div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 text-xs text-slate-700 dark:text-slate-200"><b class="text-emerald-500"><i class="fa-solid fa-circle-check mr-1.5"></i>Inscrição ' + s.insc.id + ' confirmada</b><p class="mt-1">' + esc(s.insc.curso) + ' · ' + R(s.insc.valor) + (s.insc.cupom ? ' (com cupom de 10%)' : '') + '. Detalhes no seu Webmail.</p></div>'
+                : '<label class="block text-[12px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1" for="sm-curso">Curso</label><select id="sm-curso" class="w-full px-3 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-sm text-slate-900 dark:text-white outline-none mb-3">' + VI.cursos.map(function (c) { return '<option value="' + c[0] + '">' + c[0] + ' (' + c[1] + ' vagas)</option>'; }).join('') + '</select>' +
+                '<div class="flex flex-wrap items-center justify-between gap-3"><p class="text-xs text-slate-600 dark:text-slate-300">Taxa: ' + (cp.ok ? '<s class="text-slate-400">' + R(VI.taxa) + '</s> <b class="text-emerald-500">' + R(val) + '</b> <span class="text-amber-500">com o cupom ' + cp.code + '</span>' : '<b>' + R(VI.taxa) + '</b> · faça 2 simulados com 70% ou mais para ganhar 10% de desconto') + '</p><button type="button" id="sm-insc" class="apple-btn px-5 py-2.5 rounded-xl text-xs font-semibold bg-brand-600 hover:bg-brand-700 text-white">Inscrever-me</button></div>');
+    }
+    function pintarDiv() {
+        var el = $('sm-div'); if (!el) return; var s = st();
+        el.innerHTML = VE.map(function (v) { return '<div class="flex flex-wrap items-center gap-3 p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5"><div class="min-w-0 flex-1"><b class="block text-[13px] text-slate-900 dark:text-white">' + v.n + '</b><small class="text-[12px] text-slate-500 dark:text-slate-400">' + v.l + ' · inscrições até ' + data(v.d) + '</small></div>' +
+            '<button type="button" data-div="' + v.id + '" class="apple-btn px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap ' + (s.div[v.id] ? 'bg-black/5 dark:bg-white/10 text-slate-900 dark:text-slate-100' : 'bg-brand-600 text-white') + '"><i class="fa-solid fa-link mr-1.5"></i>' + (s.div[v.id] ? 'Copiar link' : 'Divulgar (+10 XP)') + '</button></div>'; }).join('') +
+            '<div class="flex flex-wrap items-center justify-between gap-3 pt-3 mt-1 border-t border-black/5 dark:border-white/10"><p class="text-xs text-slate-600 dark:text-slate-300"><i class="fa-solid fa-user-plus text-brand-600 mr-1.5"></i>Inscrições feitas pelo seu link: <b id="sm-ind">' + s.ind + '</b> · cada uma vale <b>+50 XP</b></p><button type="button" id="sm-ind-b" class="apple-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-black/5 dark:bg-white/10 text-slate-500">Simular indicação (demo)</button></div>';
+    }
+    window.renderSimulados = function (c) {
+        var STEPS = [['fa-pen-to-square', 'Faça simulados', 'Três áreas, uma questão por vez, com cronômetro e correção comentada.'], ['fa-ticket', 'Libere o desconto', 'Com 2 simulados acima de 70%, você ganha 10% na inscrição do vestibular FNET.'], ['fa-bullhorn', 'Divulgue e ganhe XP', 'Compartilhe vestibulares de outras instituições e some XP pela divulgação e pelas indicações.']];
+        c.innerHTML = '<div id="sm-root" class="space-y-6"><div><h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-graduation-cap text-brand-600"></i> Simulados & Vestibulares</h2><p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Treine, ganhe desconto no vestibular da FNET e divulgue oportunidades.</p></div><div id="sm-res" class="grid sm:grid-cols-3 gap-3"></div>' +
+            '<ol class="grid sm:grid-cols-3 gap-3">' + STEPS.map(function (x, i) { return '<li class="apple-card rounded-2xl p-4 flex gap-3"><div class="w-9 h-9 flex-none rounded-xl bg-brand-500/10 text-brand-600 flex items-center justify-center"><i class="fa-solid ' + x[0] + '"></i></div><div><p class="text-[12px] font-bold text-brand-600">PASSO ' + (i + 1) + '</p><h4 class="text-[13px] font-bold text-slate-900 dark:text-white">' + x[1] + '</h4><p class="text-xs text-slate-500 dark:text-slate-400">' + x[2] + '</p></div></li>'; }).join('') + '</ol>' +
+            '<div id="sm-list" class="grid sm:grid-cols-3 gap-5"></div><div class="grid lg:grid-cols-2 gap-6 items-start"><section class="apple-card rounded-[28px] p-5 sm:p-6"><h3 class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-4">Vestibular interno</h3><div id="sm-vest"></div></section>' +
+            '<section class="apple-card rounded-[28px] p-5 sm:p-6"><h3 class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-4">Divulgue vestibulares e ganhe XP</h3><div id="sm-div" class="space-y-3"></div></section></div>' +
+            '<p class="text-[12px] text-slate-500 dark:text-slate-400"><i class="fa-solid fa-circle-info text-brand-600 mr-1.5"></i>Demonstração: questões, instituições, datas, taxa e cupom são exemplos. A indicação só deveria valer quando a pessoa realmente se inscrevesse pelo seu link, o que exige backend.</p></div>';
+        $('sm-root').addEventListener('click', function (e) {
+            var i = e.target.closest('[data-ini]'), d = e.target.closest('[data-div]');
+            if (i) abrir(i.dataset.ini); else if (d) { divulgar(+d.dataset.div); pintarDiv(); }
+            else if (e.target.closest('#sm-insc')) { if (inscrever($('sm-curso').value)) pintarVest(); }
+            else if (e.target.closest('#sm-ind-b')) { if (indicacao()) pintarDiv(); }
+        });
+        pintarTudo();
+    };
+    window.__sm = { SIM: SIM, st: st, cupom: cupom };
+})();
+
+</script>
+<script>
+/* V22: copiar para a área de transferência com plano B (vale para links, endereços e códigos de todos os módulos) */
+(function () {
+    function plano(t) { var ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0'; document.body.appendChild(ta); ta.select(); var ok = false; try { ok = document.execCommand('copy'); } catch (e) { } ta.remove(); return ok; }
+    var orig = null; try { if (navigator.clipboard && navigator.clipboard.writeText) orig = navigator.clipboard.writeText.bind(navigator.clipboard); } catch (e) { }
+    var seguro = function (t) { if (!orig) return Promise.resolve(plano(t)); try { return Promise.resolve(orig(t)).catch(function () { return plano(t); }); } catch (e) { return Promise.resolve(plano(t)); } };
+    try { if (navigator.clipboard) Object.defineProperty(navigator.clipboard, 'writeText', { value: seguro, configurable: true, writable: true }); else Object.defineProperty(navigator, 'clipboard', { value: { writeText: seguro }, configurable: true }); } catch (e) { }
 })();
 
 </script>
