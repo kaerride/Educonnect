@@ -4305,9 +4305,9 @@ document.addEventListener('keydown', function (ev) {
     function ativo() { return lerP().filter(function (x) { return !x.retirado; })[0]; }
     function hora(min) { var d = new Date(Date.now() + min * 60000); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
 
-    function criar() {
+    function criar(idPre) {
         var s = S[sel - 1], c = cart(), t = tot(); if (!t.n) { showToast('Adicione itens ao carrinho.'); return null; }
-        var o = { id: 'FN' + (1000 + Math.floor(Math.random() * 9000)), lojaId: s.id, loja: s.n, itens: Object.keys(c).map(function (k) { return { n: s.m[k][0], q: c[k], p: s.m[k][2] }; }),
+        var o = { id: idPre || ('FN' + (1000 + Math.floor(Math.random() * 9000))), lojaId: s.id, loja: s.n, itens: Object.keys(c).map(function (k) { return { n: s.m[k][0], q: c[k], p: s.m[k][2] }; }),
             sub: t.sub, desc: t.d, total: t.t, eta: eta, pag: pag, t0: Date.now(), prep: s.prep, code: String(1000 + Math.floor(Math.random() * 9000)), retirado: false, notificado: false };
         var a = lerP(); a.unshift(o); salvarP(a); carts[sel] = {}; last = ''; return o;
     }
@@ -4354,8 +4354,8 @@ document.addEventListener('keydown', function (ev) {
             '<div class="space-y-1 pt-3 border-t border-black/5 dark:border-white/10 text-xs"><div class="flex justify-between"><span class="text-slate-500 dark:text-slate-400">Subtotal</span><span class="text-slate-900 dark:text-white">' + R(t.sub) + '</span></div>' +
             (aluno() ? '<div class="flex justify-between"><span class="text-amber-500"><i class="fa-solid fa-id-card mr-1"></i>Carteirinha FNET (10%)</span><span class="text-amber-500">− ' + R(t.d) + '</span></div>' : '') +
             '<div class="flex justify-between text-sm font-bold pt-1"><span class="text-slate-900 dark:text-white">Total</span><span class="text-brand-600">' + R(t.t) + '</span></div></div>' +
-            '<button type="button" id="cn-go" class="apple-btn w-full mt-4 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-semibold shadow-lg"' + (t.n ? '' : ' disabled style="opacity:.5;cursor:not-allowed"') + '>Pagar ' + R(t.t) + '</button>' +
-            '<p class="text-[12px] text-slate-500 dark:text-slate-400 mt-2 text-center">Retirada prevista às ' + hora(eta) + '. Pagamento simulado (demonstração).</p>';
+            '<button type="button" id="cn-go" class="apple-btn w-full mt-4 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-semibold shadow-lg"' + (t.n ? '' : ' disabled style="opacity:.5;cursor:not-allowed"') + '>' + (pag === 'Pix' ? 'Pagar com Pix · ' : 'Pagar ') + R(t.t) + '</button>' +
+            '<p class="text-[12px] text-slate-500 dark:text-slate-400 mt-2 text-center">Retirada prevista às ' + hora(eta) + (pag === 'Pix' ? '. Pagamento por Pix, com QR Code.' : '. Pagamento simulado (demonstração).') + '</p>';
     }
     var STP = [['Recebido', 'fa-receipt'], ['Preparando', 'fa-fire-burner'], ['Pronto', 'fa-bag-shopping']];
     function pintarPedido() {
@@ -4397,7 +4397,11 @@ document.addEventListener('keydown', function (ev) {
             if (a) c[a.dataset.a] = (c[a.dataset.a] || 0) + 1; else if (d) { c[d.dataset.d] = (c[d.dataset.d] || 1) - 1; if (c[d.dataset.d] <= 0) delete c[d.dataset.d]; } else return; pintarMenu(); pintarCarrinho(); });
         $('cn-cart').addEventListener('click', function (e) { var t = e.target.closest('[data-e]'), p = e.target.closest('[data-p]');
             if (t) { eta = +t.dataset.e; pintarCarrinho(); } else if (p) { pag = p.dataset.p; pintarCarrinho(); }
-            else if (e.target.closest('#cn-go')) { var o = criar(); if (o) { showToast('Pedido confirmado! Pagamento aprovado (' + pag + ').'); pintarMenu(); pintarCarrinho(); pintarPedido(); var b = $('cn-order'); if (b && b.scrollIntoView) b.scrollIntoView({ behavior: 'smooth', block: 'start' }); } } });
+            else if (e.target.closest('#cn-go')) {
+            var fim = function (o) { if (o) { showToast(pag === 'Pix' ? 'Pix informado! Pedido ' + o.id + ' enviado à loja.' : 'Pedido confirmado! Pagamento aprovado (' + pag + ', simulado).'); pintarMenu(); pintarCarrinho(); pintarPedido(); var b = $('cn-order'); if (b && b.scrollIntoView) b.scrollIntoView({ behavior: 'smooth', block: 'start' }); } };
+            if (pag === 'Pix' && window.FNETPay) { var tt = tot(); if (!tt.n) showToast('Adicione itens ao carrinho.'); else { var pre = 'FN' + (1000 + Math.floor(Math.random() * 9000)); FNETPay.cobrar({ valor: tt.t, ref: pre, titulo: 'Pedido · ' + S[sel - 1].n }).then(function (ok) { if (ok) fim(criar(pre)); }); } }
+            else fim(criar());
+        } });
         last = ''; pintarLojas(); pintarMenu(); pintarCarrinho(); pintarPedido();
     };
     window.__cn = { S: S, add: function (k) { cart()[k] = (cart()[k] || 0) + 1; }, tot: tot, criar: criar, estagio: estagio, setSel: function (i) { sel = i; } };
@@ -4560,6 +4564,7 @@ document.addEventListener("keydown", function (e) { if (e.key === "Escape") docu
         { id: 'cantina', t: 'Como peço na cantina?', k: ['cantina', 'trailer', 'lanche', 'fome', 'comer', 'almoc', 'acai', 'cardapio', 'pedir'], a: 'Em ' + B('Cantina & Trailers') + ' escolha a loja, monte o pedido e diga em quantos minutos chega. Alunos têm ' + B('10% de desconto') + ' automático. Quando ficar pronto, você recebe um aviso e o código de retirada.', go: ['cantina', 'Abrir Cantina'], rel: ['pedido', 'carteirinha'] },
         { id: 'pedido', t: 'Como está meu pedido?', k: ['pedido', 'retirada', 'codigo de retirada'], a: function () { var o = lerLS('fnet_pedidos').filter(function (x) { return !x.retirado; })[0]; if (!o) return 'Você não tem pedido em andamento. Que tal pedir algo na cantina?'; var el = (Date.now() - o.t0) / 1000, ps = o.prep * 2, st = el < 5 ? 'recebido' : (el < 5 + ps ? 'sendo preparado' : 'pronto para retirar');
             return 'Pedido ' + B(o.id) + ' na ' + B(o.loja) + ': ' + B(st) + '. Código de retirada: ' + B(o.code) + ' · Total ' + R(o.total) + '.'; }, go: ['cantina', 'Ver pedido'], rel: ['cantina'] },
+        { id: 'pix', t: 'Como pago por Pix?', k: ['pix', 'qr code', 'copia e cola', 'comprovante', 'pagar', 'pagamento do pedido'], a: 'Na hora de pagar (cantina, uniformes ou taxa do vestibular) aparece um ' + B('QR Code Pix') + ' com o valor. Abra o app do seu banco, leia o QR Code ou use o ' + B('Pix Copia e Cola') + ', confirme e volte para tocar em ' + B('Já fiz o pagamento') + '. Quem atende confere o recebimento, então guarde o comprovante do banco.', go: ['cantina', 'Abrir Cantina'], rel: ['cantina', 'esportes'] },
         { id: 'boleto', t: 'Como tiro a 2ª via do boleto?', k: ['boleto', 'mensalidade', '2a via', 'segunda via', 'financeiro', 'pagamento da', 'bolsa'], a: 'O portal ainda ' + B('não tem área financeira') + ', então não consigo emitir boleto por aqui. Posso abrir um atendimento para o setor Financeiro responder pelo Webmail.', act: 'ticket', rel: ['atendente'] },
         { id: 'senha', t: 'Esqueci minha senha', k: ['senha', 'esqueci', 'login', 'nao consigo entrar', 'acesso'], a: 'Na tela de login há a opção ' + B('Esqueceu?') + ' ao lado da senha. Se não resolver, abro um atendimento para a Secretaria.', act: 'ticket', rel: ['atendente'] },
         { id: 'perfil', t: 'Como altero meu perfil?', k: ['perfil', 'foto', 'avatar', 'alterar dados', 'trocar nome', 'telefone'], a: 'Em ' + B('Meu Perfil') + ' você altera foto, nome, telefone e bio. A foto também aparece na carteirinha.', go: ['perfil', 'Abrir Perfil'], rel: ['carteirinha'] },
@@ -4660,13 +4665,13 @@ document.addEventListener("keydown", function (e) { if (e.key === "Escape") docu
             p: ['Abra Carteirinha & Parceiros (menu Campus). A carteirinha mostra foto, nome e curso.', 'Toque em Mostrar dados para ver RA e nascimento (voltam a ficar ocultos em 15 segundos).', 'Vire a carteirinha para ver o código, que muda a cada 30 segundos.', 'Escolha um parceiro na lista ou no mapa para ver desconto, regra, endereço e horário.', 'No caixa, mostre o código e receba o desconto na hora.'],
             d: ['O desconto não acumula com outras promoções.', 'Use o filtro por categoria para achar o que precisa mais rápido.'] },
         { id: 'cantina', ic: 'fa-utensils', t: 'Cantina e trailers', v: 'cantina', r: 'Peça antes de chegar e retire sem fila em 5 pontos de venda dentro do campus.',
-            p: ['Abra Cantina & Trailers e escolha a loja no mapa ou na lista.', 'Monte o pedido no cardápio.', 'Escolha em quantos minutos você chega e a forma de pagamento.', 'Alunos recebem 10% de desconto automático com a carteirinha.', 'Acompanhe: Recebido, Preparando, Pronto. Mostre o código de 4 dígitos no balcão.'],
-            d: ['Quando o pedido fica pronto, você recebe um aviso e um e-mail no Webmail.', 'Nesta versão de demonstração o pagamento é simulado.'] },
+            p: ['Abra Cantina & Trailers e escolha a loja no mapa ou na lista.', 'Monte o pedido no cardápio.', 'Escolha em quantos minutos você chega e pague por Pix: leia o QR Code no app do seu banco ou use o Pix Copia e Cola.', 'Alunos recebem 10% de desconto automático com a carteirinha.', 'Acompanhe: Recebido, Preparando, Pronto. Mostre o código de 4 dígitos no balcão.'],
+            d: ['Quando o pedido fica pronto, você recebe um aviso e um e-mail no Webmail.', 'O Pix é conferido pela loja. Guarde o comprovante do banco.'] },
         { id: 'aluguel', ic: 'fa-book', t: 'Aluguel de livros físicos', v: 'aluguel', r: 'Pegue livros da biblioteca de graça com a carteirinha. Só há custo se houver dano.',
             p: ['Abra Aluguel de Livros e reserve um título (ele fica separado por 24 horas).', 'Retire na biblioteca mostrando a carteirinha e o código da reserva.', 'Leia por até 7 dias; renove uma vez, se precisar.', 'Na devolução, faça o checklist: capa, páginas, marcas e umidade.', 'Sem problemas: devolução sem custo. Com problema: a biblioteca avalia e responde pelo Webmail.'],
             d: ['Você pode ter até 3 livros ao mesmo tempo.', 'Os valores em caso de dano seguem a política da biblioteca.'] },
         { id: 'esportes', ic: 'fa-medal', t: 'Esportes e atléticas', v: 'esportes', r: 'Entre num time da FNET, registre presença nos treinos e some horas complementares e XP.',
-            p: ['Abra Esportes & Atléticas (menu Campus) e escolha um dos 6 times.', 'Clique em Quero entrar no time e preencha o formulário: dados, posição, dias, contato de emergência e a data do exame.', 'Anexe o exame físico (PDF, JPG ou PNG, até 5 MB, emitido nos últimos 12 meses).', 'Aguarde a análise: o técnico da modalidade aprova, pede ajuste ou recusa, e você é avisado por e-mail.', 'Depois de aprovado(a), registre presença em cada treino: ele vale 2 horas complementares (até 40 h no semestre).', 'Veja no mapa onde ficam o campo, o ginásio, a piscina e a pista.', 'Marque Vou torcer nos próximos jogos e peça seu uniforme oficial com 10% da carteirinha.'],
+            p: ['Abra Esportes & Atléticas (menu Campus) e escolha um dos 6 times.', 'Clique em Quero entrar no time e preencha o formulário: dados, posição, dias, contato de emergência e a data do exame.', 'Anexe o exame físico (PDF, JPG ou PNG, até 5 MB, emitido nos últimos 12 meses).', 'Aguarde a análise: o técnico da modalidade aprova, pede ajuste ou recusa, e você é avisado por e-mail.', 'Depois de aprovado(a), registre presença em cada treino: ele vale 2 horas complementares (até 40 h no semestre).', 'Veja no mapa onde ficam o campo, o ginásio, a piscina e a pista.', 'Marque Vou torcer nos próximos jogos e peça seu uniforme oficial com 10% da carteirinha, pagando por Pix.'],
             d: ['Você ganha 15 XP por treino (1 por dia) e 25 XP ao entrar num time.', 'A coordenação valida as horas complementares.'] },
         { id: 'jornal', ic: 'fa-newspaper', t: 'Jornal FNET', v: 'jornal', r: 'Notícias do campus feitas por estudantes. Leia, participe da enquete e escreva a sua matéria.',
             p: ['Abra o Jornal FNET (menu Campus) e escolha uma editoria: Campus, Esportes, Cultura, Carreira ou Entretenimento.', 'Clique em uma matéria para ler; você pode curtir e copiar o link.', 'Vote na enquete do dia e veja o resultado.', 'Em Seja repórter, escreva título e texto (mínimo 150 caracteres) e envie à redação.', 'Acompanhe o status: Enviada, Em revisão, Publicada. Matérias publicadas aparecem no topo do jornal.'],
@@ -4795,8 +4800,8 @@ document.addEventListener("keydown", function (e) { if (e.key === "Escape") docu
     function torcer(id) { var s = st(), j = J.filter(function (x) { return x.id === id; })[0]; s.j[id] = !s.j[id]; var novo = s.j[id] && !s.x['j' + id]; if (s.j[id]) s.x['j' + id] = 1; put(s); if (novo) xp(10, 'Torcida confirmada!'); return s.j[id]; }
     function pedir(pid, tid, tam) {
         var s = st(), p = U.filter(function (x) { return x.id === pid; })[0], t = time(tid), d = Math.round(p.p * 10) / 100, o = { id: 'UN' + (1000 + Math.floor(Math.random() * 9000)), prod: p.n, time: t.n, tam: tam, total: p.p - d, t0: Date.now() };
-        s.u.unshift(o); put(s); showToast('Pedido ' + o.id + ' registrado! Pagamento simulado.');
-        mail('Pedido de uniforme ' + o.id, p.n + ' ' + t.n + ' (' + tam + '): ' + R(o.total) + '.', ['Recebemos seu pedido ' + o.id + '.', '', p.n + ' - ' + t.n + ' - tamanho ' + tam, 'Total com 10% da carteirinha: ' + R(o.total), '', 'Retirada na sala da Atlética em cerca de 7 dias. (Demonstração: pagamento simulado.)'].join('\n')); return o;
+        s.u.unshift(o); put(s); showToast('Pedido ' + o.id + ' registrado! Pix informado: a Atlética confere o recebimento.');
+        mail('Pedido de uniforme ' + o.id, p.n + ' ' + t.n + ' (' + tam + '): ' + R(o.total) + '.', ['Recebemos seu pedido ' + o.id + '.', '', p.n + ' - ' + t.n + ' - tamanho ' + tam, 'Total com 10% da carteirinha: ' + R(o.total), '', 'Pagamento por Pix informado por você: a Atlética confere o recebimento. Retirada na sala da Atlética em cerca de 7 dias.'].join('\n')); return o;
     }
 
     function arte(a) {
@@ -4872,7 +4877,9 @@ document.addEventListener("keydown", function (e) { if (e.key === "Escape") docu
             if (a) entrar(+a.dataset.ent); else if (p) presenca(+p.dataset.pres); else if (s) sair(+s.dataset.sair);
             else if (v) { sel = +v.dataset.ver; pintarLocal(); var m = $('es-mapa'); if (m && m.scrollIntoView) m.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; } else return; pintarTimes(); });
         $('es-jogos').addEventListener('click', function (e) { var b = e.target.closest('[data-jg]'); if (b) { torcer(+b.dataset.jg); pintarJogos(); } });
-        $('es-unif').addEventListener('click', function (e) { var b = e.target.closest('[data-ped]'); if (!b) return; var pid = +b.dataset.ped, root = $('es-unif'), tm = root.querySelector('select[data-time="' + pid + '"]'), z = root.querySelector('input[name="tam' + pid + '"]:checked'); pedir(pid, +tm.value, z ? z.value : 'M'); pintarUnif(); });
+        $('es-unif').addEventListener('click', function (e) { var b = e.target.closest('[data-ped]'); if (!b) return; var pid = +b.dataset.ped, root = $('es-unif'), tm = root.querySelector('select[data-time="' + pid + '"]'), z = root.querySelector('input[name="tam' + pid + '"]:checked'); var pr = U.filter(function (x) { return x.id === pid; })[0], tam = z ? z.value : 'M', tid = +tm.value;
+            if (window.FNETPay) FNETPay.cobrar({ valor: Math.round(pr.p * 90) / 100, ref: 'UN' + Date.now().toString(36).slice(-6).toUpperCase(), titulo: pr.n + ' · ' + time(tid).n + ' (' + tam + ')' }).then(function (ok) { if (ok) { pedir(pid, tid, tam); pintarUnif(); } });
+            else { pedir(pid, tid, tam); pintarUnif(); } });
         $('es-locs').addEventListener('click', function (e) { var b = e.target.closest('[data-l]'); if (b) { sel = +b.dataset.l; pintarLocal(); } });
         $('es-svg').addEventListener('click', function (e) { var g = e.target.closest('.cc-pin'); if (g) { sel = +g.dataset.pin; pintarLocal(); } });
         $('es-svg').addEventListener('keydown', function (e) { var g = e.target.closest && e.target.closest('.cc-pin'); if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); sel = +g.dataset.pin; pintarLocal(); } });
@@ -5231,7 +5238,7 @@ document.addEventListener("keydown", function (e) { if (e.key === "Escape") docu
     function inscrever(curso) {
         var s = st(); if (s.insc) { showToast('Você já está inscrito(a) no ' + VI.n + '.'); return null; } var cp = cupom(s), val = cp.ok ? VI.taxa * .9 : VI.taxa;
         s.insc = { id: 'VB' + (2000 + Math.floor(Math.random() * 8000)), curso: curso, valor: val, cupom: cp.ok, t0: Date.now() }; put(s);
-        mail('Inscrição confirmada - ' + VI.n, 'Nº ' + s.insc.id + ' · ' + curso + '.', ['Sua inscrição no ' + VI.n + ' foi confirmada!', '', 'Inscrição: ' + s.insc.id, 'Curso: ' + curso, 'Taxa: ' + R(val) + (cp.ok ? ' (com 10% do cupom de simulados)' : ''), 'Prova: ' + data(VI.prova) + ', ' + VI.local, '', 'Leve um documento com foto. (Demonstração: pagamento simulado.)'].join('\n'));
+        mail('Inscrição confirmada - ' + VI.n, 'Nº ' + s.insc.id + ' · ' + curso + '.', ['Sua inscrição no ' + VI.n + ' foi confirmada!', '', 'Inscrição: ' + s.insc.id, 'Curso: ' + curso, 'Taxa: ' + R(val) + (cp.ok ? ' (com 10% do cupom de simulados)' : ''), 'Prova: ' + data(VI.prova) + ', ' + VI.local, '', 'Taxa paga por Pix (informada por você; a FNET confere o recebimento). Leve um documento com foto no dia da prova.'].join('\n'));
         showToast('Inscrição ' + s.insc.id + ' confirmada! Veja o e-mail no Webmail.'); return s.insc;
     }
     function divulgar(id) {
@@ -5275,7 +5282,11 @@ document.addEventListener("keydown", function (e) { if (e.key === "Escape") docu
         $('sm-root').addEventListener('click', function (e) {
             var i = e.target.closest('[data-ini]'), d = e.target.closest('[data-div]');
             if (i) abrir(i.dataset.ini); else if (d) { divulgar(+d.dataset.div); pintarDiv(); }
-            else if (e.target.closest('#sm-insc')) { if (inscrever($('sm-curso').value)) pintarVest(); }
+            else if (e.target.closest('#sm-insc')) {
+                var cur = $('sm-curso').value, es = st();
+                if (es.insc) showToast('Você já está inscrito(a) no ' + VI.n + '.');
+                else { var cpn = cupom(es), val = cpn.ok ? VI.taxa * .9 : VI.taxa; if (window.FNETPay) FNETPay.cobrar({ valor: val, ref: 'VB' + Date.now().toString(36).slice(-6).toUpperCase(), titulo: VI.n + ' · taxa de inscrição' }).then(function (ok) { if (ok && inscrever(cur)) pintarVest(); }); else if (inscrever(cur)) pintarVest(); }
+            }
             else if (e.target.closest('#sm-ind-b')) { if (indicacao()) pintarDiv(); }
         });
         pintarTudo();
@@ -5742,6 +5753,111 @@ window.FNETImg = (function () {
         camisa: { 1: I.c_1, 2: I.c_2, 3: I.c_3 },
         pos: { time: '50% 22%', campo: '50% 22%', formatura: '50% 35%', carteirinha: '50% 50%', feira: '50% 50%', palco: '50% 42%', natacao: '50% 20%', futsal: '50% 45%', volei: '50% 22%', basquete: '50% 22%', atletismo: '50% 30%', fachada: '50% 30%', biblioteca: '50% 55%' } };
 })();
+</script>
+<script>
+/* V26: Pix de verdade — BR Code (padrão do Banco Central) + QR Code + Pix Copia e Cola */
+(function () {
+    /* >>> Troque aqui a chave, o nome e a cidade do recebedor <<< */
+    var PIX = { chave: '119826284186', nome: 'FNET PORTAL', cidade: 'PORTO ESPERANCA' };
+
+    var $ = function (id) { return document.getElementById(id); };
+    var R = function (v) { return 'R$ ' + Number(v).toFixed(2).replace('.', ','); };
+    var esc = function (t) { return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+
+    /* ---------- BR Code (Pix estático com valor) ---------- */
+    function tlv(id, v) { return id + ('0' + v.length).slice(-2) + v; }
+    function ascii(t, n) { return String(t).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Za-z0-9 ]/g, '').toUpperCase().slice(0, n); }
+    function crc16(s) { var c = 0xFFFF, i, j; for (i = 0; i < s.length; i++) { c ^= s.charCodeAt(i) << 8; for (j = 0; j < 8; j++) c = (c & 0x8000) ? ((c << 1) ^ 0x1021) & 0xFFFF : (c << 1) & 0xFFFF; } return ('0000' + c.toString(16).toUpperCase()).slice(-4); }
+    function br(valor, ref) {
+        var p = tlv('00', '01') + tlv('01', '11') + tlv('26', tlv('00', 'br.gov.bcb.pix') + tlv('01', PIX.chave)) + tlv('52', '0000') + tlv('53', '986') + tlv('54', Number(valor).toFixed(2)) + tlv('58', 'BR') +
+            tlv('59', ascii(PIX.nome, 25)) + tlv('60', ascii(PIX.cidade, 15)) + tlv('62', tlv('05', String(ref || '').replace(/[^A-Za-z0-9]/g, '').slice(0, 25) || '***')) + '6304';
+        return p + crc16(p);
+    }
+
+    /* ---------- QR Code (modo byte, correção M, versões 1 a 10) ---------- */
+    var EXP = [], LOG = [];
+    (function () { var x = 1, i; for (i = 0; i < 255; i++) { EXP[i] = x; LOG[x] = i; x <<= 1; if (x & 256) x ^= 0x11D; } for (i = 255; i < 512; i++) EXP[i] = EXP[i - 255]; })();
+    function gm(a, b) { return (a && b) ? EXP[LOG[a] + LOG[b]] : 0; }
+    function rsRem(data, n) {
+        var g = [1], i, j, r = []; for (i = 0; i < n; i++) { var ng = []; for (j = 0; j <= g.length; j++) ng[j] = 0; for (j = 0; j < g.length; j++) { ng[j] ^= g[j]; ng[j + 1] ^= gm(g[j], EXP[i]); } g = ng; }
+        for (i = 0; i < n; i++) r[i] = 0;
+        for (i = 0; i < data.length; i++) { var f = data[i] ^ r[0]; r.shift(); r.push(0); for (j = 0; j < n; j++) r[j] ^= gm(g[j + 1], f); }
+        return r;
+    }
+    var TB = { 1: [16, 10, 1, 16, 0, 0], 2: [28, 16, 1, 28, 0, 0], 3: [44, 26, 1, 44, 0, 0], 4: [64, 18, 2, 32, 0, 0], 5: [86, 24, 2, 43, 0, 0], 6: [108, 16, 4, 27, 0, 0], 7: [124, 18, 4, 31, 0, 0], 8: [154, 22, 2, 38, 2, 39], 9: [182, 22, 3, 36, 2, 37], 10: [216, 26, 4, 43, 1, 44] };
+    var AL = { 1: [], 2: [6, 18], 3: [6, 22], 4: [6, 26], 5: [6, 30], 6: [6, 34], 7: [6, 22, 38], 8: [6, 24, 42], 9: [6, 26, 46], 10: [6, 28, 50] };
+    function qr(texto) {
+        var bytes = [], i, j, v, t; for (i = 0; i < texto.length; i++) { var c = texto.charCodeAt(i); if (c < 128) bytes.push(c); else { var u = unescape(encodeURIComponent(texto.charAt(i))); for (j = 0; j < u.length; j++) bytes.push(u.charCodeAt(j)); } }
+        for (v = 1; v <= 10; v++) if (4 + (v < 10 ? 8 : 16) + 8 * bytes.length <= 8 * TB[v][0]) break;
+        if (v > 10) throw new Error('Texto grande demais para o QR');
+        t = TB[v]; var bits = []; var put = function (val, n) { for (var k = n - 1; k >= 0; k--) bits.push((val >>> k) & 1); };
+        put(4, 4); put(bytes.length, v < 10 ? 8 : 16); bytes.forEach(function (b) { put(b, 8); });
+        var cap = t[0] * 8; for (i = 0; i < 4 && bits.length < cap; i++) bits.push(0); while (bits.length % 8) bits.push(0);
+        var data = []; for (i = 0; i < bits.length; i += 8) { var by = 0; for (j = 0; j < 8; j++) by = (by << 1) | bits[i + j]; data.push(by); }
+        for (i = 0; data.length < t[0]; i++) data.push(i % 2 ? 0x11 : 0xEC);
+        var nb = t[2] + t[4], blocks = [], ecs = [], k = 0; for (i = 0; i < nb; i++) { var len = i < t[2] ? t[3] : t[5], blk = data.slice(k, k + len); k += len; blocks.push(blk); ecs.push(rsRem(blk, t[1])); }
+        var all = [], maxd = t[4] ? t[5] : t[3]; for (i = 0; i < maxd; i++) for (j = 0; j < nb; j++) if (i < blocks[j].length) all.push(blocks[j][i]);
+        for (i = 0; i < t[1]; i++) for (j = 0; j < nb; j++) all.push(ecs[j][i]);
+        var N = 17 + 4 * v, m = [], fn = [], y, x; for (y = 0; y < N; y++) { m.push([]); fn.push([]); for (x = 0; x < N; x++) { m[y].push(0); fn[y].push(false); } }
+        var setF = function (xx, yy, d) { m[yy][xx] = d ? 1 : 0; fn[yy][xx] = true; };
+        for (i = 0; i < N; i++) { setF(6, i, i % 2 === 0); setF(i, 6, i % 2 === 0); }
+        var finder = function (cx, cy) { for (var dy = -4; dy <= 4; dy++) for (var dx = -4; dx <= 4; dx++) { var xx = cx + dx, yy = cy + dy; if (xx >= 0 && xx < N && yy >= 0 && yy < N) { var d = Math.max(Math.abs(dx), Math.abs(dy)); setF(xx, yy, d !== 2 && d !== 4); } } };
+        finder(3, 3); finder(N - 4, 3); finder(3, N - 4);
+        var pos = AL[v], last = pos.length - 1; for (i = 0; i < pos.length; i++) for (j = 0; j < pos.length; j++) { if ((i === 0 && j === 0) || (i === 0 && j === last) || (i === last && j === 0)) continue; for (var dy = -2; dy <= 2; dy++) for (var dx = -2; dx <= 2; dx++) setF(pos[i] + dx, pos[j] + dy, Math.max(Math.abs(dx), Math.abs(dy)) !== 1); }
+        var fmt = function (mask) {
+            var d = (0 << 3) | mask, rem = d; for (var q = 0; q < 10; q++) rem = (rem << 1) ^ ((rem >>> 9) * 0x537); var b = ((d << 10) | rem) ^ 0x5412, g = function (n) { return ((b >>> n) & 1) === 1; };
+            for (var a = 0; a <= 5; a++) setF(8, a, g(a)); setF(8, 7, g(6)); setF(8, 8, g(7)); setF(7, 8, g(8)); for (a = 9; a < 15; a++) setF(14 - a, 8, g(a));
+            for (a = 0; a < 8; a++) setF(N - 1 - a, 8, g(a)); for (a = 8; a < 15; a++) setF(8, N - 15 + a, g(a)); setF(8, N - 8, true);
+        };
+        fmt(0);
+        if (v >= 7) { var rem = v; for (i = 0; i < 12; i++) rem = (rem << 1) ^ ((rem >>> 11) * 0x1F25); var vb = (v << 12) | rem; for (i = 0; i < 18; i++) { var bit = ((vb >>> i) & 1) === 1, a1 = N - 11 + i % 3, b1 = Math.floor(i / 3); setF(a1, b1, bit); setF(b1, a1, bit); } }
+        var idx = 0; for (var right = N - 1; right >= 1; right -= 2) { if (right === 6) right = 5; for (var vert = 0; vert < N; vert++) for (j = 0; j < 2; j++) { x = right - j; var up = ((right + 1) & 2) === 0; y = up ? N - 1 - vert : vert; if (!fn[y][x] && idx < all.length * 8) { m[y][x] = (all[idx >>> 3] >>> (7 - (idx & 7))) & 1; idx++; } } }
+        var maskFn = [function (x, y) { return (x + y) % 2 === 0; }, function (x, y) { return y % 2 === 0; }, function (x, y) { return x % 3 === 0; }, function (x, y) { return (x + y) % 3 === 0; }, function (x, y) { return (Math.floor(x / 3) + Math.floor(y / 2)) % 2 === 0; }, function (x, y) { return x * y % 2 + x * y % 3 === 0; }, function (x, y) { return (x * y % 2 + x * y % 3) % 2 === 0; }, function (x, y) { return ((x + y) % 2 + x * y % 3) % 2 === 0; }];
+        var pen = function (g) {
+            var p = 0, yy, xx, run, k2, dark = 0;
+            for (yy = 0; yy < N; yy++) { run = 1; for (xx = 1; xx <= N; xx++) { if (xx < N && g[yy][xx] === g[yy][xx - 1]) run++; else { if (run >= 5) p += 3 + run - 5; run = 1; } } }
+            for (xx = 0; xx < N; xx++) { run = 1; for (yy = 1; yy <= N; yy++) { if (yy < N && g[yy][xx] === g[yy - 1][xx]) run++; else { if (run >= 5) p += 3 + run - 5; run = 1; } } }
+            for (yy = 0; yy < N - 1; yy++) for (xx = 0; xx < N - 1; xx++) { var c0 = g[yy][xx]; if (c0 === g[yy][xx + 1] && c0 === g[yy + 1][xx] && c0 === g[yy + 1][xx + 1]) p += 3; }
+            var pa = [1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0], pb = pa.slice().reverse();
+            for (yy = 0; yy < N; yy++) for (xx = 0; xx <= N - 11; xx++) { var ra = true, rb = true, ca = true, cb = true; for (k2 = 0; k2 < 11; k2++) { if (g[yy][xx + k2] !== pa[k2]) ra = false; if (g[yy][xx + k2] !== pb[k2]) rb = false; if (g[xx + k2][yy] !== pa[k2]) ca = false; if (g[xx + k2][yy] !== pb[k2]) cb = false; } if (ra || rb) p += 40; if (ca || cb) p += 40; }
+            for (yy = 0; yy < N; yy++) for (xx = 0; xx < N; xx++) dark += g[yy][xx];
+            return p + 10 * (Math.ceil(Math.abs(dark * 20 - N * N * 10) / (N * N)) - 1);
+        };
+        var best = null, bp = 1e9, base = m.map(function (r) { return r.slice(); });
+        for (var mk = 0; mk < 8; mk++) { for (y = 0; y < N; y++) for (x = 0; x < N; x++) m[y][x] = base[y][x] ^ ((!fn[y][x] && maskFn[mk](x, y)) ? 1 : 0); fmt(mk); var pp = pen(m); if (pp < bp) { bp = pp; best = m.map(function (r) { return r.slice(); }); } }
+        return best;
+    }
+    function svgQr(m) {
+        var N = m.length, d = '', y, x, s; for (y = 0; y < N; y++) { x = 0; while (x < N) { if (m[y][x]) { s = x; while (x < N && m[y][x]) x++; d += 'M' + (s + 4) + ' ' + (y + 4) + 'h' + (x - s) + 'v1h-' + (x - s) + 'z'; } else x++; } }
+        return '<svg viewBox="0 0 ' + (N + 8) + ' ' + (N + 8) + '" class="w-full h-auto block" shape-rendering="crispEdges" role="img" aria-label="QR Code do Pix"><rect width="' + (N + 8) + '" height="' + (N + 8) + '" fill="#fff"/><path d="' + d + '" fill="#000"/></svg>';
+    }
+
+    /* ---------- tela de pagamento ---------- */
+    var aberto = null;
+    function cobrar(o) {
+        return new Promise(function (resolve) {
+            var payload = br(o.valor, o.ref), opener = document.activeElement, feito = false;
+            var m = document.createElement('div'); m.id = 'modal-pix'; m.className = 'fixed inset-0 bg-black/80 backdrop-blur-xl z-[60] overflow-y-auto p-3 sm:p-6'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-labelledby', 'pix-t');
+            m.innerHTML = '<div class="apple-glass rounded-[28px] max-w-xl mx-auto my-4 shadow-2xl overflow-hidden"><div class="p-6 pb-4 flex items-start justify-between gap-3 border-b border-black/5 dark:border-white/10"><div class="min-w-0"><p class="text-[12px] uppercase tracking-widest text-emerald-500 font-bold"><i class="fa-brands fa-pix mr-1.5"></i>Pagamento por Pix</p><h2 id="pix-t" class="text-lg font-bold text-slate-900 dark:text-white truncate">' + esc(o.titulo || 'Pagamento') + '</h2><p class="text-xs text-slate-500 dark:text-slate-400">Referência ' + esc(o.ref) + '</p></div><button type="button" id="pix-x" aria-label="Cancelar pagamento" class="w-9 h-9 rounded-full bg-black/5 dark:bg-white/10 text-slate-500"><i class="fa-solid fa-xmark"></i></button></div>' +
+                '<div class="p-6 grid sm:grid-cols-2 gap-6 items-start"><div><div class="bg-white rounded-2xl p-2 shadow-lg max-w-[260px] mx-auto">' + svgQr(qr(payload)) + '</div><p class="text-[12px] text-center text-slate-500 dark:text-slate-400 mt-3">Aponte a câmera do app do seu banco para ler</p></div>' +
+                '<div class="space-y-4"><div><p class="text-[12px] uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400">Valor</p><p class="text-3xl font-bold text-slate-900 dark:text-white" style="font-variant-numeric:tabular-nums">' + R(o.valor) + '</p></div>' +
+                '<div><p class="text-[12px] uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400 mb-1">Pix Copia e Cola</p><div class="flex gap-2"><input id="pix-code" readonly value="' + esc(payload) + '" aria-label="Código Pix Copia e Cola" class="min-w-0 flex-1 px-3 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-[12px] text-slate-700 dark:text-slate-200 outline-none" style="font-family:ui-monospace,monospace"><button type="button" id="pix-copy" class="apple-btn px-3 py-2 rounded-xl text-xs font-semibold bg-brand-600 hover:bg-brand-700 text-white whitespace-nowrap"><i class="fa-regular fa-copy mr-1.5"></i>Copiar</button></div></div>' +
+                '<ol class="text-xs text-slate-600 dark:text-slate-300 space-y-1.5 list-decimal pl-4"><li>Abra o app do seu banco e escolha <b>Pix</b>.</li><li>Leia o QR Code, ou use <b>Pix Copia e Cola</b>.</li><li>Confira o valor e confirme o pagamento.</li><li>Volte aqui e toque em <b>Já fiz o pagamento</b>.</li></ol>' +
+                '<p class="text-[12px] text-slate-500 dark:text-slate-400">Chave Pix do recebedor: <b class="text-slate-900 dark:text-white" style="font-variant-numeric:tabular-nums">' + esc(PIX.chave) + '</b></p></div></div>' +
+                '<div class="px-6 pb-6"><p class="text-[12px] text-slate-500 dark:text-slate-400 mb-4"><i class="fa-solid fa-circle-info text-brand-600 mr-1.5"></i>O recebimento é conferido por quem atende (loja, Atlética ou Secretaria). Guarde o comprovante do banco.</p><div class="flex flex-wrap justify-end gap-2"><button type="button" id="pix-cancel" class="apple-btn px-4 py-2.5 rounded-xl text-xs font-semibold bg-black/5 dark:bg-white/10 text-slate-900 dark:text-slate-100">Cancelar</button><button type="button" id="pix-paid" class="apple-btn px-5 py-2.5 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white"><i class="fa-solid fa-check mr-1.5"></i>Já fiz o pagamento</button></div></div></div>';
+            document.body.appendChild(m);
+            function fim(ok) { if (feito) return; feito = true; document.removeEventListener('keydown', tecla); m.remove(); aberto = null; if (opener && opener.focus) opener.focus(); resolve(ok); }
+            function tecla(e) { if (e.key === 'Escape') fim(false); }
+            document.addEventListener('keydown', tecla); aberto = m;
+            $('pix-x').onclick = $('pix-cancel').onclick = function () { fim(false); };
+            $('pix-paid').onclick = function () { fim(true); };
+            $('pix-copy').onclick = function () { var b = this; try { navigator.clipboard.writeText(payload); } catch (e) { } $('pix-code').select(); b.innerHTML = '<i class="fa-solid fa-check mr-1.5"></i>Copiado'; showToast('Código Pix copiado! Cole no Pix Copia e Cola do seu banco.'); setTimeout(function () { b.innerHTML = '<i class="fa-regular fa-copy mr-1.5"></i>Copiar'; }, 2500); };
+            $('pix-copy').focus();
+        });
+    }
+    window.FNETPay = { cobrar: cobrar, config: PIX, __t: { br: br, qr: qr, crc16: crc16 } };
+})();
+
 </script>
 </body>
 </html>
